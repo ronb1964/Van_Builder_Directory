@@ -1,0 +1,37 @@
+{
+  "name": "van-builder-scraper",
+  "version": "1.0.0",
+  "description": "Playwright-based web scraper for collecting van builder data across all U.S. states",
+  "main": "web_scraper_playwright.js",
+  "scripts": {
+    "scrape": "node web_scraper_playwright.js",
+    "scrape-headed": "node web_scraper_playwright.js $1 --headed",
+    "scrape-fast": "node web_scraper_playwright.js $1 --fast",
+    "install-browsers": "npx playwright install",
+    "test": "node web_scraper_playwright.js Alabama --headed",
+    "help": "node web_scraper_playwright.js"
+  },
+  "keywords": [
+    "web-scraping",
+    "playwright",
+    "van-builders",
+    "data-collection",
+    "automation"
+  ],
+  "author": "Van Builder Directory Team",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "file:///home/ron/Dev/Van_Builder_Directory"
+  },
+  "bugs": {
+    "url": "file:///home/ron/Dev/Van_Builder_Directory/issues"
+  },
+  "homepage": "file:///home/ron/Dev/Van_Builder_Directory#readme"
+}

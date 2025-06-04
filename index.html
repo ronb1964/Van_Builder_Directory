@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camper Van Builders</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .site-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .hero {
+            background-color: #4a5de8;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hero-content {
+            flex: 1;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .search-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #4a5de8;
+        }
+        
+        .search-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-tab {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .search-tab.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-tab svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            fill: #4a5de8;
+        }
+        
+        .search-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #2a2a2a;
+            border: none;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .search-input::placeholder {
+            color: #aaa;
+        }
+        
+        .welcome-section {
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .welcome-section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-section p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+        }
+        
+        .stat {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4a5de8;
+        }
+        
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzRhNWRlOCIgZD0iTTIxLDZIMTlWMTVIMTdWNkgxNVYxNUgxM1Y2SDExVjE1SDlWNkg3VjE1SDVWNkgzVjE1SDE2LjA2QzE2LjYsMTUuOCAxNy41LDE2LjM3IDE4LjUsMTYuMzdDMjAuMTksMTYuMzcgMjEuNTYsMTUgMjEuNTYsMTMuMzdDMjEuNTYsMTIuNTQgMjEuMiwxMS43OCAyMC41NiwxMS4yMVY2TTMsMTdWMTlINS4wNkM1LjYsMTkuOCA2LjUsMjAuMzcgNy41LDIwLjM3QzkuMTksMjAuMzcgMTAuNTYsMTkgMTAuNTYsMTcuMzdDMTAuNTYsMTYuNTQgMTAuMiwxNS43OCA5LjU2LDE1LjIxVjE3SDcuNTZWMTVINS4wNkM0LjUsMTUuOCAzLjYsMTYuMzcgMi41LDE2LjM3QTIuMTIsMi4xMiAwIDAsMS0wLjA2LDE0LjMxQzAuMSwxMy45IDAuMzQsMTMuNSAwLjU2LDEzLjIxVjE3SDNNMi41LDE0LjM3QzMuMDUsMTQuMzcgMy41LDEzLjkyIDMuNSwxMy4zN0MzLjUsMTIuODIgMy4wNSwxMi4zNyAyLjUsMTIuMzdDMS45NSwxMi4zNyAxLjUsMTIuODIgMS41LDEzLjM3QzEuNSwxMy45MiAxLjk1LDE0LjM3IDIuNSwxNC4zN00xOC41LDE0LjM3QzE5LjA1LDE0LjM3IDE5LjUsMTMuOTIgMTkuNSwxMy4zN0MxOS41LDEyLjgyIDE5LjA1LDEyLjM3IDE4LjUsMTIuMzdDMTcuOTUsMTIuMzcgMTcuNSwxMi44MiAxNy41LDEzLjM3QzE3LjUsMTMuOTIgMTcuOTUsMTQuMzcgMTguNSwxNC4zN001LjA2LDE3SDcuNTZDNy41NiwxNi4wOSA2LjQxLDE1LjM3IDUuNSwxNS4zN0M0LjUsMTUuMzcgMy41LDE2LjE3IDMuNSwxNy4zN0MzLjUsMTguOTcgNC45NiwxOS4zNyA1LjUsMS45LjM3QzYuMDQsMTkuMzcgNi41LDE4LjkgNi41LDE4LjM3SDUuMDZWMTdNNy41LDE4LjM3QzguMDUsMTguMzcgOC41LDE3LjkyIDguNSwxNy4zN0M4LjUsMTYuODIgOC4wNSwxNi4zNyA3LjUsMTYuMzdDNi45NSwxNi4zNyA2LjUsMTYuODIgNi41LDE3LjM3QzYuNSwxNy45MiA2Ljk1LDE4LjM3IDcuNSwxOC4zN1oiIC8+PC9zdmc+" alt="Van Icon">
+            </div>
+            <div class="site-title">Camper Van Builders</div>
+        </header>
+        
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Find Your Perfect Camper Van Builder</h1>
+                <p>Discover top-rated van conversion specialists across the United States</p>
+            </div>
+            <div class="hero-image">
+                <img src="https://i.imgur.com/YJOX1PC.png" alt="Camper Van Illustration">
+            </div>
+        </div>
+        
+        <div class="search-section">
+            <h2 class="search-title">Find Camper Van Builders</h2>
+            
+            <div class="search-tabs">
+                <div class="search-tab active">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
+                    </svg>
+                    By State
+                </div>
+                
+                <div class="search-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12,2C7.59,2 4,5.59 4,10C4,14.41 7.59,18 12,18C16.41,18 20,14.41 20,10C20,5.59 16.41,2 12,2M12,4A1,1 0 0,1 13,5A1,1 0 0,1 12,6A1,1 0 0,1 11,5A1,1 0 0,1 12,4M11,9A1,1 0 0,1 12,8A1,1 0 0,1 13,9V13.47L16.21,15.13A1,1 0 0,1 16.45,16.44L15.45,16.89A1.5,1.5 0 0,1 14.3,16.88V16.88L11,15V9Z" />
+                    </svg>
+                    By Zip Code
+                </div>
+                
+                <div class="search-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                    </svg>
+                    By Builder Name
+                </div>
+            </div>
+            
+            <div class="search-form">
+                <select class="search-input">
+                    <option value="" selected disabled>Select a State</option>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <!-- Add all states here -->
+                </select>
+            </div>
+        </div>
+        
+        <div class="welcome-section">
+            <h2>Welcome to the Camper Van Builders Directory</h2>
+            <p>We're here to help you find the perfect partner for your van conversion journey. Whether you're dreaming of weekend adventures or full-time van life, our directory connects you with experienced builders who can bring your vision to life.</p>
+            
+            <div class="stats">
+                <div class="stat">14</div>
+                <div class="stat">50</div>
+                <div class="stat">100%</div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="dark-mode-toggle">☀️</button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('.search-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update form based on selected tab
+                    const searchForm = document.querySelector('.search-form');
+                    const tabText = this.textContent.trim();
+                    
+                    if (tabText.includes('State')) {
+                        searchForm.innerHTML = `
+                            <select class="search-input">
+                                <option value="" selected disabled>Select a State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <!-- Add all states here -->
+                            </select>
+                        `;
+                    } else if (tabText.includes('Zip')) {
+                        searchForm.innerHTML = `
+                            <input type="text" class="search-input" placeholder="Enter Zip Code">
+                        `;
+                    } else if (tabText.includes('Builder')) {
+                        searchForm.innerHTML = `
+                            <input type="text" class="search-input" placeholder="Enter Builder Name">
+                        `;
+                    }
+                });
+            });
+            
+            // Dark mode toggle
+            const darkModeToggle = document.querySelector('.dark-mode-toggle');
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('light-mode');
+                if (document.body.classList.contains('light-mode')) {
+                    this.textContent = '🌙';
+                } else {
+                    this.textContent = '☀️';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
