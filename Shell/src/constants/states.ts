@@ -1,0 +1,66 @@
+export interface StateInfo {
+  name: string;
+  abbreviation: string;
+  region: string;
+}
+
+export const statesByRegion: Record<string, StateInfo[]> = {
+  Northeast: [
+    { name: 'Connecticut', abbreviation: 'CT', region: 'Northeast' },
+    { name: 'Maine', abbreviation: 'ME', region: 'Northeast' },
+    { name: 'Massachusetts', abbreviation: 'MA', region: 'Northeast' },
+    { name: 'New Hampshire', abbreviation: 'NH', region: 'Northeast' },
+    { name: 'New Jersey', abbreviation: 'NJ', region: 'Northeast' },
+    { name: 'New York', abbreviation: 'NY', region: 'Northeast' },
+    { name: 'Pennsylvania', abbreviation: 'PA', region: 'Northeast' },
+    { name: 'Rhode Island', abbreviation: 'RI', region: 'Northeast' },
+    { name: 'Vermont', abbreviation: 'VT', region: 'Northeast' },
+  ],
+  Midwest: [
+    { name: 'Illinois', abbreviation: 'IL', region: 'Midwest' },
+    { name: 'Indiana', abbreviation: 'IN', region: 'Midwest' },
+    { name: 'Iowa', abbreviation: 'IA', region: 'Midwest' },
+    { name: 'Kansas', abbreviation: 'KS', region: 'Midwest' },
+    { name: 'Michigan', abbreviation: 'MI', region: 'Midwest' },
+    { name: 'Minnesota', abbreviation: 'MN', region: 'Midwest' },
+    { name: 'Missouri', abbreviation: 'MO', region: 'Midwest' },
+    { name: 'Nebraska', abbreviation: 'NE', region: 'Midwest' },
+    { name: 'North Dakota', abbreviation: 'ND', region: 'Midwest' },
+    { name: 'Ohio', abbreviation: 'OH', region: 'Midwest' },
+    { name: 'South Dakota', abbreviation: 'SD', region: 'Midwest' },
+    { name: 'Wisconsin', abbreviation: 'WI', region: 'Midwest' },
+  ],
+  South: [
+    { name: 'Alabama', abbreviation: 'AL', region: 'South' },
+    { name: 'Arkansas', abbreviation: 'AR', region: 'South' },
+    { name: 'Delaware', abbreviation: 'DE', region: 'South' },
+    { name: 'Florida', abbreviation: 'FL', region: 'South' },
+    { name: 'Georgia', abbreviation: 'GA', region: 'South' },
+    { name: 'Kentucky', abbreviation: 'KY', region: 'South' },
+    { name: 'Louisiana', abbreviation: 'LA', region: 'South' },
+    { name: 'Maryland', abbreviation: 'MD', region: 'South' },
+    { name: 'Mississippi', abbreviation: 'MS', region: 'South' },
+    { name: 'North Carolina', abbreviation: 'NC', region: 'South' },
+    { name: 'Oklahoma', abbreviation: 'OK', region: 'South' },
+    { name: 'South Carolina', abbreviation: 'SC', region: 'South' },
+    { name: 'Tennessee', abbreviation: 'TN', region: 'South' },
+    { name: 'Texas', abbreviation: 'TX', region: 'South' },
+    { name: 'Virginia', abbreviation: 'VA', region: 'South' },
+    { name: 'West Virginia', abbreviation: 'WV', region: 'South' },
+  ],
+  West: [
+    { name: 'Alaska', abbreviation: 'AK', region: 'West' },
+    { name: 'Arizona', abbreviation: 'AZ', region: 'West' },
+    { name: 'California', abbreviation: 'CA', region: 'West' },
+    { name: 'Colorado', abbreviation: 'CO', region: 'West' },
+    { name: 'Hawaii', abbreviation: 'HI', region: 'West' },
+    { name: 'Idaho', abbreviation: 'ID', region: 'West' },
+    { name: 'Montana', abbreviation: 'MT', region: 'West' },
+    { name: 'Nevada', abbreviation: 'NV', region: 'West' },
+    { name: 'New Mexico', abbreviation: 'NM', region: 'West' },
+    { name: 'Oregon', abbreviation: 'OR', region: 'West' },
+    { name: 'Utah', abbreviation: 'UT', region: 'West' },
+    { name: 'Washington', abbreviation: 'WA', region: 'West' },
+    { name: 'Wyoming', abbreviation: 'WY', region: 'West' },
+  ],
+};
