@@ -29,7 +29,7 @@ export interface Builder {
   website: string;
   location: Location;
   description: string;
-  vanTypes?: string[];
+  vanTypes?: string[] | string;
   priceRange?: {
     min: number;
     max: number;

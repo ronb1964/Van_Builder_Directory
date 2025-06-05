@@ -227,6 +227,44 @@ class DatabaseService {
   }
 
   formatBuilder(row) {
+    // Helper function to parse pipe-separated strings or JSON
+    const parseField = (field, defaultValue = []) => {
+      if (!field) return defaultValue;
+      
+      // If it starts with [ or {, it's JSON
+      if (field.startsWith('[') || field.startsWith('{')) {
+        try {
+          return JSON.parse(field);
+        } catch (e) {
+          return defaultValue;
+        }
+      }
+      
+      // Otherwise, it's pipe-separated
+      return field.split('|').filter(item => item.trim());
+    };
+
+    // Special function for van types that handles comma-separated strings
+    const parseVanTypes = (field, defaultValue = []) => {
+      if (!field) return defaultValue;
+      
+      // If it starts with [ or {, it's JSON
+      if (field.startsWith('[') || field.startsWith('{')) {
+        try {
+          return JSON.parse(field);
+        } catch (e) {
+          return defaultValue;
+        }
+      }
+      
+      // Check if it contains commas (comma-separated) or pipes (pipe-separated)
+      if (field.includes(',')) {
+        return field.split(',').map(item => item.trim()).filter(item => item);
+      } else {
+        return field.split('|').map(item => item.trim()).filter(item => item);
+      }
+    };
+
     return {
       id: row.id,
       name: row.name,
@@ -235,10 +273,10 @@ class DatabaseService {
       email: row.email || '',
       website: row.website || '',
       description: row.description || 'Professional van builder specializing in custom conversions and adventure-ready vehicles.',
-      vanTypes: JSON.parse(row.van_types || '[\"Custom Builds\", \"Sprinter Conversions\"]'),
-      amenities: JSON.parse(row.amenities || '[\"Solar Power\", \"Kitchen\"]'),
-      socialMedia: JSON.parse(row.social_media || '{}'),
-      gallery: JSON.parse(row.photos || '[]'),
+      vanTypes: parseVanTypes(row.van_types, ['Custom Builds', 'Sprinter Conversions']),
+      amenities: parseField(row.amenities, ['Solar Power', 'Kitchen']),
+      socialMedia: parseField(row.social_media, {}),
+      gallery: parseField(row.photos, []),
       location: {
         city: row.city,
         state: row.state,

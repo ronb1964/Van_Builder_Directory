@@ -54,7 +54,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
     email,
     website,
     description,
-    vanTypes = [],
+    vanTypes,
     location,
     socialMedia
   } = builder;
@@ -70,12 +70,21 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
     <Zoom in={true} style={{ transitionDelay: '100ms' }}>
       <Card 
         sx={{ 
-          height: '100%', 
+          height: 'auto', 
+          minHeight: '280px',
+          maxHeight: '320px',
+          width: '100%',
+          maxWidth: '400px',
           display: 'flex', 
           flexDirection: 'column',
           position: 'relative',
           overflow: 'visible',
-          minWidth: '280px'
+          borderRadius: 2,
+          transition: 'all 0.3s ease-in-out',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+          }
         }}
       >
         {/* Distance Badge - Upper Left Corner */}
@@ -125,8 +134,8 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
             justifyContent: 'center',
             background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
             color: 'white',
-            fontSize: '1.4rem',
-            fontWeight: '500',
+            fontSize: '1.3rem',
+            fontWeight: '600',
             transition: 'all 0.3s ease-in-out',
             textAlign: 'center',
             px: 2,
@@ -160,7 +169,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
           <Box sx={{ mb: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
               <LocationOn color="action" fontSize="small" sx={{ mr: 1 }} />
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: '500', fontSize: '0.85rem', textAlign: 'left' }}>
                 {location.city}, {location.state}
               </Typography>
             </Box>
@@ -171,14 +180,15 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
             variant="body2" 
             paragraph 
             sx={{ 
-              mb: 2, 
+              mb: 1, 
               color: 'text.secondary',
               display: '-webkit-box',
               overflow: 'hidden',
               WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 3,
-              lineHeight: 1.5,
-              height: '4.5em'
+              WebkitLineClamp: 2,
+              lineHeight: 1.4,
+              height: '2.8em',
+              fontSize: '0.85rem'
             }}
           >
             {description}
@@ -187,10 +197,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
           {/* Van Types */}
           {processedVanTypes.length > 0 && (
             <Box sx={{ mb: 1 }}>
-              <Typography variant="subtitle2" gutterBottom sx={{ 
-                fontWeight: 'bold', 
-                color: '#5b9bd5'
-              }}>
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: '600', color: 'text.primary', mb: 0.5, fontSize: '0.85rem' }}>
                 Van Types
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>

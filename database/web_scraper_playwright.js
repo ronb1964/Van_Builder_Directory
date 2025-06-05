@@ -3,6 +3,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 class VanBuilderScraper {
     constructor(options = {}) {
@@ -13,6 +14,11 @@ class VanBuilderScraper {
         this.page = null;
         this.screenshots = [];
         this.results = [];
+        this.braveApiKey = process.env.BRAVE_SEARCH_API_KEY;
+        
+        if (!this.braveApiKey) {
+            throw new Error('❌ BRAVE_SEARCH_API_KEY not found in environment variables');
+        }
     }
 
     async initialize() {
@@ -60,63 +66,36 @@ class VanBuilderScraper {
         console.log('✅ Browser initialized successfully');
     }
 
-    async searchGoogle(query) {
-        console.log(`🔍 Searching Google for: "${query}"`);
+    async searchBrave(query) {
+        console.log(`🔍 Searching Brave for: "${query}"`);
         
         try {
-            await this.page.goto('https://www.google.com/search?q=' + encodeURIComponent(query));
-            
-            // Handle cookie consent if present
-            try {
-                await this.page.waitForSelector('button[id*="accept"], button[id*="agree"], button:has-text("Accept all")', { timeout: 3000 });
-                await this.page.click('button[id*="accept"], button[id*="agree"], button:has-text("Accept all")');
-                console.log('✅ Accepted cookie consent');
-            } catch (e) {
-                console.log('ℹ️ No cookie consent found or already accepted');
-            }
-
-            // Wait for search results
-            await this.page.waitForSelector('div[data-ved]', { timeout: 10000 });
-            
-            // Take screenshot of search results
-            const searchScreenshot = `search_results_${Date.now()}.png`;
-            await this.page.screenshot({ 
-                path: searchScreenshot,
-                fullPage: true 
-            });
-            this.screenshots.push(searchScreenshot);
-            console.log(`📸 Search results screenshot: ${searchScreenshot}`);
-
-            // Extract search results
-            const searchResults = await this.page.evaluate(() => {
-                const results = [];
-                const resultElements = document.querySelectorAll('div[data-ved] h3');
-                
-                for (let i = 0; i < Math.min(10, resultElements.length); i++) {
-                    const titleElement = resultElements[i];
-                    const linkElement = titleElement.closest('a');
-                    
-                    if (linkElement && titleElement.textContent.trim()) {
-                        results.push({
-                            title: titleElement.textContent.trim(),
-                            url: linkElement.href,
-                            snippet: ''
-                        });
-                    }
+            const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=10`;
+            const response = await fetch(url, {
+                headers: {
+                    'X-Subscription-Token': this.braveApiKey,
+                    'Accept': 'application/json'
                 }
-                
-                return results;
             });
-
-            console.log(`📋 Found ${searchResults.length} search results`);
             
-            // Wait 3 seconds after search (respectful crawling)
-            await this.page.waitForTimeout(3000);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            const searchResults = (data.web?.results || []).map(result => ({
+                title: result.title,
+                url: result.url,
+                snippet: result.description
+            }));
+            
+            console.log(`📋 Found ${searchResults.length} search results`);
             
             return searchResults;
             
         } catch (error) {
-            console.error('❌ Error during Google search:', error.message);
+            console.error('❌ Error during Brave search:', error.message);
             return [];
         }
     }
@@ -144,21 +123,77 @@ class VanBuilderScraper {
             // Wait for page to load
             await this.page.waitForTimeout(2000);
             
-            // Look for state mentions in the page content
-            const pageContent = await this.page.evaluate(() => {
-                return document.body.textContent.toLowerCase();
-            });
+            // Enhanced location verification
+            const locationData = await this.page.evaluate(({ targetState, stateVariations }) => {
+                const content = document.body.textContent.toLowerCase();
+                
+                // Look for state mentions in content
+                const foundInContent = stateVariations.some(state => content.includes(state));
+                
+                // Look for zip code patterns with state
+                const hasAlabamaZip = content.includes('35') && content.includes('alabama'); // Alabama zips start with 35
+                
+                // Check for Alabama area codes (205, 251, 256, 334, 938)
+                const alabamaAreaCodes = ['205', '251', '256', '334', '938'];
+                const hasAlabamaPhone = alabamaAreaCodes.some(code => 
+                    content.includes(code + '-') || content.includes(code + ' ') || content.includes(code + '.')
+                );
+                
+                // Check for actual business location (not just service area)
+                const hasBusinessLocation = content.includes('located in alabama') || 
+                                          content.includes('based in alabama') ||
+                                          content.includes('alabama office') ||
+                                          content.includes('alabama location');
+                
+                // Check for non-Alabama states that would disqualify
+                const otherStates = ['california', 'colorado', 'texas', 'florida', 'pennsylvania', 'new york'];
+                const hasOtherState = otherStates.some(state => 
+                    content.includes('located in ' + state) || 
+                    content.includes('based in ' + state) ||
+                    content.includes(state + ' office') ||
+                    content.includes(state + ' location')
+                );
+                
+                // Check for directory/listing site indicators
+                const directoryIndicators = [
+                    'directory', 'listing', 'find builders', 'search builders', 
+                    'builders in usa', 'van builders | campervan', 'explore vanx'
+                ];
+                const isDirectorySite = directoryIndicators.some(indicator => 
+                    content.includes(indicator)
+                );
+                
+                return {
+                    foundInContent,
+                    hasAlabamaZip,
+                    hasAlabamaPhone,
+                    hasBusinessLocation,
+                    hasOtherState,
+                    isDirectorySite
+                };
+            }, { targetState, stateVariations });
             
-            const foundInContent = stateVariations.some(state => 
-                pageContent.includes(state)
-            );
+            // Calculate verification score
+            let verificationScore = 0;
+            if (mentionedInSearch) verificationScore += 2;
+            if (locationData.foundInContent) verificationScore += 1; // Reduced from 2
+            if (locationData.hasAlabamaZip) verificationScore += 4; // Increased importance
+            if (locationData.hasAlabamaPhone) verificationScore += 4; // Increased importance
+            if (locationData.hasBusinessLocation) verificationScore += 3;
             
-            const isVerified = mentionedInSearch || foundInContent;
+            // Penalize if other state location is found
+            if (locationData.hasOtherState) verificationScore -= 5;
+            
+            // Penalize if directory site is detected
+            if (locationData.isDirectorySite) verificationScore -= 10;
+            
+            const isVerified = verificationScore >= 4; // Increased threshold
             
             if (isVerified) {
-                console.log(`✅ Location verified for: ${result.title}`);
+                console.log(`✅ Location verified for: ${result.title} (score: ${verificationScore})`);
             } else {
-                console.log(`❌ Location not verified for: ${result.title}`);
+                console.log(`❌ Location not verified for: ${result.title} (score: ${verificationScore})`);
+                console.log(`   Details: search=${mentionedInSearch}, content=${locationData.foundInContent}, zip=${locationData.hasAlabamaZip}, phone=${locationData.hasAlabamaPhone}, business=${locationData.hasBusinessLocation}, otherState=${locationData.hasOtherState}, directory=${locationData.isDirectorySite}`);
             }
             
             return isVerified;
@@ -209,7 +244,7 @@ class VanBuilderScraper {
             this.screenshots.push(builderScreenshot);
 
             // Extract comprehensive data
-            const builderData = await this.page.evaluate((url, title) => {
+            const builderData = await this.page.evaluate(({ url, title }) => {
                 const data = {
                     name: title,
                     website: url,
@@ -475,7 +510,7 @@ class VanBuilderScraper {
                 }
 
                 return data;
-            }, result.url, result.title);
+            }, { url: result.url, title: result.title });
 
             // Ensure required fields have values
             if (!builderData.name) builderData.name = result.title;
@@ -515,7 +550,7 @@ class VanBuilderScraper {
         console.log(`\n🏗️ Starting scrape for ${state}...`);
         
         const query = `custom camper van builders in ${state}`;
-        const searchResults = await this.searchGoogle(query);
+        const searchResults = await this.searchBrave(query);
         
         if (searchResults.length === 0) {
             console.log('❌ No search results found');
@@ -578,10 +613,33 @@ class VanBuilderScraper {
     }
 
     async cleanup() {
+        console.log('🧹 Starting cleanup...');
+        
+        // Close browser
         if (this.browser) {
             await this.browser.close();
-            console.log('🧹 Browser closed');
+            console.log('✅ Browser closed');
         }
+        
+        // Clean up screenshot files
+        if (this.screenshots && this.screenshots.length > 0) {
+            console.log(`🗑️ Removing ${this.screenshots.length} screenshot files...`);
+            
+            for (const screenshot of this.screenshots) {
+                try {
+                    if (fs.existsSync(screenshot)) {
+                        fs.unlinkSync(screenshot);
+                        console.log(`   ✅ Removed: ${screenshot}`);
+                    }
+                } catch (error) {
+                    console.log(`   ❌ Failed to remove ${screenshot}: ${error.message}`);
+                }
+            }
+            
+            console.log('✅ Screenshot cleanup completed');
+        }
+        
+        console.log('🎉 Cleanup finished');
     }
 
     getStateAbbreviation(state) {
@@ -624,6 +682,7 @@ Examples:
 States should be full names (e.g., "New York", not "NY")
 
 Photo Collection: Strives for 8 photos per builder (minimum 1 required)
+Cleanup: Screenshots are automatically removed after scraping completes
         `);
         process.exit(1);
     }
