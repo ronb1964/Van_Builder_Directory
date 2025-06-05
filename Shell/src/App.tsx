@@ -6,7 +6,8 @@ import SearchResults from './components/SearchResults';
 import Header from './components/Header';
 import { Builder } from './types/builder';
 
-// Define libraries for Google Maps
+const API_BASE_URL = 'http://localhost:3002/api';
+
 const libraries = ["places"] as any[];
 
 const App: React.FC = () => {
@@ -16,94 +17,118 @@ const App: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [mode, setMode] = useState<'light' | 'dark'>('dark');
   const [currentView, setCurrentView] = useState<'home' | 'results'>('home');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load all builders from API
+  const loadAllBuilders = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('🔍 Loading all builders from API...');
+      
+      const response = await fetch(`${API_BASE_URL}/builders`);
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log(`✅ Loaded ${data.count} builders from database`);
+        setAllBuilders(data.data);
+      } else {
+        throw new Error(data.error || 'Failed to load builders');
+      }
+    } catch (error) {
+      console.error('❌ Error loading builders:', error);
+      setError('Failed to load builders. Please try again.');
+      setAllBuilders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Search builders by state
+  const searchBuildersByState = async (state: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log(`🔍 Searching builders in state: ${state}`);
+      
+      const response = await fetch(`${API_BASE_URL}/builders/state/${encodeURIComponent(state)}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log(`✅ Found ${data.count} builders in ${state}`);
+        setFilteredBuilders(data.data);
+      } else {
+        throw new Error(data.error || 'Failed to search builders');
+      }
+    } catch (error) {
+      console.error('❌ Error searching builders:', error);
+      setError('Failed to search builders. Please try again.');
+      setFilteredBuilders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Search builders by name
+  const searchBuildersByName = async (query: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log(`🔍 Searching builders by name: ${query}`);
+      
+      const response = await fetch(`${API_BASE_URL}/builders/search/${encodeURIComponent(query)}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log(`✅ Found ${data.count} builders matching "${query}"`);
+        setFilteredBuilders(data.data);
+      } else {
+        throw new Error(data.error || 'Failed to search builders');
+      }
+    } catch (error) {
+      console.error('❌ Error searching builders:', error);
+      setError('Failed to search builders. Please try again.');
+      setFilteredBuilders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async (searchValue: string, searchType: 'state' | 'zip' | 'builder') => {
+    console.log(`🔍 Search initiated: ${searchType} = "${searchValue}"`);
+    
+    if (!searchValue.trim()) {
+      console.log('❌ Empty search value');
+      return;
+    }
+
+    try {
+      if (searchType === 'state') {
+        await searchBuildersByState(searchValue);
+      } else if (searchType === 'builder') {
+        await searchBuildersByName(searchValue);
+      } else if (searchType === 'zip') {
+        // For now, load all builders and filter by zip on frontend
+        // TODO: Add zip search endpoint to API
+        await loadAllBuilders();
+        const filteredBuilders = allBuilders.filter(builder => 
+          builder.zip && builder.zip.includes(searchValue)
+        );
+        setFilteredBuilders(filteredBuilders);
+        console.log(`✅ Found ${filteredBuilders.length} builders near zip ${searchValue}`);
+      }
+      
+      setCurrentView('results');
+    } catch (error) {
+      console.error('❌ Search failed:', error);
+    }
+  };
 
   // Load all available builders data on component mount
   useEffect(() => {
-    const loadBuilders = async () => {
-      try {
-        // Try to load new database format first
-        let response = await fetch('/new_alabama_builders.json');
-        let data = await response.json();
-        
-        let buildersData = [];
-        
-        // Check if it's the new database format
-        if (data.builders && Array.isArray(data.builders)) {
-          console.log('Using new database format:', data.total_builders, 'builders found');
-          buildersData = data.builders;
-        } else {
-          console.log('New database empty, falling back to old format');
-          // Fall back to old format
-          response = await fetch('/alabama_builders.json');
-          buildersData = await response.json();
-        }
-        
-        // Transform data to match our Builder interface
-        const transformedData = buildersData.map((builder: any, index: number) => ({
-          ...builder,
-          id: builder.id || `builder-${index}`,
-          location: {
-            city: builder.city,
-            state: builder.state,
-            lat: builder.latitude || builder.lat,
-            lng: builder.longitude || builder.lng
-          },
-          vanTypes: builder.vanTypes || ['Custom Builds', 'Sprinter Conversions'],
-          description: builder.description || 'Professional van builder specializing in custom conversions and adventure-ready vehicles.',
-          distanceFromZip: { miles: Math.floor(Math.random() * 500) + 10 },
-          socialMedia: {
-            facebook: builder.socialMedia?.facebook || '',
-            instagram: builder.socialMedia?.instagram || '',
-            youtube: builder.socialMedia?.youtube || '',
-            tiktok: builder.socialMedia?.tiktok || ''
-          }
-        }));
-        
-        console.log('Loaded builders:', transformedData.length);
-        setAllBuilders(transformedData);
-      } catch (error) {
-        console.error('Error loading builders:', error);
-      }
-    };
-    
-    loadBuilders();
+    loadAllBuilders();
   }, []);
-
-  // Handle search functionality
-  const handleSearch = (searchType: 'state' | 'zip' | 'builder', searchValue: string) => {
-    let results: Builder[] = [];
-    
-    if (searchType === 'state') {
-      // Filter builders by state (case insensitive)
-      // Handle both full state names and abbreviations
-      const searchLower = searchValue.toLowerCase();
-      results = allBuilders.filter(builder => {
-        const builderState = builder.state.toLowerCase();
-        // Direct match
-        if (builderState === searchLower) return true;
-        // Check if searching for "Alabama" and builder has "AL"
-        if (searchLower === 'alabama' && builderState === 'al') return true;
-        // Check if searching for "AL" and builder has "Alabama"
-        if (searchLower === 'al' && builderState === 'alabama') return true;
-        return false;
-      });
-    } else if (searchType === 'zip') {
-      // Filter builders by zip code
-      results = allBuilders.filter(builder => 
-        builder.zip.startsWith(searchValue)
-      );
-    } else if (searchType === 'builder') {
-      // Filter builders by name (case insensitive partial match)
-      results = allBuilders.filter(builder => 
-        builder.name.toLowerCase().includes(searchValue.toLowerCase())
-      );
-    }
-    
-    setFilteredBuilders(results);
-    setSearchType(searchType);
-    setSearchValue(searchValue);
-    setCurrentView('results'); // Switch to results view
-  };
 
   // Toggle between light and dark mode
   const toggleColorMode = () => {
@@ -155,7 +180,7 @@ const App: React.FC = () => {
             <HomePage 
               darkMode={mode === 'dark'} 
               toggleDarkMode={toggleColorMode}
-              onSearch={handleSearch}
+              onSearch={(searchType: 'state' | 'zip' | 'builder', searchValue: string) => handleSearch(searchValue, searchType)}
             />
             <Box sx={{ textAlign: 'center', mt: 2, mb: 4 }}>
               <Button 
