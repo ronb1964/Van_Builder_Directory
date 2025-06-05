@@ -8,6 +8,7 @@ interface HomePageProps {
   darkMode: boolean;
   toggleDarkMode: () => void;
   onSearch: (searchType: 'state' | 'zip' | 'builder', searchValue: string) => void;
+  builderCount: number;
 }
 
 const PageContainer = styled.div<{ darkMode: boolean }>`
@@ -99,7 +100,7 @@ const HeroImage = styled.div`
   }
 `;
 
-const HomePage: React.FC<HomePageProps> = ({ darkMode, toggleDarkMode, onSearch }) => {
+const HomePage: React.FC<HomePageProps> = ({ darkMode, toggleDarkMode, onSearch, builderCount }) => {
   return (
     <PageContainer darkMode={darkMode}>
       <HeroSection darkMode={darkMode}>
@@ -126,7 +127,7 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, toggleDarkMode, onSearch 
       <SearchBox onSearch={onSearch} />
       
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <WelcomeSection />
+        <WelcomeSection builderCount={builderCount} />
       </Container>
     </PageContainer>
   );

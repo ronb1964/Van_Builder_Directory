@@ -47,24 +47,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             gutterBottom
             sx={{ 
               fontWeight: 'bold',
-              color: theme.palette.primary.main,
+              background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
               mb: 2
             }}
           >
             {getSearchTitle()}
           </Typography>
-          
-          {builders.length > 0 && (
-            <Typography 
-              variant="h6" 
-              color="text.secondary"
-              sx={{ mb: 3 }}
-            >
-              Found {builders.length} professional van builder{builders.length !== 1 ? 's' : ''} 
-              {searchType === 'state' && ` in ${searchValue}`}
-              {searchType === 'zip' && ` near ${searchValue}`}
-            </Typography>
-          )}
         </Box>
 
         {/* Results Section */}

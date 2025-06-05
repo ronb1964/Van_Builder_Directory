@@ -47,25 +47,24 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
   const theme = useTheme();
   const {
     name,
-    address,
     phone,
     email,
     website,
     description,
     vanTypes = [],
     location,
-    distanceFromZip,
     socialMedia
   } = builder;
-
-  // Calculate distance (placeholder for now)
-  const calculatedDistance = distanceFromZip || { miles: Math.floor(Math.random() * 500) + 10 };
 
   return (
     <Zoom in={true} style={{ transitionDelay: '100ms' }}>
       <Card 
         sx={{ 
-          height: '100%', 
+          height: 'auto', 
+          minHeight: '280px',
+          maxHeight: '320px',
+          width: '100%',
+          maxWidth: '400px',
           display: 'flex', 
           flexDirection: 'column',
           position: 'relative',
@@ -78,208 +77,252 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
           }
         }}
       >
-        {/* Distance Badge - Upper Left Corner */}
-        {calculatedDistance && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 8,
-              left: 8,
-              zIndex: 10,
-              bgcolor: '#d32f2f',
-              color: 'white',
-              borderRadius: '20px',
-              px: 1.5,
-              py: 0.5,
-              fontSize: '0.75rem',
-              fontWeight: 'bold',
-              boxShadow: '0 2px 8px rgba(211, 47, 47, 0.4)',
-              border: '2px solid white',
-              minWidth: '60px',
-              textAlign: 'center',
-              transition: 'all 0.2s ease-in-out',
-              '&:hover': {
-                transform: 'scale(1.05)',
-                boxShadow: '0 4px 12px rgba(211, 47, 47, 0.6)'
-              },
-              cursor: 'pointer'
-            }}
-            onClick={() => onZoomToLocation?.(builder)}
-          >
-            {calculatedDistance.miles} mi
-          </Box>
-        )}
-
-        {/* Card Media - Gradient Header with Builder Name */}
+        {/* Card Header with Builder Name - Using theme colors */}
         <Box
           sx={{
-            height: 160,
+            height: 120,
+            minHeight: 120,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
+            background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
             color: 'white',
-            fontSize: '1.4rem',
+            fontSize: '1.3rem',
             fontWeight: '600',
             transition: 'all 0.3s ease-in-out',
             textAlign: 'center',
             px: 2,
             borderRadius: '8px 8px 0 0',
             textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%)',
+              pointerEvents: 'none',
+            },
             '&:hover': {
-              background: `linear-gradient(135deg, ${alpha(theme.palette.primary.dark, 0.8)} 0%, ${alpha(theme.palette.primary.dark, 0.7)} 100%)`,
+              background: 'linear-gradient(135deg, #34495e 0%, #5c6bc0 100%)',
               transform: 'scale(1.02)'
             }
           }}
         >
-          {name}
+          <Box sx={{ position: 'relative', zIndex: 1 }}>
+            {name}
+          </Box>
         </Box>
 
         <CardContent sx={{ flexGrow: 1, pt: 1.5, pb: 1, px: 2 }}>
           {/* Location */}
           <Box sx={{ mb: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 0.5 }}>
-              <LocationOn color="action" fontSize="small" sx={{ mr: 1, mt: 0.3 }} />
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: '500', fontSize: '0.85rem' }}>
-                {builder.city}, {builder.state}
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+              <LocationOn color="action" fontSize="small" sx={{ mr: 1 }} />
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: '500', fontSize: '0.85rem', textAlign: 'left' }}>
+                {location.city}, {location.state}
               </Typography>
             </Box>
           </Box>
 
-          {/* Contact Information */}
-          <Box sx={{ mb: 1.5 }}>
-            {phone && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                <Phone color="action" fontSize="small" sx={{ mr: 1 }} />
-                <Link 
-                  href={`tel:${phone}`} 
-                  color="inherit" 
-                  underline="hover"
-                  sx={{ 
-                    fontSize: '0.85rem',
-                    transition: 'color 0.2s ease-in-out',
-                    '&:hover': { color: theme.palette.primary.main }
-                  }}
-                >
-                  {phone}
-                </Link>
-              </Box>
-            )}
-            {email && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                <Email color="action" fontSize="small" sx={{ mr: 1 }} />
-                <Link 
-                  href={`mailto:${email}`} 
-                  color="inherit" 
-                  underline="hover"
-                  sx={{ 
-                    fontSize: '0.85rem',
-                    wordBreak: 'break-word',
-                    transition: 'color 0.2s ease-in-out',
-                    '&:hover': { color: theme.palette.primary.main }
-                  }}
-                >
-                  {email}
-                </Link>
-              </Box>
-            )}
-            {website && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                <Language color="action" fontSize="small" sx={{ mr: 1 }} />
-                <Link 
-                  href={website} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  color="inherit" 
-                  underline="hover"
-                  sx={{ 
-                    fontSize: '0.85rem',
-                    transition: 'color 0.2s ease-in-out',
-                    '&:hover': { color: theme.palette.primary.main }
-                  }}
-                >
-                  Visit Website
-                </Link>
-              </Box>
-            )}
-          </Box>
+          {/* Description */}
+          <Typography 
+            variant="body2" 
+            paragraph 
+            sx={{ 
+              mb: 1, 
+              color: 'text.secondary',
+              display: '-webkit-box',
+              overflow: 'hidden',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 2,
+              lineHeight: 1.4,
+              height: '2.8em',
+              fontSize: '0.85rem'
+            }}
+          >
+            {description}
+          </Typography>
 
           {/* Van Types */}
           {vanTypes && vanTypes.length > 0 && (
-            <Box sx={{ mb: 1.5 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                <DirectionsCar color="action" fontSize="small" sx={{ mr: 1 }} />
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: '500' }}>
-                  Van Types:
-                </Typography>
-              </Box>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: '600', color: 'text.primary', mb: 0.5, fontSize: '0.85rem' }}>
+                Van Types
+              </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {vanTypes.map((type: string, index: number) => (
+                {vanTypes.map((type) => (
                   <Chip
-                    key={index}
+                    key={type}
                     label={type}
                     size="small"
-                    sx={{
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
-                      color: theme.palette.primary.main,
+                    sx={{ 
+                      borderRadius: 1.5,
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? alpha('#ffffff', 0.15) 
+                        : alpha('#2c3e50', 0.08),
+                      color: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      fontWeight: '500',
                       fontSize: '0.7rem',
                       height: '22px',
-                      fontWeight: '500',
-                      '&:hover': {
-                        bgcolor: alpha(theme.palette.primary.main, 0.2)
-                      }
+                      border: theme.palette.mode === 'dark' 
+                        ? '1px solid rgba(255, 255, 255, 0.3)' 
+                        : '1px solid rgba(44, 62, 80, 0.2)',
+                      '&:hover': { 
+                        bgcolor: theme.palette.mode === 'dark' 
+                          ? alpha('#ffffff', 0.25) 
+                          : alpha('#2c3e50', 0.15),
+                        transform: 'translateY(-1px)',
+                        boxShadow: 1 
+                      },
+                      transition: 'all 0.2s ease-in-out'
                     }}
                   />
                 ))}
               </Box>
             </Box>
           )}
+        </CardContent>
 
-          {/* Description */}
-          {description && (
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ 
-                mb: 1.5,
-                fontSize: '0.85rem',
-                lineHeight: 1.4,
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden'
-              }}
-            >
-              {description}
-            </Typography>
-          )}
-
-          {/* View Details Button */}
+        <Box sx={{ p: 1.5, pt: 0, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Button
             variant="contained"
-            fullWidth
-            onClick={() => onViewDetails(builder)}
+            onClick={() => onViewDetails && onViewDetails(builder)}
             sx={{
-              mb: 1.5,
-              py: 1,
-              borderRadius: 1.5,
-              textTransform: 'none',
+              py: 0.6,
+              px: 2,
               fontWeight: '600',
-              fontSize: '0.9rem',
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '0.85rem',
+              background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
               transition: 'all 0.2s ease-in-out',
               '&:hover': {
+                background: 'linear-gradient(135deg, #34495e 0%, #5c6bc0 100%)',
                 transform: 'translateY(-1px)',
-                boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.4)}`
+                boxShadow: 4
               }
             }}
           >
             View Details
           </Button>
-
-          {/* Social Media Icons */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            {/* Always show phone icon */}
+            <Tooltip title={phone ? `Call ${phone}` : "Contact via email"}>
+              <IconButton 
+                size="small" 
+                color="primary" 
+                aria-label="contact"
+                component="a"
+                href={phone ? `tel:${phone}` : `mailto:${email}`}
+                sx={{ 
+                  bgcolor: theme.palette.mode === 'dark' 
+                    ? alpha('#ffffff', 0.1) 
+                    : alpha('#2c3e50', 0.1),
+                  borderRadius: '50%',
+                  width: 32,
+                  height: 32,
+                  minWidth: 32,
+                  minHeight: 32,
+                  color: theme.palette.mode === 'dark' 
+                    ? 'white' 
+                    : '#2c3e50',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
+                    color: theme.palette.mode === 'dark' 
+                      ? '#2c3e50' 
+                      : 'white',
+                    transform: 'scale(1.1)'
+                  }
+                }}
+              >
+                <Phone fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {email && (
+              <Tooltip title={`Email ${email}`}>
+                <IconButton 
+                  size="small" 
+                  color="primary" 
+                  aria-label="email"
+                  component="a"
+                  href={`mailto:${email}`}
+                  sx={{ 
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#2c3e50', 0.1),
+                    borderRadius: '50%',
+                    width: 32,
+                    height: 32,
+                    minWidth: 32,
+                    minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#2c3e50' 
+                        : 'white',
+                      transform: 'scale(1.1)'
+                    }
+                  }}
+                >
+                  <Email fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {website && (
+              <Tooltip title="Visit Website">
+                <IconButton 
+                  size="small" 
+                  color="primary" 
+                  aria-label="website"
+                  component="a"
+                  href={website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ 
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#2c3e50', 0.1),
+                    borderRadius: '50%',
+                    width: 32,
+                    height: 32,
+                    minWidth: 32,
+                    minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#2c3e50' 
+                        : 'white',
+                      transform: 'scale(1.1)'
+                    }
+                  }}
+                >
+                  <Language fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
             {socialMedia?.youtube && (
-              <Tooltip title="YouTube Profile">
+              <Tooltip title="YouTube Channel">
                 <IconButton 
                   size="small" 
                   color="primary" 
@@ -289,16 +332,25 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#2c3e50', 0.1),
                     borderRadius: '50%',
                     width: 32,
                     height: 32,
                     minWidth: 32,
                     minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#2c3e50' 
+                        : 'white',
                       transform: 'scale(1.1)'
                     }
                   }}
@@ -318,16 +370,25 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#2c3e50', 0.1),
                     borderRadius: '50%',
                     width: 32,
                     height: 32,
                     minWidth: 32,
                     minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#2c3e50' 
+                        : 'white',
                       transform: 'scale(1.1)'
                     }
                   }}
@@ -337,7 +398,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
               </Tooltip>
             )}
             {socialMedia?.facebook && (
-              <Tooltip title="Facebook Profile">
+              <Tooltip title="Facebook Page">
                 <IconButton 
                   size="small" 
                   color="primary" 
@@ -347,16 +408,25 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#2c3e50', 0.1),
                     borderRadius: '50%',
                     width: 32,
                     height: 32,
                     minWidth: 32,
                     minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#2c3e50' 
+                        : 'white',
                       transform: 'scale(1.1)'
                     }
                   }}
@@ -376,16 +446,25 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#2c3e50', 0.1),
                     borderRadius: '50%',
                     width: 32,
                     height: 32,
                     minWidth: 32,
                     minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#2c3e50',
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#2c3e50',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#2c3e50' 
+                        : 'white',
                       transform: 'scale(1.1)'
                     }
                   }}
@@ -395,7 +474,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
               </Tooltip>
             )}
           </Box>
-        </CardContent>
+        </Box>
       </Card>
     </Zoom>
   );

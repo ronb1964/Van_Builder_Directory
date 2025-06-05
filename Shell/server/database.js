@@ -230,27 +230,26 @@ class DatabaseService {
     return {
       id: row.id,
       name: row.name,
-      address: `${row.city}, ${row.state} ${row.zip || ''}`.trim(),
-      city: row.city,
-      state: row.state,
-      zip: row.zip || '',
+      address: `${row.address || ''} ${row.city}, ${row.state} ${row.zip || ''}`.trim(),
       phone: row.phone || '',
       email: row.email || '',
       website: row.website || '',
-      latitude: row.lat,
-      longitude: row.lng,
       description: row.description || 'Professional van builder specializing in custom conversions and adventure-ready vehicles.',
-      vanTypes: JSON.parse(row.van_types || '["Custom Builds", "Sprinter Conversions"]'),
-      amenities: JSON.parse(row.amenities || '["Solar Power", "Kitchen"]'),
+      vanTypes: JSON.parse(row.van_types || '[\"Custom Builds\", \"Sprinter Conversions\"]'),
+      amenities: JSON.parse(row.amenities || '[\"Solar Power\", \"Kitchen\"]'),
       socialMedia: JSON.parse(row.social_media || '{}'),
-      photos: JSON.parse(row.photos || '[]'),
+      gallery: JSON.parse(row.photos || '[]'),
       location: {
         city: row.city,
         state: row.state,
+        zip: row.zip || '',
         lat: row.lat,
         lng: row.lng
       },
-      distanceFromZip: { miles: Math.floor(Math.random() * 500) + 10 }
+      distanceFromZip: { 
+        miles: Math.floor(Math.random() * 500) + 10,
+        zipCode: row.zip || ''
+      }
     };
   }
 

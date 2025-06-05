@@ -103,6 +103,10 @@ const App: React.FC = () => {
       return;
     }
 
+    // Save search parameters to state
+    setSearchType(searchType);
+    setSearchValue(searchValue);
+
     try {
       if (searchType === 'state') {
         await searchBuildersByState(searchValue);
@@ -181,6 +185,7 @@ const App: React.FC = () => {
               darkMode={mode === 'dark'} 
               toggleDarkMode={toggleColorMode}
               onSearch={(searchType: 'state' | 'zip' | 'builder', searchValue: string) => handleSearch(searchValue, searchType)}
+              builderCount={allBuilders.length}
             />
             <Box sx={{ textAlign: 'center', mt: 2, mb: 4 }}>
               <Button 
@@ -201,8 +206,24 @@ const App: React.FC = () => {
           <>
             <Box sx={{ p: 2, display: 'flex', justifyContent: 'flex-start', bgcolor: 'background.paper', boxShadow: 1 }}>
               <Button 
-                variant="outlined" 
+                variant="contained" 
                 onClick={() => setCurrentView('home')}
+                sx={{
+                  background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
+                  color: 'white',
+                  fontWeight: '600',
+                  textTransform: 'none',
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1,
+                  boxShadow: '0 3px 10px rgba(0,0,0,0.2)',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #34495e 0%, #5c6bc0 100%)',
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 6px 20px rgba(0,0,0,0.3)'
+                  }
+                }}
               >
                 Back to Home
               </Button>

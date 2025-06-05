@@ -5,7 +5,11 @@ import {
   Box 
 } from '@mui/material';
 
-const WelcomeSection: React.FC = () => {
+interface WelcomeSectionProps {
+  builderCount: number;
+}
+
+const WelcomeSection: React.FC<WelcomeSectionProps> = ({ builderCount }) => {
   return (
     <Paper 
       elevation={3}
@@ -69,7 +73,7 @@ const WelcomeSection: React.FC = () => {
       }}>
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="h3" sx={{ color: '#64b5f6', fontWeight: 'bold' }}>
-            14
+            {builderCount}
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
             Builders Listed
