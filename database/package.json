@@ -21,6 +21,8 @@
   "author": "Van Builder Directory Team",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.5.0",
+    "node-fetch": "^3.3.2",
     "playwright": "^1.40.0"
   },
   "engines": {

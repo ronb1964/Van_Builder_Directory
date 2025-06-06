@@ -41,6 +41,7 @@ class DatabaseService {
         lead_time TEXT,
         photos TEXT,
         social_media TEXT,
+        gallery TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -100,7 +101,8 @@ class DatabaseService {
             years_in_business: 5,
             lead_time: '4-8 months',
             photos: '[]',
-            social_media: '{}'
+            social_media: '{}',
+            gallery: '[]'
           },
           {
             id: 2,
@@ -125,7 +127,8 @@ class DatabaseService {
             years_in_business: 5,
             lead_time: '4-8 months',
             photos: '[]',
-            social_media: '{}'
+            social_media: '{}',
+            gallery: '[]'
           },
           {
             id: 3,
@@ -150,13 +153,14 @@ class DatabaseService {
             years_in_business: 5,
             lead_time: '4-8 months',
             photos: '[]',
-            social_media: '{}'
+            social_media: '{}',
+            gallery: '[]'
           }
         ];
 
         const insertSQL = `
-          INSERT INTO builders (name, city, state, lat, lng, zip, phone, email, website, description, specialties, van_types, price_range_min, price_range_max, pricing_tiers, amenities, services, certifications, years_in_business, lead_time, photos, social_media)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO builders (name, city, state, lat, lng, zip, phone, email, website, description, specialties, van_types, price_range_min, price_range_max, pricing_tiers, amenities, services, certifications, years_in_business, lead_time, photos, social_media, gallery)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         alabamaBuilders.forEach(builder => {
@@ -182,7 +186,8 @@ class DatabaseService {
             builder.years_in_business,
             builder.lead_time,
             builder.photos,
-            builder.social_media
+            builder.social_media,
+            builder.gallery
           ], (err) => {
             if (err) {
               console.error('Error inserting builder:', err);
@@ -223,6 +228,26 @@ class DatabaseService {
           }
         }
       );
+    });
+  }
+
+  async updateBuilder(builderName, updateData) {
+    return new Promise((resolve, reject) => {
+      // Build the SET clause dynamically based on updateData
+      const setClause = Object.keys(updateData).map(key => `${key} = ?`).join(', ');
+      const values = Object.values(updateData);
+      values.push(builderName); // Add the name for the WHERE clause
+      
+      const sql = `UPDATE builders SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE name = ?`;
+      
+      this.db.run(sql, values, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          console.log(`✅ Updated ${builderName}: ${this.changes} row(s) affected`);
+          resolve(this.changes);
+        }
+      });
     });
   }
 
@@ -276,7 +301,7 @@ class DatabaseService {
       vanTypes: parseVanTypes(row.van_types, ['Custom Builds', 'Sprinter Conversions']),
       amenities: parseField(row.amenities, ['Solar Power', 'Kitchen']),
       socialMedia: parseField(row.social_media, {}),
-      gallery: parseField(row.photos, []),
+      gallery: parseField(row.gallery, []),
       location: {
         city: row.city,
         state: row.state,
