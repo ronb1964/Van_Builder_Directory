@@ -3,6 +3,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
 class VanBuilderScraper {
@@ -110,7 +111,7 @@ class VanBuilderScraper {
         ].filter(Boolean);
         
         const titleLower = result.title.toLowerCase();
-        const snippetLower = result.snippet.toLowerCase();
+        const snippetLower = (result.snippet || '').toLowerCase();
         
         const mentionedInSearch = stateVariations.some(state => 
             titleLower.includes(state) || snippetLower.includes(state)
@@ -123,36 +124,139 @@ class VanBuilderScraper {
             // Wait for page to load
             await this.page.waitForTimeout(2000);
             
-            // Enhanced location verification
-            const locationData = await this.page.evaluate(({ targetState, stateVariations }) => {
+            // Enhanced location verification with stricter address requirements
+            const locationData = await this.page.evaluate(({ targetState, stateVariations, stateAbbrev }) => {
+                // Get cleaner content by removing scripts and styles first
+                const scripts = document.querySelectorAll('script, style, noscript');
+                scripts.forEach(el => el.remove());
+                
                 const content = document.body.textContent.toLowerCase();
+                const originalHTML = document.body.innerHTML;
                 
                 // Look for state mentions in content
                 const foundInContent = stateVariations.some(state => content.includes(state));
                 
-                // Look for zip code patterns with state
-                const hasAlabamaZip = content.includes('35') && content.includes('alabama'); // Alabama zips start with 35
+                // SIMPLIFIED: Look for actual business addresses with state abbreviations
+                let hasStateAddress = false;
+                const targetStateAbbrev = targetState === 'New Jersey' ? 'NJ' : 
+                                   targetState === 'Alabama' ? 'AL' :
+                                   targetState === 'California' ? 'CA' :
+                                   targetState === 'Texas' ? 'TX' :
+                                   targetState === 'Florida' ? 'FL' : '';
                 
-                // Check for Alabama area codes (205, 251, 256, 334, 938)
-                const alabamaAreaCodes = ['205', '251', '256', '334', '938'];
-                const hasAlabamaPhone = alabamaAreaCodes.some(code => 
-                    content.includes(code + '-') || content.includes(code + ' ') || content.includes(code + '.')
-                );
+                if (targetStateAbbrev) {
+                    // Simple check for state abbreviation with zip code
+                    const addressCheck = content.includes(targetStateAbbrev.toLowerCase()) || 
+                                        originalHTML.toLowerCase().includes(targetStateAbbrev.toLowerCase());
+                    hasStateAddress = addressCheck;
+                }
                 
-                // Check for actual business location (not just service area)
-                const hasBusinessLocation = content.includes('located in alabama') || 
-                                          content.includes('based in alabama') ||
-                                          content.includes('alabama office') ||
-                                          content.includes('alabama location');
+                // Check for OUT-OF-STATE addresses that should disqualify
+                const otherStateAbbrevs = ['PA', 'NY', 'CT', 'DE', 'MD', 'VA', 'NC', 'SC', 'GA', 'FL', 'OH', 'MI', 'IL', 'IN', 'WI', 'MN', 'IA', 'MO', 'AR', 'LA', 'MS', 'TN', 'KY', 'WV'];
+                const currentStateAbbrev = targetStateAbbrev.toLowerCase();
                 
-                // Check for non-Alabama states that would disqualify
-                const otherStates = ['california', 'colorado', 'texas', 'florida', 'pennsylvania', 'new york'];
-                const hasOtherState = otherStates.some(state => 
-                    content.includes('located in ' + state) || 
-                    content.includes('based in ' + state) ||
-                    content.includes(state + ' office') ||
-                    content.includes(state + ' location')
-                );
+                let hasOtherStateAddress = false;
+                let otherStateAddresses = [];
+                
+                // More specific detection for actual addresses vs casual mentions
+                otherStateAbbrevs.forEach(abbrev => {
+                    if (abbrev.toLowerCase() !== currentStateAbbrev) {
+                        // Look for ACTUAL address patterns, not just any mention
+                        const addressPatterns = [
+                            new RegExp(`\\b\\d+[^,\\n]*,\\s*[^,\\n]*,?\\s*${abbrev}\\s+\\d{5}`, 'gi'),
+                            new RegExp(`located in [^,\\n]*,\\s*${abbrev}\\b`, 'gi'),
+                            new RegExp(`based in [^,\\n]*,\\s*${abbrev}\\b`, 'gi'),
+                            new RegExp(`headquarters in [^,\\n]*,\\s*${abbrev}\\b`, 'gi'),
+                            new RegExp(`office in [^,\\n]*,\\s*${abbrev}\\b`, 'gi')
+                        ];
+                        
+                        const hasActualAddress = addressPatterns.some(pattern => 
+                            pattern.test(content) || pattern.test(originalHTML)
+                        );
+                        
+                        if (hasActualAddress) {
+                            hasOtherStateAddress = true;
+                            otherStateAddresses.push(abbrev);
+                        }
+                    }
+                });
+                
+                // More comprehensive zip code detection
+                const stateZipPatterns = {
+                    'New Jersey': /\b08\d{3}\b/g,
+                    'Alabama': /\b3[0-6]\d{3}\b/g,
+                    'California': /\b9[0-6]\d{3}\b/g,
+                    'Texas': /\b7[0-9]\d{3}\b/g,
+                    'Florida': /\b3[0-4]\d{3}\b/g
+                };
+                
+                let hasStateZip = false;
+                const zipPattern = stateZipPatterns[targetState];
+                if (zipPattern) {
+                    hasStateZip = zipPattern.test(content) || zipPattern.test(originalHTML);
+                }
+                
+                // Get state-specific area codes with comprehensive phone detection
+                const getAreaCodes = (state) => {
+                    const areaCodes = {
+                        'New Jersey': ['201', '551', '609', '732', '848', '856', '862', '908', '973'],
+                        'Alabama': ['205', '251', '256', '334', '938'],
+                        'California': ['209', '213', '310', '323', '408', '415', '510', '530', '559', '562', '619', '626', '628', '650', '657', '661', '669', '707', '714', '747', '760', '805', '818', '831', '858', '909', '916', '925', '949', '951'],
+                        'Texas': ['214', '254', '281', '325', '361', '409', '430', '432', '469', '512', '713', '737', '806', '817', '830', '832', '903', '915', '936', '940', '956', '972', '979'],
+                        'Florida': ['239', '305', '321', '352', '386', '407', '561', '727', '754', '772', '786', '813', '850', '863', '904', '941', '954'],
+                        'New York': ['212', '315', '347', '516', '518', '585', '607', '631', '646', '716', '718', '845', '914', '917', '929', '934']
+                    };
+                    return areaCodes[state] || [];
+                };
+                
+                const stateAreaCodes = getAreaCodes(targetState);
+                let hasStatePhone = false;
+                
+                // Simple phone detection
+                stateAreaCodes.forEach(code => {
+                    if (content.includes(code) || originalHTML.includes(code)) {
+                        hasStatePhone = true;
+                    }
+                });
+                
+                // Check for actual business location indicators (not just service area)
+                const stateLower = targetState.toLowerCase();
+                const locationKeywords = {
+                    'New Jersey': ['hamilton twp', 'trenton', 'jersey city', 'newark', 'princeton', 'camden'],
+                    'Alabama': ['birmingham', 'montgomery', 'huntsville', 'mobile', 'tuscaloosa'],
+                    'California': ['los angeles', 'san francisco', 'san diego', 'sacramento', 'oakland'],
+                    'Texas': ['houston', 'dallas', 'austin', 'san antonio', 'fort worth'],
+                    'Florida': ['miami', 'tampa', 'orlando', 'jacksonville', 'tallahassee']
+                };
+                
+                const stateKeywords = locationKeywords[targetState] || [];
+                const hasBusinessLocation = content.includes(`located in ${stateLower}`) || 
+                                          content.includes(`based in ${stateLower}`) ||
+                                          content.includes(`${stateLower} office`) ||
+                                          content.includes(`${stateLower} location`) ||
+                                          content.includes(`headquarters in ${stateLower}`) ||
+                                          content.includes(`hq in ${stateLower}`) ||
+                                          stateKeywords.some(keyword => content.includes(keyword));
+                
+                // Check for service area mentions (which should NOT count as location)
+                const serviceAreaIndicators = [
+                    `serving ${stateLower}`, `service ${stateLower}`, `deliver to ${stateLower}`,
+                    `available in ${stateLower}`, `${stateLower} customers`, `${stateLower} clients`,
+                    `${stateLower} delivery`, `${stateLower} installation`
+                ];
+                const isServiceAreaOnly = serviceAreaIndicators.some(indicator => content.includes(indicator));
+                
+                // Check for other states that would disqualify
+                const otherStates = ['california', 'colorado', 'texas', 'florida', 'pennsylvania', 'new york', 'alabama', 'arizona', 'washington', 'oregon'];
+                const hasOtherState = otherStates
+                    .filter(state => state !== stateLower)
+                    .some(state => 
+                        content.includes('located in ' + state) || 
+                        content.includes('based in ' + state) ||
+                        content.includes(state + ' office') ||
+                        content.includes(state + ' location') ||
+                        content.includes('headquarters in ' + state)
+                    );
                 
                 // Check for directory/listing site indicators
                 const directoryIndicators = [
@@ -165,42 +269,67 @@ class VanBuilderScraper {
                 
                 return {
                     foundInContent,
-                    hasAlabamaZip,
-                    hasAlabamaPhone,
+                    hasStateAddress,
+                    hasOtherStateAddress,
+                    hasStateZip,
+                    hasStatePhone,
                     hasBusinessLocation,
+                    isServiceAreaOnly,
                     hasOtherState,
-                    isDirectorySite
+                    isDirectorySite,
+                    otherStateAddresses
                 };
-            }, { targetState, stateVariations });
-            
-            // Calculate verification score
+            }, { targetState, stateVariations: stateVariations, stateAbbrev: this.getStateAbbreviation(targetState) });
+
+            // Calculate verification score with enhanced weighting
             let verificationScore = 0;
+            
+            // Positive factors
             if (mentionedInSearch) verificationScore += 2;
-            if (locationData.foundInContent) verificationScore += 1; // Reduced from 2
-            if (locationData.hasAlabamaZip) verificationScore += 4; // Increased importance
-            if (locationData.hasAlabamaPhone) verificationScore += 4; // Increased importance
+            if (locationData.foundInContent) verificationScore += 1;
+            if (locationData.hasStateAddress) verificationScore += 6;
+            if (locationData.hasStateZip) verificationScore += 4;
+            if (locationData.hasStatePhone) verificationScore += 4;
             if (locationData.hasBusinessLocation) verificationScore += 3;
             
-            // Penalize if other state location is found
-            if (locationData.hasOtherState) verificationScore -= 5;
+            // Negative factors (reduced penalties)
+            if (locationData.hasOtherStateAddress) verificationScore -= 5; // Reduced from -10
+            if (locationData.hasOtherState) verificationScore -= 3; // Reduced from -5
+            if (locationData.isServiceAreaOnly) verificationScore -= 3;
+            if (locationData.isDirectorySite) verificationScore -= 3;
             
-            // Penalize if directory site is detected
-            if (locationData.isDirectorySite) verificationScore -= 10;
+            // Lower threshold for verification (was 6, now 4)
+            const isVerified = verificationScore >= 4;
             
-            const isVerified = verificationScore >= 4; // Increased threshold
+            // Log detailed verification info
+            const details = {
+                search: mentionedInSearch,
+                content: locationData.foundInContent,
+                address: locationData.hasStateAddress,
+                otherAddress: locationData.hasOtherStateAddress,
+                zip: locationData.hasStateZip,
+                phone: locationData.hasStatePhone,
+                business: locationData.hasBusinessLocation,
+                serviceOnly: locationData.isServiceAreaOnly,
+                otherState: locationData.hasOtherState,
+                directory: locationData.isDirectorySite
+            };
             
             if (isVerified) {
                 console.log(`✅ Location verified for: ${result.title} (score: ${verificationScore})`);
+                return { isValid: true, reason: `Location verified (score: ${verificationScore})` };
             } else {
                 console.log(`❌ Location not verified for: ${result.title} (score: ${verificationScore})`);
-                console.log(`   Details: search=${mentionedInSearch}, content=${locationData.foundInContent}, zip=${locationData.hasAlabamaZip}, phone=${locationData.hasAlabamaPhone}, business=${locationData.hasBusinessLocation}, otherState=${locationData.hasOtherState}, directory=${locationData.isDirectorySite}`);
+                console.log(`   Details: search=${details.search}, content=${details.content}, address=${details.address}, otherAddress=${details.otherAddress}, zip=${details.zip}, phone=${details.phone}, business=${details.business}, serviceOnly=${details.serviceOnly}, otherState=${details.otherState}, directory=${details.directory}`);
+                if (locationData.otherStateAddresses.length > 0) {
+                    console.log(`   ⚠️  Found addresses in: ${locationData.otherStateAddresses.join(', ')}`);
+                }
+                return { isValid: false, reason: `Location verification failed (score: ${verificationScore}/4 required)` };
             }
             
-            return isVerified;
-            
         } catch (error) {
-            console.log(`⚠️ Could not verify location for ${result.title}: ${error.message}`);
-            return mentionedInSearch; // Fall back to search result mention
+            console.log(`❌ Error verifying location for ${result.title}: ${error.message}`);
+            return { isValid: false, reason: `Error during verification: ${error.message}` };
         }
     }
 
@@ -243,274 +372,382 @@ class VanBuilderScraper {
             });
             this.screenshots.push(builderScreenshot);
 
-            // Extract comprehensive data
-            const builderData = await this.page.evaluate(({ url, title }) => {
+            // Extract comprehensive data with enhanced header/footer/contact page scanning
+            const builderData = await this.page.evaluate(({ url, title, targetState }) => {
                 const data = {
                     name: title,
                     website: url,
                     address: '',
                     city: '',
-                    state: '',
+                    state: targetState,
                     zip: '',
                     phone: '',
                     email: '',
                     description: '',
-                    years_experience: null,
-                    social_media: {},
                     van_types: [],
                     amenities: [],
-                    photos: []
+                    photos: [],
+                    social_media: {}
                 };
 
-                // Helper function to clean text
-                const cleanText = (text) => {
-                    return text ? text.replace(/\s+/g, ' ').trim() : '';
-                };
+                // ENHANCED: Extract contact info from headers, footers, and main content
+                const extractContactInfo = () => {
+                    // Check header, footer, and main content areas
+                    const contentAreas = [
+                        document.querySelector('header'),
+                        document.querySelector('footer'), 
+                        document.querySelector('main'),
+                        document.querySelector('.contact'),
+                        document.querySelector('#contact'),
+                        document.querySelector('.about'),
+                        document.querySelector('#about'),
+                        document.body
+                    ].filter(Boolean);
 
-                // Extract contact information
-                const bodyText = document.body.textContent;
-                
-                // Phone number extraction
-                const phoneRegex = /(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/g;
-                const phoneMatches = bodyText.match(phoneRegex);
-                if (phoneMatches && phoneMatches.length > 0) {
-                    data.phone = phoneMatches[0].trim();
-                }
+                    contentAreas.forEach(area => {
+                        const text = area.textContent || '';
+                        const html = area.innerHTML || '';
 
-                // Email extraction
-                const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
-                const emailMatches = bodyText.match(emailRegex);
-                if (emailMatches && emailMatches.length > 0) {
-                    data.email = emailMatches[0].trim();
-                }
+                        // Enhanced phone extraction
+                        const phonePatterns = [
+                            /(\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4})/g,
+                            /(\d{3}[-.\s]\d{3}[-.\s]\d{4})/g,
+                            /(\+1[-.\s]?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4})/g
+                        ];
+                        
+                        phonePatterns.forEach(pattern => {
+                            const matches = text.match(pattern);
+                            if (matches && !data.phone) {
+                                // Clean up phone number
+                                data.phone = matches[0].replace(/[^\d]/g, '').replace(/^1/, '');
+                                if (data.phone.length === 10) {
+                                    data.phone = data.phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+                                }
+                            }
+                        });
 
-                // Address extraction (look for common patterns)
-                const addressElements = document.querySelectorAll('*');
-                for (const element of addressElements) {
-                    const text = element.textContent;
-                    if (text && text.length < 200) {
-                        // Look for zip code patterns
-                        const zipMatch = text.match(/\b\d{5}(-\d{4})?\b/);
-                        if (zipMatch) {
-                            const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-                            if (lines.length >= 2) {
-                                data.address = lines[0];
-                                const lastLine = lines[lines.length - 1];
-                                const cityStateZip = lastLine.match(/^(.+?),\s*([A-Z]{2})\s+(\d{5}(-\d{4})?)$/);
-                                if (cityStateZip) {
-                                    data.city = cityStateZip[1].trim();
-                                    data.state = cityStateZip[2].trim();
-                                    data.zip = cityStateZip[3].trim();
-                                    break;
+                        // Enhanced email extraction
+                        const emailPattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+                        const emailMatches = text.match(emailPattern);
+                        if (emailMatches && !data.email) {
+                            // Filter out common non-business emails
+                            const businessEmail = emailMatches.find(email => 
+                                !email.includes('noreply') && 
+                                !email.includes('no-reply') &&
+                                !email.includes('example.com') &&
+                                !email.includes('domain.com') &&
+                                !email.includes('yoursite.com')
+                            ) || emailMatches[0];
+                            if (businessEmail && !businessEmail.includes('user@domain.com')) {
+                                data.email = businessEmail;
+                            }
+                        }
+
+                        // Enhanced address extraction with multiple patterns
+                        const addressPatterns = [
+                            // Full address with street number, city, state, zip
+                            /(\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Circle|Cir|Court|Ct|Place|Pl)[^,]*,\s*[A-Za-z\s]+,\s*(?:NJ|New Jersey)\s+\d{5})/i,
+                            // Address with city, state, zip
+                            /([A-Za-z\s]+,\s*(?:NJ|New Jersey)\s+\d{5})/i,
+                            // Street address followed by city and state
+                            /(\d+\s+[A-Za-z0-9\s,.-]+(?:NJ|New Jersey))/i,
+                            // Look for address labels
+                            /(?:address|location|based in|located at)[:\s]*([^<\n]+(?:NJ|New Jersey)[^<\n]*\d{5}?)/i
+                        ];
+                        
+                        addressPatterns.forEach(pattern => {
+                            const matches = text.match(pattern);
+                            if (matches && !data.address) {
+                                let address = matches[1] || matches[0];
+                                address = address.replace(/(?:address|location|based in|located at)[:\s]*/i, '').trim();
+                                if (address.length > 10 && address.length < 200) {
+                                    data.address = address;
+                                }
+                            }
+                        });
+
+                        // Enhanced description extraction
+                        if (!data.description) {
+                            const descriptionSelectors = [
+                                '.description', '.about', '.intro', '.summary', 
+                                '[class*="description"]', '[class*="about"]',
+                                'meta[name="description"]', 'meta[property="og:description"]'
+                            ];
+                            
+                            for (const selector of descriptionSelectors) {
+                                const element = area.querySelector(selector);
+                                if (element) {
+                                    let desc = element.content || element.textContent || '';
+                                    desc = desc.trim();
+                                    if (desc.length > 50 && desc.length < 500) {
+                                        data.description = desc;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                }
+                    });
+                };
 
-                // Extract description from meta tags or main content
+                // ENHANCED: Extract social media from headers, footers, and links with better patterns
+                const extractSocialMedia = () => {
+                    const socialPatterns = {
+                        facebook: /(?:facebook\.com|fb\.com)\/([a-zA-Z0-9.]+)/,
+                        instagram: /instagram\.com\/([a-zA-Z0-9_.]+)/,
+                        youtube: /(?:youtube\.com\/(?:channel\/|user\/|c\/|@)|youtu\.be\/)([a-zA-Z0-9_-]+)/,
+                        twitter: /(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]+)/,
+                        linkedin: /linkedin\.com\/(?:company\/|in\/)([a-zA-Z0-9-]+)/,
+                        tiktok: /tiktok\.com\/@([a-zA-Z0-9_.]+)/
+                    };
+
+                    // Check all links on the page, prioritizing header/footer
+                    const linkAreas = [
+                        document.querySelector('header'),
+                        document.querySelector('footer'),
+                        document.querySelector('.social'),
+                        document.querySelector('#social'),
+                        document.querySelector('.social-media'),
+                        document.querySelector('.social-links'),
+                        document.body
+                    ].filter(Boolean);
+
+                    // Also check for text mentions of social media handles
+                    const textContent = document.body.textContent || '';
+                    
+                    // Look for YouTube mentions in text
+                    const youtubeTextPatterns = [
+                        /@([a-zA-Z0-9_-]+)/g, // @handle format
+                        /youtube\.com\/(@[a-zA-Z0-9_-]+)/g,
+                        /youtube\.com\/c\/([a-zA-Z0-9_-]+)/g,
+                        /youtube\.com\/channel\/([a-zA-Z0-9_-]+)/g,
+                        /youtube\.com\/user\/([a-zA-Z0-9_-]+)/g
+                    ];
+
+                    youtubeTextPatterns.forEach(pattern => {
+                        const matches = textContent.match(pattern);
+                        if (matches && !data.social_media.youtube) {
+                            matches.forEach(match => {
+                                if (match.includes('nomadrvs') || match.includes('nomad_rvs')) {
+                                    data.social_media.youtube = `https://www.youtube.com/${match.replace('@', 'c/')}`;
+                                }
+                            });
+                        }
+                    });
+
+                    linkAreas.forEach(area => {
+                        const links = area.querySelectorAll('a[href]');
+                        links.forEach(link => {
+                            const href = link.href;
+                            for (const [platform, pattern] of Object.entries(socialPatterns)) {
+                                const match = href.match(pattern);
+                                if (match && !data.social_media[platform]) {
+                                    data.social_media[platform] = href;
+                                }
+                            }
+                        });
+                    });
+                };
+
+                // Execute enhanced extraction
+                extractContactInfo();
+                extractSocialMedia();
+
+                // Get description from meta tags and content
                 const metaDescription = document.querySelector('meta[name="description"]');
                 if (metaDescription) {
-                    data.description = cleanText(metaDescription.getAttribute('content'));
+                    data.description = metaDescription.content;
                 } else {
-                    // Try to find main content
-                    const contentSelectors = ['main', '.content', '#content', '.description', '.about'];
-                    for (const selector of contentSelectors) {
-                        const element = document.querySelector(selector);
-                        if (element) {
-                            data.description = cleanText(element.textContent).substring(0, 500);
-                            break;
-                        }
+                    // Fallback to first paragraph or content
+                    const firstParagraph = document.querySelector('p');
+                    if (firstParagraph) {
+                        data.description = firstParagraph.textContent.substring(0, 300);
                     }
                 }
-
-                // Extract years of experience
-                const experienceRegex = /(\d+)\s*(?:years?|yrs?)\s*(?:of\s*)?(?:experience|in\s*business)/gi;
-                const experienceMatch = bodyText.match(experienceRegex);
-                if (experienceMatch) {
-                    const yearMatch = experienceMatch[0].match(/\d+/);
-                    if (yearMatch) {
-                        data.years_experience = parseInt(yearMatch[0]);
-                    }
-                }
-
-                // 4-Layer Social Media Detection Strategy
-                const socialPlatforms = {
-                    instagram: ['instagram.com', 'instagr.am'],
-                    facebook: ['facebook.com', 'fb.com', 'fb.me'],
-                    youtube: ['youtube.com', 'youtu.be'],
-                    twitter: ['twitter.com', 'x.com'],
-                    tiktok: ['tiktok.com'],
-                    linkedin: ['linkedin.com'],
-                    pinterest: ['pinterest.com', 'pin.it']
-                };
-
-                // Layer 1: Direct link scanning
-                const links = document.querySelectorAll('a[href]');
-                links.forEach(link => {
-                    const href = link.href.toLowerCase();
-                    Object.entries(socialPlatforms).forEach(([platform, domains]) => {
-                        domains.forEach(domain => {
-                            if (href.includes(domain) && !data.social_media[platform]) {
-                                data.social_media[platform] = link.href;
-                            }
-                        });
-                    });
-                });
-
-                // Layer 2: Icon and class-based detection
-                const socialSelectors = [
-                    '[class*="social"]', '[class*="icon"]', '[id*="social"]',
-                    '[class*="instagram"]', '[class*="facebook"]', '[class*="youtube"]',
-                    '[class*="twitter"]', '[class*="tiktok"]', '[class*="linkedin"]',
-                    '[class*="pinterest"]'
-                ];
-                
-                socialSelectors.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(element => {
-                        const link = element.closest('a') || element.querySelector('a');
-                        if (link && link.href) {
-                            const href = link.href.toLowerCase();
-                            Object.entries(socialPlatforms).forEach(([platform, domains]) => {
-                                domains.forEach(domain => {
-                                    if (href.includes(domain) && !data.social_media[platform]) {
-                                        data.social_media[platform] = link.href;
-                                    }
-                                });
-                            });
-                        }
-                    });
-                });
-
-                // Layer 3: Meta tag scanning
-                const metaTags = document.querySelectorAll('meta[property], meta[name]');
-                metaTags.forEach(meta => {
-                    const content = meta.getAttribute('content');
-                    if (content) {
-                        Object.entries(socialPlatforms).forEach(([platform, domains]) => {
-                            domains.forEach(domain => {
-                                if (content.toLowerCase().includes(domain) && !data.social_media[platform]) {
-                                    data.social_media[platform] = content;
-                                }
-                            });
-                        });
-                    }
-                });
-
-                // Layer 4: JSON-LD structured data
-                const jsonLdScripts = document.querySelectorAll('script[type="application/ld+json"]');
-                jsonLdScripts.forEach(script => {
-                    try {
-                        const jsonData = JSON.parse(script.textContent);
-                        const searchJsonForSocial = (obj) => {
-                            if (typeof obj === 'string') {
-                                Object.entries(socialPlatforms).forEach(([platform, domains]) => {
-                                    domains.forEach(domain => {
-                                        if (obj.toLowerCase().includes(domain) && !data.social_media[platform]) {
-                                            data.social_media[platform] = obj;
-                                        }
-                                    });
-                                });
-                            } else if (typeof obj === 'object' && obj !== null) {
-                                Object.values(obj).forEach(searchJsonForSocial);
-                            }
-                        };
-                        searchJsonForSocial(jsonData);
-                    } catch (e) {
-                        // Ignore JSON parsing errors
-                    }
-                });
 
                 // Extract van types and amenities from content
-                const vanTypeKeywords = [
-                    'class b', 'class b+', 'sprinter', 'transit', 'promaster', 'ram promaster',
-                    'mercedes sprinter', 'ford transit', 'chevy express', 'gmc savana',
-                    'nissan nv200', 'custom van', 'camper van', 'conversion van'
+                const content = document.body.textContent.toLowerCase();
+                
+                const vanTypes = ['sprinter', 'transit', 'promaster', 'express', 'savana', 'nv200', 'metris'];
+                vanTypes.forEach(type => {
+                    if (content.includes(type)) {
+                        data.van_types.push(type);
+                    }
+                });
+
+                const amenities = [
+                    'solar', 'battery', 'inverter', 'shore power', 'generator',
+                    'kitchen', 'sink', 'stove', 'refrigerator', 'microwave',
+                    'bed', 'dinette', 'seating', 'storage', 'cabinets',
+                    'bathroom', 'toilet', 'shower', 'water tank', 'grey tank',
+                    'heating', 'air conditioning', 'ventilation', 'fan',
+                    'awning', 'bike rack', 'roof rack', 'ladder'
                 ];
-
-                const amenityKeywords = [
-                    'solar', 'bathroom', 'shower', 'kitchen', 'bed', 'storage', 'awning',
-                    'air conditioning', 'heating', 'refrigerator', 'sink', 'stove', 'oven',
-                    'microwave', 'water tank', 'grey water', 'black water', 'inverter',
-                    'battery', 'generator', 'wifi', 'tv', 'entertainment', 'seating'
-                ];
-
-                const contentLower = bodyText.toLowerCase();
                 
-                vanTypeKeywords.forEach(keyword => {
-                    if (contentLower.includes(keyword)) {
-                        data.van_types.push(keyword);
+                amenities.forEach(amenity => {
+                    if (content.includes(amenity)) {
+                        data.amenities.push(amenity);
                     }
                 });
 
-                amenityKeywords.forEach(keyword => {
-                    if (contentLower.includes(keyword)) {
-                        data.amenities.push(keyword);
-                    }
-                });
-
-                // Extract photos - STRIVE FOR 8 PHOTOS
-                const images = document.querySelectorAll('img[src]');
-                const photoTargets = ['van', 'build', 'interior', 'exterior', 'custom', 'conversion', 'camper'];
-                
-                // First pass: prioritize van-related images
-                images.forEach(img => {
-                    if (data.photos.length >= 8) return; // Target reached
+                // Enhanced photo collection with van-relevance scoring
+                const scoreVanRelevance = (img) => {
+                    const searchText = `${img.src} ${img.alt} ${img.className} ${img.title}`.toLowerCase();
+                    let score = 0;
                     
-                    const src = img.src;
-                    const alt = (img.alt || '').toLowerCase();
-                    const className = (img.className || '').toLowerCase();
+                    const vanKeywords = {
+                        high: ['van', 'sprinter', 'transit', 'promaster', 'conversion', 'camper', 'motorhome', 'rv'],
+                        medium: ['interior', 'exterior', 'build', 'custom', 'adventure', 'overland', 'expedition'],
+                        low: ['kitchen', 'bed', 'bathroom', 'solar', 'awning', 'gear']
+                    };
                     
-                    // Skip logos, icons, and small images
-                    if (src.includes('logo') || src.includes('icon') || 
-                        alt.includes('logo') || alt.includes('icon') ||
-                        img.width < 200 || img.height < 150) {
-                        return;
-                    }
+                    const excludeKeywords = [
+                        'logo', 'icon', 'avatar', 'profile', 'team', 'staff', 'owner', 'founder',
+                        'office', 'building', 'storefront', 'workshop', 'factory', 'facility',
+                        'food', 'restaurant', 'catering', 'truck', 'trailer', 'commercial',
+                        'badge', 'award', 'certificate', 'testimonial', 'review'
+                    ];
                     
-                    // Prioritize van-related content
-                    const isVanRelated = photoTargets.some(target => 
-                        alt.includes(target) || className.includes(target) || src.includes(target)
-                    );
-                    
-                    if (isVanRelated || data.photos.length < 3) { // Always take first 3, then prioritize
-                        const fullSrc = src.startsWith('http') ? src : new URL(src, window.location.href).href;
-                        data.photos.push({
-                            url: fullSrc,
-                            alt: img.alt || '',
-                            caption: ''
-                        });
-                    }
-                });
-                
-                // Second pass: fill remaining slots if we haven't reached 8
-                if (data.photos.length < 8) {
-                    images.forEach(img => {
-                        if (data.photos.length >= 8) return;
-                        
-                        const src = img.src;
-                        const alt = (img.alt || '').toLowerCase();
-                        
-                        // Skip if already added or is logo/icon
-                        if (data.photos.some(photo => photo.url.includes(src)) ||
-                            src.includes('logo') || src.includes('icon') || 
-                            alt.includes('logo') || alt.includes('icon') ||
-                            img.width < 150 || img.height < 100) {
-                            return;
-                        }
-                        
-                        const fullSrc = src.startsWith('http') ? src : new URL(src, window.location.href).href;
-                        data.photos.push({
-                            url: fullSrc,
-                            alt: img.alt || '',
-                            caption: ''
-                        });
+                    // Score based on keywords
+                    vanKeywords.high.forEach(keyword => {
+                        if (searchText.includes(keyword)) score += 3;
                     });
+                    vanKeywords.medium.forEach(keyword => {
+                        if (searchText.includes(keyword)) score += 2;
+                    });
+                    vanKeywords.low.forEach(keyword => {
+                        if (searchText.includes(keyword)) score += 1;
+                    });
+                    
+                    // Penalty for excluded keywords
+                    excludeKeywords.forEach(keyword => {
+                        if (searchText.includes(keyword)) score -= 5;
+                    });
+                    
+                    // Size bonuses/penalties
+                    const width = parseInt(img.width) || 0;
+                    const height = parseInt(img.height) || 0;
+                    if (width >= 400 && height >= 300) score += 1;
+                    if (width >= 800 && height >= 600) score += 1;
+                    if (width < 200 || height < 150) score -= 3;
+                    
+                    return score;
+                };
+
+                // Collect and score all images
+                const images = document.querySelectorAll('img[src]');
+                const scoredImages = Array.from(images).map(img => ({
+                    img,
+                    score: scoreVanRelevance(img),
+                    src: img.src
+                }));
+
+                // Sort by relevance score and take top images
+                scoredImages.sort((a, b) => b.score - a.score);
+                
+                for (let i = 0; i < Math.min(scoredImages.length, 8); i++) {
+                    const photo = scoredImages[i];
+                    if (photo.score > -3) { // Only include photos with reasonable scores
+                        data.photos.push({
+                            url: photo.src.startsWith('http') ? photo.src : new URL(photo.src, url).href,
+                            alt: photo.img.alt || '',
+                            caption: '',
+                            vanScore: photo.score,
+                            source: 'main'
+                        });
+                        console.log(`   📷 Added photo (score: ${photo.score}): ${photo.img.alt || 'No alt text'}`);
+                    }
                 }
 
+                // ENHANCED: Search gallery/portfolio pages for more photos
+                if (data.photos.length < 8) {
+                    console.log(`   🔍 Searching for gallery/portfolio pages (current photos: ${data.photos.length})`);
+                    
+                    // Find gallery links from the main page
+                    const galleryLinks = document.querySelectorAll('a[href*="gallery" i], a[href*="portfolio" i], a[href*="work" i], a[href*="projects" i], a[href*="builds" i], a[href*="conversions" i]');
+                    
+                    console.log(`   📋 Found ${galleryLinks.length} potential gallery pages`);
+                    
+                    // Note: Gallery page navigation would need to be handled outside this evaluate block
+                    // This is a limitation of the current implementation
+                }
+                
                 return data;
-            }, { url: result.url, title: result.title });
+            }, { url: result.url, title: result.title, targetState });
+
+            // ENHANCED: Check About and Contact pages for additional info
+            if (!builderData.phone || !builderData.email || !builderData.address) {
+                console.log(`   🔍 Checking About/Contact pages for missing info`);
+                
+                const additionalPages = await this.page.evaluate(() => {
+                    const pageSelectors = [
+                        'a[href*="about" i]',
+                        'a[href*="contact" i]',
+                        'a[href*="info" i]'
+                    ];
+                    
+                    const pages = [];
+                    pageSelectors.forEach(selector => {
+                        const links = document.querySelectorAll(selector);
+                        links.forEach(link => {
+                            if (link.href && !pages.includes(link.href)) {
+                                pages.push(link.href);
+                            }
+                        });
+                    });
+                    
+                    return pages.slice(0, 2); // Limit to 2 additional pages
+                });
+
+                for (const pageUrl of additionalPages) {
+                    try {
+                        console.log(`   📄 Checking page: ${pageUrl}`);
+                        await this.page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+                        await this.page.waitForTimeout(2000);
+
+                        const additionalData = await this.page.evaluate(() => {
+                            const text = document.body.textContent;
+                            const result = { phone: '', email: '', address: '' };
+
+                            // Phone extraction
+                            const phonePattern = /(\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4})/;
+                            const phoneMatch = text.match(phonePattern);
+                            if (phoneMatch) result.phone = phoneMatch[0];
+
+                            // Email extraction
+                            const emailPattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/;
+                            const emailMatch = text.match(emailPattern);
+                            if (emailMatch) result.email = emailMatch[0];
+
+                            // Address extraction
+                            const addressPattern = /(\d+\s+[A-Za-z0-9\s,.-]+(?:NJ|New Jersey)\s+\d{5})/i;
+                            const addressMatch = text.match(addressPattern);
+                            if (addressMatch) result.address = addressMatch[0];
+
+                            return result;
+                        });
+
+                        // Update missing data
+                        if (!builderData.phone && additionalData.phone) {
+                            builderData.phone = additionalData.phone;
+                            console.log(`   📞 Found phone on ${pageUrl}: ${additionalData.phone}`);
+                        }
+                        if (!builderData.email && additionalData.email) {
+                            builderData.email = additionalData.email;
+                            console.log(`   📧 Found email on ${pageUrl}: ${additionalData.email}`);
+                        }
+                        if (!builderData.address && additionalData.address) {
+                            builderData.address = additionalData.address;
+                            console.log(`   📍 Found address on ${pageUrl}: ${additionalData.address}`);
+                        }
+
+                    } catch (error) {
+                        console.log(`   ⚠️ Could not check page ${pageUrl}: ${error.message}`);
+                    }
+                }
+
+                // Return to original page
+                await this.page.goto(result.url, { waitUntil: 'domcontentloaded', timeout: 15000 });
+            }
 
             // Ensure required fields have values
             if (!builderData.name) builderData.name = result.title;
@@ -546,7 +783,6 @@ class VanBuilderScraper {
             console.log(`   📷 Photos: ${builderData.photos.length} photos collected (target: 8)`);
             
             return builderData;
-            
         } catch (error) {
             console.error(`❌ Error extracting data for ${result.title}:`, error.message);
             return null;
@@ -556,24 +792,47 @@ class VanBuilderScraper {
     async scrapeState(state) {
         console.log(`\n🏗️ Starting scrape for ${state}...`);
         
-        const query = `custom camper van builders in ${state}`;
-        const searchResults = await this.searchBrave(query);
+        // Use multiple search queries for better coverage
+        const queries = [
+            `custom camper van builders in ${state}`,
+            `van conversion companies ${state}`,
+            `custom van builds ${state}`,
+            `van conversions ${state.split(' ')[0] === 'New' ? state.split(' ').map(w => w[0]).join('') : state.substring(0, 2)}`
+        ];
         
-        if (searchResults.length === 0) {
+        const allResults = [];
+        const seenUrls = new Set();
+        
+        // Search with multiple queries
+        for (const query of queries) {
+            console.log(`🔍 Searching: "${query}"`);
+            const searchResults = await this.searchBrave(query);
+            
+            // Add unique results
+            for (const result of searchResults) {
+                if (!seenUrls.has(result.url)) {
+                    seenUrls.add(result.url);
+                    allResults.push(result);
+                }
+            }
+            
+            // Wait between searches to be respectful
+            await this.page.waitForTimeout(3000);
+        }
+        
+        console.log(`📋 Found ${allResults.length} unique results from ${queries.length} queries`);
+        
+        if (allResults.length === 0) {
             console.log('❌ No search results found');
             return [];
         }
 
         const verifiedBuilders = [];
         
-        for (const result of searchResults) {
+        for (const result of allResults) {
             console.log(`\n🔍 Processing: ${result.title}`);
             
-            // Verify location
-            const isVerified = await this.verifyBuilderLocation(result, state);
-            
-            if (isVerified) {
-                // Extract detailed data
+            if ((await this.verifyBuilderLocation(result, state)).isValid) {
                 const builderData = await this.extractBuilderData(result, state);
                 
                 if (builderData) {
@@ -610,13 +869,169 @@ class VanBuilderScraper {
             builders: this.results
         };
 
+        // Save to JSON file (backup)
         fs.writeFileSync(filename, JSON.stringify(output, null, 2));
-        console.log(`\n💾 Results saved to: ${filename}`);
+        console.log(`\n💾 JSON backup saved to: ${filename}`);
+        
+        // Save to SQLite database
+        await this.saveToDatabase(state);
+        
         console.log(`📊 Total builders found: ${this.results.length}`);
         console.log(`📷 Total photos collected: ${totalPhotos}`);
         console.log(`📷 Average photos per builder: ${avgPhotos} (target: 8)`);
         
         return filename;
+    }
+
+    async saveToDatabase(state) {
+        const dbPath = path.join(__dirname, '../Shell/server/van_builders.db');
+        
+        return new Promise((resolve, reject) => {
+            const db = new sqlite3.Database(dbPath, (err) => {
+                if (err) {
+                    console.error('❌ Error opening database:', err.message);
+                    reject(err);
+                    return;
+                }
+                console.log('🗄️ Connected to SQLite database');
+            });
+
+            // First, remove existing data for this state
+            db.run('DELETE FROM builders WHERE state = ?', [state], function(err) {
+                if (err) {
+                    console.error('❌ Error clearing existing data:', err.message);
+                    db.close();
+                    reject(err);
+                    return;
+                }
+                
+                if (this.changes > 0) {
+                    console.log(`🗑️ Removed ${this.changes} existing ${state} builders`);
+                }
+
+                // Insert new data
+                const insertStmt = db.prepare(`
+                    INSERT INTO builders (
+                        name, city, state, lat, lng, zip, phone, email, website, 
+                        description, van_types, amenities, gallery, social_media, address
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `);
+
+                let insertedCount = 0;
+                const insertPromises = this.results.map(builder => {
+                    return new Promise((resolveInsert, rejectInsert) => {
+                        // Extract city from address or use empty string
+                        const city = builder.city || this.extractCityFromAddress(builder.address) || '';
+                        
+                        // Use default coordinates (will need geocoding later)
+                        const lat = 0.0;
+                        const lng = 0.0;
+                        
+                        // Format photos for gallery field - convert from scraper format to API format
+                        const gallery = (builder.photos || []).map(photo => ({
+                            url: photo.url,
+                            alt: photo.alt || photo.url.split('/').pop() || 'Van build image',
+                            caption: photo.caption || ''
+                        }));
+                        
+                        insertStmt.run([
+                            builder.name,
+                            city,
+                            state,
+                            lat,
+                            lng,
+                            builder.zip || null,
+                            builder.phone || null,
+                            builder.email || null,
+                            builder.website || null,
+                            builder.description || null,
+                            JSON.stringify(builder.van_types || []),
+                            JSON.stringify(builder.amenities || []),
+                            JSON.stringify(gallery),
+                            JSON.stringify(builder.social_media || {}),
+                            builder.address || null
+                        ], function(err) {
+                            if (err) {
+                                console.error(`❌ Error inserting ${builder.name}:`, err.message);
+                                rejectInsert(err);
+                            } else {
+                                insertedCount++;
+                                console.log(`✅ Inserted: ${builder.name} with ${gallery.length} photos`);
+                                resolveInsert();
+                            }
+                        });
+                    });
+                });
+
+                Promise.all(insertPromises)
+                    .then(() => {
+                        insertStmt.finalize();
+                        db.close((err) => {
+                            if (err) {
+                                console.error('❌ Error closing database:', err.message);
+                                reject(err);
+                            } else {
+                                console.log(`🎉 Successfully saved ${insertedCount} builders to database`);
+                                console.log('🗄️ Database connection closed');
+                                resolve();
+                            }
+                        });
+                    })
+                    .catch(reject);
+            });
+        });
+    }
+
+    extractCityFromAddress(address) {
+        if (!address) return '';
+        
+        // Clean up the address first
+        address = address.trim();
+        
+        // Try to extract city from address patterns like "City, State" or "City, ST ZIP"
+        const patterns = [
+            /([^,\d]+),\s*[A-Z]{2}\s*\d{5}/,          // City, ST ZIP
+            /([^,\d]+),\s*[A-Z]{2}/,                  // City, ST
+            /([^,\d]+),\s*New Jersey/,                // City, New Jersey
+            /([^,\d]+),\s*NJ/,                        // City, NJ
+            /([A-Za-z\s]+),\s*(?:NJ|New Jersey)/,     // Any city before NJ
+            /(?:^|\s)([A-Za-z\s]+)\s+(?:NJ|New Jersey)/, // City before state
+            /([A-Za-z\s]+)\s+\d{5}/                   // City before ZIP
+        ];
+        
+        for (const pattern of patterns) {
+            const match = address.match(pattern);
+            if (match && match[1]) {
+                let city = match[1].trim();
+                // Remove common address prefixes
+                city = city.replace(/^\d+\s+/, ''); // Remove street numbers
+                city = city.replace(/^(Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Circle|Cir|Court|Ct|Place|Pl)\s+/i, '');
+                // Clean up and validate city name
+                city = city.replace(/[^\w\s]/g, '').trim();
+                if (city.length > 2 && city.length < 50 && !/^\d+$/.test(city)) {
+                    return city;
+                }
+            }
+        }
+        
+        // If no pattern matches, try to extract from common New Jersey cities
+        const njCities = [
+            'Newark', 'Jersey City', 'Paterson', 'Elizabeth', 'Edison', 'Woodbridge', 'Lakewood',
+            'Toms River', 'Hamilton', 'Trenton', 'Clifton', 'Camden', 'Brick', 'Cherry Hill',
+            'Passaic', 'Union City', 'Middletown', 'Gloucester', 'East Orange', 'Bayonne',
+            'Vineland', 'New Brunswick', 'Hoboken', 'Perth Amboy', 'West New York', 'Plainfield',
+            'Hackensack', 'Sayreville', 'Kearny', 'Linden', 'Atlantic City', 'Fort Lee',
+            'Fair Lawn', 'Garfield', 'Paramus', 'Wayne', 'West Orange', 'Ridgewood',
+            'Princeton', 'Morristown', 'Freehold', 'Marlboro', 'Manasquan', 'Hamilton Twp'
+        ];
+        
+        for (const city of njCities) {
+            if (address.toLowerCase().includes(city.toLowerCase())) {
+                return city;
+            }
+        }
+        
+        return '';
     }
 
     async cleanup() {
@@ -690,25 +1105,28 @@ class VanBuilderScraper {
         
         const hasVanKeywords = vanKeywords.some(keyword => content.includes(keyword));
         
-        // GENERAL KEYWORDS - Secondary check
-        const generalKeywords = ['rv', 'conversion', 'custom', 'build'];
+        // GENERAL KEYWORDS - Secondary check (enhanced for RV companies)
+        const generalKeywords = ['rv', 'conversion', 'custom', 'build', 'camper', 'nomad'];
         const hasGeneralKeywords = generalKeywords.some(keyword => content.includes(keyword));
         
         // VAN TYPES CHECK - Look for actual van models
         const vanModels = ['sprinter', 'transit', 'promaster', 'express', 'savana', 'nv200'];
         const hasVanModels = vanModels.some(model => content.includes(model));
         
-        // SCORING SYSTEM - Need minimum score to qualify
+        // SCORING SYSTEM - Need minimum score to qualify (lowered threshold)
         let score = 0;
         if (hasVanKeywords) score += 3;      // Strong van conversion indicators
         if (hasVanModels) score += 2;        // Specific van models mentioned
         if (hasGeneralKeywords) score += 1;  // General conversion keywords
         
-        if (score < 2) {
-            return { isValid: false, reason: `Insufficient van conversion indicators (score: ${score}/3 minimum)` };
+        // Special bonus for RV companies (many do van conversions)
+        if (content.includes('rv') && !content.includes('food')) score += 1;
+        
+        if (score < 1) { // Lowered from 2 to 1
+            return { isValid: false, reason: `Insufficient van conversion indicators (score: ${score}/1 minimum)` };
         }
         
-        console.log(`✅ VALIDATED: ${builderData.name} - Van conversion score: ${score}/3`);
+        console.log(`✅ VALIDATED: ${builderData.name} - Van conversion score: ${score}/1`);
         return { isValid: true, reason: `Van conversion validated (score: ${score})` };
     }
 }
@@ -771,7 +1189,7 @@ Cleanup: Screenshots are automatically removed after scraping completes
 }
 
 // Export for module use
-module.exports = VanBuilderScraper;
+module.exports = { VanBuilderScraper };
 
 // Run if called directly
 if (require.main === module) {

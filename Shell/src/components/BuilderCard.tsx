@@ -70,7 +70,45 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
 
   // Transform builder name to title case
   const formatBuilderName = (name: string): string => {
-    return name
+    // First, extract the core business name from descriptive text
+    const extractBusinessName = (fullName: string): string => {
+      // Handle specific cases first
+      if (fullName.includes('Sequoia + Salt')) {
+        return 'Sequoia + Salt';
+      }
+      
+      // Remove common descriptive suffixes and prefixes
+      let cleanName = fullName;
+      
+      // Handle pipe-separated names - take the part after the pipe if it exists
+      if (cleanName.includes(' | ')) {
+        const parts = cleanName.split(' | ');
+        cleanName = parts[parts.length - 1]; // Take the last part (usually the business name)
+      }
+      
+      // Handle dash-separated names - take the part before the dash
+      if (cleanName.includes(' - ')) {
+        cleanName = cleanName.split(' - ')[0];
+      }
+      
+      // Remove LLC, Inc, etc.
+      cleanName = cleanName.replace(/,?\s*(LLC|Inc|Corporation|Corp|Co\.?)(\s|$)/gi, '');
+      
+      // Remove common descriptive phrases
+      cleanName = cleanName.replace(/\s*(Custom tailored camper vans|East Coast Van Conversions and Builds|Campervan Conversion and Rental)/gi, '');
+      
+      // Remove state names when they appear as descriptive text
+      cleanName = cleanName.replace(/\s*(New Jersey|New York|California|Texas|Florida)(\s|$)/gi, '');
+      
+      // Clean up extra spaces and punctuation
+      cleanName = cleanName.replace(/[,\s]+$/, '').trim();
+      
+      return cleanName;
+    };
+
+    const businessName = extractBusinessName(name);
+    
+    return businessName
       .toLowerCase()
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))

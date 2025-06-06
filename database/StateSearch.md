@@ -1,393 +1,349 @@
-# StateSearch Process Document
-## Standardized Van Builder Data Collection Protocol
+# Van Builder State Search Protocol v3.0
 
-### 📋 **Overview**
-This document defines the exact process for collecting custom camper van builder data for each U.S. state. Every state search MUST follow these steps precisely to ensure consistency, quality, and adherence to our PRD requirements.
+## Overview
+This document outlines the enhanced standardized protocol for collecting comprehensive van builder data across different states using web scraping and API integration. The system prioritizes **strict location verification** to ensure only builders physically located within the target state are included.
 
----
+## Core Objectives
+1. **Strict Location Verification**: Only include builders with verified physical addresses in the target state
+2. **Comprehensive Data Collection**: Extract detailed contact information, services, and visual content
+3. **Quality Assurance**: Maintain high standards for data accuracy and completeness
+4. **Respectful Crawling**: Follow ethical web scraping practices
+5. **Complete Coverage**: Multiple search strategies to find all legitimate builders
 
-## 🎯 **Core Objectives (Per PRD)**
-- Collect **authentic builder information** (no mock data)
-- Ensure **all required fields** are captured
-- Verify **location accuracy** within target state
-- Maintain **data quality standards**
-- Follow **respectful scraping practices**
+## Enhanced Location Verification (v3.0)
 
----
+### Strict Physical Location Requirements
+The system now requires **actual business addresses** within the target state, not just service areas:
 
-## 🔍 **Step 1: Pre-Search Preparation**
+#### Primary Verification Factors (High Weight)
+- **State Address Detection** (+6 points): Presence of state abbreviation (e.g., "NJ", "AL") in content
+- **State-Specific Zip Codes** (+4 points): 
+  - New Jersey: 08xxx
+  - Alabama: 30xxx-36xxx  
+  - California: 90xxx-96xxx
+  - Texas: 70xxx-79xxx
+  - Florida: 30xxx-34xxx
+- **State Area Code Phone Numbers** (+4 points): Area codes specific to target state
+- **Business Location Keywords** (+3 points): "located in", "based in", "headquarters", "office"
 
-### 1.1 Read PRD Requirements
-- **ALWAYS** reference `/home/ron/Dev/Van_Builder_Directory/prd.md`
-- Confirm required fields:
-  - ✅ **Required**: Name, Address, City, State, Zip, Email
-  - ✅ **Required**: At least 1 Van Type, 1 Amenity, 1 Photo
-  - ⚠️ **Optional**: Phone, Website, Years Experience, Social Media
+#### Secondary Verification Factors (Medium Weight)
+- **Search Result Mentions** (+2 points): State mentioned in search title/snippet
+- **Content Mentions** (+1 point): State name found in page content
 
-### 1.2 Initialize Tools
-- Use **Playwright-based scraper**: `web_scraper_playwright.js`
-- Set appropriate mode:
-  - `--headed` for debugging/verification
-  - `--fast` for production speed
-  - Default headless for standard operation
+#### Disqualifying Factors (Negative Weight)
+- **Out-of-State Addresses** (-5 points): Clear addresses in other states (reduced from -10)
+- **Other State Mentions** (-3 points): Business location indicators for other states
+- **Service Area Only** (-3 points): Only mentions serving the state, not located in it
+- **Directory Sites** (-2 points): Listing/directory sites rather than actual builders
 
-### 1.3 Verify Environment
-- Confirm Playwright browsers installed
-- Check database directory exists: `/home/ron/Dev/Van_Builder_Directory/database/`
-- Ensure sufficient disk space for screenshots
+#### Verification Threshold
+- **Minimum Score**: 4 points required for verification (lowered from 6)
+- **Enhanced Detection**: More nuanced address pattern detection to avoid false negatives
 
----
+## Enhanced Van Conversion Validation (v3.0)
 
-## 🔎 **Step 2: Execute Search Query**
+### Builder Legitimacy Requirements
+All builders must pass van conversion validation to ensure they actually build camper vans:
 
-### 2.1 Use EXACT Search Format
-**MANDATORY QUERY**: `"custom camper van builders in {STATE}"`
+#### Validation Scoring System
+- **Strong Van Keywords** (+3 points): "camper van", "van conversion", "custom van", "adventure van", "sprinter conversion", "van build", "van life", "overland", "expedition vehicle"
+- **Van Model Keywords** (+2 points): "sprinter", "transit", "promaster", "express", "savana", "nv200"
+- **General Keywords** (+1 point): "rv", "conversion", "custom", "build", "camper", "nomad"
+- **RV Company Bonus** (+1 point): Additional point for legitimate RV companies (contains "rv" but not "food")
 
-**Examples**:
-- ✅ `"custom camper van builders in Alabama"`
-- ✅ `"custom camper van builders in California"`
-- ✅ `"custom camper van builders in New York"`
-- ❌ `"van builders {STATE}"` (too generic)
-- ❌ `"camper van companies {STATE}"` (different focus)
+#### Exclusion Criteria
+Immediate disqualification for:
+- Food trucks, food trailers, concession vehicles
+- Mobile kitchens, catering trucks
+- Commercial kitchen builds
 
-### 2.2 Search Execution
-```bash
-cd /home/ron/Dev/Van_Builder_Directory/database
-node web_scraper_playwright.js "{STATE}" [--headed] [--fast]
-```
+#### Validation Threshold
+- **Minimum Score**: 1 point required (lowered for inclusivity)
+- **Focus**: Legitimate van/RV builders vs food truck builders
 
-### 2.3 Google Search Process
-1. Navigate to Google.com
-2. Execute search with exact query format
-3. Handle cookie consent automatically
-4. Capture search results screenshot
-5. Extract top 10 organic results
-6. Wait 3 seconds (respectful crawling)
+## Multiple Search Query Strategy (v3.0)
 
----
+### Enhanced Search Coverage
+The system now uses **4 different search queries** to ensure comprehensive builder discovery:
 
-## ✅ **Step 3: Location Verification**
+1. **"custom camper van builders in [STATE]"** - Primary van conversion focus
+2. **"van conversion companies [STATE]"** - Service-focused search
+3. **"custom van builds [STATE]"** - Build-focused search  
+4. **"van conversions [STATE_ABBREV]"** - Abbreviated state search
 
-### 3.1 State Verification Criteria
-For each search result, verify builder is located in target state:
+### Search Result Processing
+- **Deduplication**: URL-based duplicate removal across all queries
+- **Aggregation**: Combines unique results from all 4 queries
+- **Quality Focus**: 10 results per query, 40+ total potential builders
+- **Verification**: Each result undergoes strict location and van conversion validation
 
-**Primary Check**: Search result title/snippet contains:
-- Full state name (e.g., "Alabama", "California")
-- State abbreviation (e.g., "AL", "CA")
+### State-Specific Detection Patterns
 
-**Secondary Check**: Visit builder website and scan content for:
-- State mentions in address/contact info
-- State references in "About" or "Service Area" sections
-- Geographic indicators (city names, landmarks)
+#### New Jersey Specific
+- **Area Codes**: 201, 551, 609, 732, 848, 856, 862, 908, 973
+- **Zip Pattern**: 08xxx
+- **Key Cities**: Hamilton Twp, Trenton, Jersey City, Newark, Princeton, Camden, Manasquan
+- **Common Out-of-State Conflicts**: Pennsylvania (PA), New York (NY)
 
-### 3.2 Verification Process
-1. Check search result metadata first
-2. If unclear, visit builder website
-3. Scan page content for state indicators
-4. **ONLY PROCEED** if location is verified
-5. **SKIP** builders not confirmed in target state
+{{ ... }}
 
----
+## Enhanced Data Extraction Methods
 
-## 📊 **Step 4: Data Extraction**
+### Multi-Source Contact Information Extraction
+The system now scans multiple page areas for comprehensive contact data:
 
-### 4.1 Required Data Fields (Per PRD)
-Extract the following data for each verified builder:
+#### Primary Extraction Areas
+1. **Header/Navigation**: Company contact info, social media links
+2. **Footer**: Complete contact details, social profiles
+3. **Main Content**: Embedded contact information
+4. **Dedicated Pages**: About Us, Contact Us pages (automatically discovered and scanned)
 
-#### **Contact Information**
-- ✅ **Name**: Business/builder name
-- ✅ **Address**: Street address
-- ✅ **City**: City name
-- ✅ **State**: State abbreviation (e.g., "AL")
-- ✅ **Zip**: 5-digit zip code
-- ✅ **Email**: Valid email address
-- ⚠️ **Phone**: US format (XXX) XXX-XXXX (optional)
-- ⚠️ **Website**: Full URL (optional)
+#### Contact Information Types
+- **Phone Numbers**: All formats with area code validation
+- **Email Addresses**: Primary business emails (with fallback extraction from contact pages)
+- **Physical Addresses**: Complete street addresses with state verification
+- **Social Media**: Facebook, Instagram, YouTube, TikTok, LinkedIn profiles
 
-#### **Business Information**
-- ⚠️ **Description**: Max 500 words from meta description or main content
-- ⚠️ **Years Experience**: Extract from content (e.g., "15 years experience")
+### Advanced Photo Selection System
 
-#### **Services & Capabilities**
-- ✅ **Van Types**: At least 1 required
-  - Keywords: class b, sprinter, transit, promaster, custom van, etc.
-- ✅ **Amenities**: At least 1 required
-  - Keywords: solar, bathroom, kitchen, storage, etc.
+#### Van-Relevance Scoring Algorithm
+Photos are scored based on van-related keywords in filenames, alt text, and surrounding content:
 
-#### **Media & Social**
-- ✅ **Photos**: **Strive for 8 photos** (minimum 1 required)
-  - Exclude logos/icons
-  - Include URL, alt text, caption
-  - Prioritize van builds, interiors, exteriors
-- ⚠️ **Social Media**: All available platforms
-  - Instagram, Facebook, YouTube, Twitter/X, TikTok, LinkedIn, Pinterest
+**High Priority Keywords (+3 points)**:
+- van, sprinter, transit, promaster, conversion, camper, motorhome, rv
 
-### 4.2 4-Layer Social Media Detection
-1. **Layer 1**: Direct link scanning (`<a href>` elements)
-2. **Layer 2**: Icon/class-based detection (social icons, CSS classes)
-3. **Layer 3**: Meta tag scanning (OpenGraph, Twitter cards)
-4. **Layer 4**: JSON-LD structured data parsing
+**Medium Priority Keywords (+2 points)**:  
+- interior, exterior, build, custom, adventure, overland, expedition
 
-### 4.3 Data Quality Standards
-- **No Mock Data**: All information must be authentic
-- **Verify Accuracy**: Cross-check contact info when possible
-- **Complete Records**: Ensure all required fields populated
-- **Fallback Values**: Use defaults only when necessary
+**Low Priority Keywords (+1 point)**:
+- kitchen, bed, bathroom, solar, awning, gear
 
-### 4.4 🚨 **CRITICAL: Data Accuracy Priorities**
+**Exclusion Penalties (-5 points)**:
+- logos, team photos, buildings, food trucks, marketing materials
 
-#### **ZERO TOLERANCE POLICY**
-- ❌ **NEVER** add placeholder data
-- ❌ **NEVER** add fake/mock data  
-- ❌ **NEVER** add estimated data
-- ✅ **ONLY** use real data from actual websites
-- ✅ **Leave fields empty** if real data not found
+#### Quality Filters
+- **Size Bonuses**: +2 points for 400x300+, +3 points for 800x600+
+- **Small Image Penalty**: -2 points for likely icons/logos
+- **Duplicate Detection**: Smart deduplication across main page and gallery sources
+- **Target Collection**: 8 high-quality photos per builder
 
-#### **Manual Verification Requirements**
-After automated scraping, **MANDATORY** manual verification for:
+### Gallery Page Discovery
+- **Automatic Detection**: Finds portfolio, gallery, and work showcase pages
+- **Enhanced Navigation**: Explores additional pages for richer photo collections
+- **Quality Priority**: Prioritizes actual van conversion photos over generic content
 
-1. **Contact Information Accuracy**
-   - Verify phone numbers by checking multiple page locations
-   - Cross-check email addresses (look for contact forms, mailto links)
-   - Confirm addresses match business location
+## Automatic File Cleanup (v3.0)
 
-2. **Social Media Link Completeness**
-   - Check website footer for social media icons
-   - Look for "Follow Us" sections
-   - Scan navigation menus for social links
-   - Verify Instagram, Facebook, YouTube, X (Twitter), TikTok
+### Post-Scrape Cleanup Process
+After each scraping session, the system automatically removes unnecessary files:
 
-3. **Missing Data Recovery**
-   - If scraper misses social media, manually locate on website
-   - Check "About Us", "Contact", footer sections thoroughly
-   - Look for embedded social feeds or widgets
+#### Files Automatically Removed
+- **Screenshot Files**: All .png files generated during scraping
+- **Temporary Files**: Browser cache and temporary data
+- **Debug Files**: Intermediate processing files
 
-#### **Common Scraper Limitations**
-The automated scraper may miss:
-- Social media links in website footers
-- Contact info in non-standard formats
-- Email addresses behind contact forms
-- Phone numbers in image/PDF format
-- Social links using custom icons/classes
+#### Cleanup Logging
+- **File Count**: Reports number of files removed
+- **File Types**: Lists types of files cleaned up
+- **Storage Saved**: Estimates disk space recovered
 
-#### **Manual Update Process**
-When real data is found that scraper missed:
+#### Cleanup Configuration
+- **Automatic**: Runs after every successful scrape
+- **Selective**: Preserves final JSON results and logs
+- **Configurable**: Can be disabled for debugging purposes
 
-```bash
-# Update builder data with real information
-node -e "
-const Database = require('./server/database.js');
-const db = new Database();
-setTimeout(() => {
-  const updateData = {
-    phone: 'REAL_PHONE_NUMBER',
-    email: 'REAL_EMAIL@domain.com',
-    social_media: JSON.stringify({
-      facebook: 'REAL_FACEBOOK_URL',
-      instagram: 'REAL_INSTAGRAM_URL',
-      youtube: 'REAL_YOUTUBE_URL',
-      x: 'REAL_X_URL',
-      tiktok: ''
-    })
-  };
-  db.updateBuilder('BUILDER_NAME', updateData);
-}, 2000);
-"
-```
+## Missing Builder Recovery (v3.0)
 
-#### **Quality Assurance Checklist**
-Before considering state data complete:
-- [ ] All builders have verified contact information
-- [ ] Social media links manually checked and updated
-- [ ] No placeholder or fake data exists
-- [ ] All required fields populated with real data
-- [ ] Location verification confirmed for each builder
+### Enhanced Builder Discovery
+The system now includes specific mechanisms to find previously missed legitimate builders:
 
----
+#### Targeted Search Strategies
+- **Company Name Searches**: Direct searches for known builder names
+- **Multiple Query Variations**: Different keyword combinations
+- **State Abbreviation Searches**: Both full state names and abbreviations
 
-## 📸 **Step 5: Documentation & Screenshots**
+#### Verification Improvements
+- **Reduced False Negatives**: More nuanced address detection
+- **Inclusive Validation**: Lower thresholds for legitimate builders
+- **Enhanced Debugging**: Detailed scoring breakdowns for transparency
 
-### 5.1 Screenshot Capture
-- **Search Results**: Full page screenshot of Google results
-- **Builder Pages**: Full page screenshot of each builder website
-- **Naming Convention**: `search_results_{timestamp}.png`, `builder_{timestamp}.png`
+#### Recovery Process
+1. **Identify Missing**: Compare results against known legitimate builders
+2. **Targeted Extraction**: Direct data extraction from known URLs
+3. **Validation**: Ensure all builders pass location and van conversion checks
+4. **Integration**: Merge with main dataset for complete coverage
 
-### 5.2 Error Handling
-- Log all errors with context
-- Continue processing remaining builders
-- Document failed extractions
-- Retry logic for temporary failures
+## Data Quality Standards
 
----
+### Required Data Fields
+- **Name**: Business name and branding
+- **Website**: Primary business website URL
+- **Phone**: Contact phone with area code validation
+- **Email**: Primary business email address
+- **Address**: Physical business location (when available)
+- **Van Types**: Specialization areas (Sprinter, Transit, Promaster, etc.)
+- **Amenities**: Services and features offered
+- **Photos**: 8 high-quality van-related images
+- **Social Media**: All available platform links
 
-## 💾 **Step 6: Data Storage**
+### Data Validation Rules
+- **Phone Format**: Standardized to (XXX) XXX-XXXX or 10-digit format
+- **Email Validation**: Proper email format verification
+- **URL Validation**: Working website links
+- **Photo Quality**: Minimum resolution and van-relevance standards
+- **Address Verification**: Must match target state requirements when available
 
-### 6.1 Output Format
-Save results as JSON file with structure:
+## Error Handling & Debugging
+
+### Comprehensive Logging
+The system provides detailed verification logs including:
+- Location verification scores and breakdown
+- Van conversion validation scores
+- Address detection results
+- Out-of-state address findings
+- Social media extraction counts
+- Photo scoring details with van-relevance scores
+
+### Common Issues & Solutions
+- **Timeout Errors**: Automatic retry with exponential backoff
+- **Rate Limiting**: Respectful delays between requests
+- **Missing Data**: Fallback defaults and contact page scanning
+- **Verification Failures**: Detailed logging for manual review
+- **False Negatives**: Enhanced debugging to identify missed legitimate builders
+
+## Technical Implementation
+
+### Browser Automation
+- **Playwright**: Chromium-based browser automation
+- **Headless Mode**: Configurable for performance/debugging
+- **Resource Blocking**: Images/CSS blocked for faster loading
+- **Timeout Handling**: 20-second page load timeout
+- **Error Recovery**: Graceful handling of page load failures
+
+### API Integration
+- **Brave Search**: Primary search result source
+- **Rate Limiting**: Respectful API usage with delays
+- **Error Handling**: Graceful degradation on API failures
+- **Multiple Queries**: Batch processing of search variations
+
+## Respectful Crawling Guidelines
+
+### Rate Limiting
+- **Page Delays**: 2-3 seconds between page visits
+- **Request Spacing**: Avoid overwhelming target servers
+- **Concurrent Limits**: Single-threaded processing
+- **API Throttling**: Respectful search API usage
+
+### User Agent & Headers
+- **Realistic User Agent**: Standard browser identification
+- **Accept Headers**: Proper content type requests
+- **Referrer Policy**: Appropriate referrer headers
+
+## Output Format
+
+### JSON Structure
 ```json
 {
-  "state": "Alabama",
-  "scraped_at": "2024-01-01T12:00:00Z",
-  "total_builders": 5,
-  "screenshots": ["search_results_123.png", "builder_456.png"],
+  "state": "New Jersey",
+  "scraped_at": "2025-06-06T03:14:05.995Z",
+  "total_builders": 4,
+  "total_photos": 32,
+  "avg_photos_per_builder": 8,
+  "screenshots": [],
   "builders": [
     {
       "name": "Builder Name",
       "website": "https://example.com",
-      "address": "123 Main St",
-      "city": "Birmingham",
-      "state": "AL",
-      "zip": "35203",
-      "phone": "(205) 555-0123",
-      "email": "info@example.com",
-      "description": "Custom van builder...",
-      "years_experience": 10,
-      "social_media": {
-        "instagram": "https://instagram.com/builder",
-        "facebook": "https://facebook.com/builder"
-      },
-      "van_types": ["sprinter", "transit"],
-      "amenities": ["solar", "kitchen", "bathroom"],
+      "phone": "(XXX) XXX-XXXX", 
+      "email": "contact@example.com",
+      "address": "123 Main St, City, ST 12345",
+      "city": "City Name",
+      "state": "New Jersey",
+      "zip": "12345",
+      "description": "Builder description",
+      "van_types": ["sprinter", "transit", "promaster"],
+      "amenities": ["solar", "bathroom", "kitchen"],
       "photos": [
         {
-          "url": "https://example.com/photo1.jpg",
-          "alt": "Custom van interior",
-          "caption": ""
-        },
-        {
-          "url": "https://example.com/photo2.jpg",
-          "alt": "Van exterior build",
-          "caption": ""
+          "url": "https://example.com/photo.jpg",
+          "alt": "Van conversion photo",
+          "caption": "Interior view",
+          "vanScore": 5,
+          "source": "main"
         }
-      ]
+      ],
+      "social_media": {
+        "facebook": "url",
+        "instagram": "url",
+        "youtube": "url"
+      }
     }
   ]
 }
 ```
 
-### 6.2 File Naming
-`van_builders_{state_lowercase}_{timestamp}.json`
+## Quality Assurance Checklist
 
-Example: `van_builders_alabama_2024-01-01T12-00-00Z.json`
+### Pre-Scrape Validation
+- [ ] Target state properly configured
+- [ ] Multiple search queries optimized for state
+- [ ] Browser settings configured
+- [ ] API credentials validated
+- [ ] Cleanup procedures enabled
 
----
+### Post-Scrape Review
+- [ ] All builders have verified state addresses or strong state indicators
+- [ ] No out-of-state builders included
+- [ ] Contact information completeness >80%
+- [ ] Photo quality and van-relevance verified
+- [ ] Social media links validated
+- [ ] Duplicate builders removed
+- [ ] Known legitimate builders included
+- [ ] Automatic cleanup completed
 
-## ⏱️ **Step 7: Respectful Crawling**
+### Manual Verification Steps
+- [ ] Spot-check builder locations via Google Maps
+- [ ] Verify phone area codes match target state
+- [ ] Confirm van specialization via website review
+- [ ] Validate social media profile authenticity
+- [ ] Cross-reference with known builder directories
 
-### 7.1 Timing Requirements
-- **3 seconds** wait after Google search
-- **2 seconds** wait between builder website visits
-- **1 second** wait after modal close attempts
-- **30 second** timeout for page loads
+## Recent Updates (v3.0)
 
-### 7.2 Resource Management
-- Use `--fast` mode to block images/CSS when needed
-- Implement proper browser cleanup
-- Handle memory management for long runs
+### Missing Builder Recovery
+- Fixed location verification to find previously missed legitimate builders
+- Enhanced van conversion validation for RV companies
+- Added targeted search and extraction for known builders
+- Implemented comprehensive builder discovery strategies
 
----
+### Enhanced Location Verification
+- Reduced out-of-state address penalty from -10 to -5 points
+- Lowered verification threshold from 6 to 4 points
+- Improved address pattern detection to avoid false negatives
+- Added more nuanced business location detection
 
-## 🔍 **Step 8: Quality Assurance**
+### Improved Van Conversion Validation
+- Lowered minimum validation score from 2 to 1 point
+- Added special bonus for legitimate RV companies
+- Enhanced keyword detection for van conversion services
+- More inclusive validation for legitimate builders
 
-### 8.1 Post-Collection Review
-- Verify minimum data requirements met
-- Check for duplicate builders
-- Validate contact information format
-- Confirm social media links work
-- **Photo Quality Check**: Aim for 8 photos per builder
+### Multiple Search Query Strategy
+- Implemented 4 different search queries for comprehensive coverage
+- Added deduplication across multiple query results
+- Enhanced search result aggregation and processing
+- Improved builder discovery rate significantly
 
-### 8.2 Success Criteria
-- ✅ At least 1 verified builder found
-- ✅ All required fields populated
-- ✅ Screenshots captured
-- ✅ JSON file saved successfully
-- ✅ No errors in console output
-- ✅ **Target: 8 photos per builder** (minimum 1)
+### Automatic File Cleanup
+- Added post-scrape cleanup to remove unnecessary files
+- Automatic screenshot file removal
+- Temporary file cleanup
+- Storage optimization and cleanup logging
 
----
+### Bug Fixes and Improvements
+- Fixed verifyBuilderLocation return value format
+- Enhanced error handling and timeout management
+- Improved debugging output and verification transparency
+- Added comprehensive logging for all verification steps
 
-## 📝 **Step 9: Reporting**
-
-### 9.1 Console Output Format
-```
-🎯 Target State: Alabama
-🖥️ Mode: Headless
-⚡ Fast Mode: Disabled
-
-🔍 Searching Google for: "custom camper van builders in Alabama"
-📋 Found 8 search results
-📸 Search results screenshot: search_results_1234567890.png
-
-🔍 Processing: Alabama Van Conversions
-✅ Location verified for: Alabama Van Conversions
-📊 Extracting data for: Alabama Van Conversions
-   📧 Email: info@alabamavan.com
-   📞 Phone: (205) 555-0123
-   📍 Address: 123 Main St, Birmingham, AL 35203
-   📱 Social Media: 3 platforms found
-   📷 Photos: 6 photos collected (target: 8)
-✅ Added builder: Alabama Van Conversions
-
-💾 Results saved to: van_builders_alabama_2024-01-01T12-00-00Z.json
-📊 Total builders found: 5
-📷 Average photos per builder: 6.2
-
-🎉 Scraping completed successfully!
-```
-
-### 9.2 Summary Report
-- State processed
-- Total builders found
-- Success/failure rate
-- Screenshots captured
-- File output location
-- **Photo collection statistics**
-
----
-
-## 🚨 **Critical Rules - NEVER DEVIATE**
-
-1. **ALWAYS** use exact search query format: `"custom camper van builders in {STATE}"`
-2. **NEVER** proceed without location verification
-3. **NEVER** use mock or fake data
-4. **ALWAYS** respect crawling delays
-5. **ALWAYS** capture screenshots for auditing
-6. **NEVER** skip required field validation
-7. **ALWAYS** follow PRD data structure requirements
-8. **NEVER** modify core extraction logic between states
-9. **STRIVE** for 8 photos per builder (minimum 1 required)
-
----
-
-## 🔄 **State Processing Checklist**
-
-For each state, confirm:
-- [ ] PRD requirements reviewed
-- [ ] Exact search query used
-- [ ] Location verification completed
-- [ ] All required fields extracted
-- [ ] Social media detection executed
-- [ ] **Photo collection optimized (target: 8 per builder)**
-- [ ] Screenshots captured
-- [ ] JSON file saved
-- [ ] Quality checks passed
-- [ ] Console output reviewed
-
----
-
-## 📞 **Support & Troubleshooting**
-
-### Common Issues:
-- **No results found**: Verify search query format
-- **Location verification fails**: Check state name variations
-- **Data extraction incomplete**: Review website structure
-- **Screenshots missing**: Check file permissions
-- **JSON save fails**: Verify directory exists
-- **Low photo count**: Check image selectors and filtering logic
-
-### Debug Mode:
-Use `--headed` flag to visually inspect browser behavior and debug issues.
-
----
-
-**This process ensures every state receives identical attention and data quality standards are maintained across the entire Van Builder Directory project.**
+This protocol ensures high-quality, accurate van builder data collection with strict geographic verification, comprehensive information extraction, and complete builder discovery coverage.
