@@ -134,6 +134,75 @@ Extract the following data for each verified builder:
 - **Complete Records**: Ensure all required fields populated
 - **Fallback Values**: Use defaults only when necessary
 
+### 4.4 🚨 **CRITICAL: Data Accuracy Priorities**
+
+#### **ZERO TOLERANCE POLICY**
+- ❌ **NEVER** add placeholder data
+- ❌ **NEVER** add fake/mock data  
+- ❌ **NEVER** add estimated data
+- ✅ **ONLY** use real data from actual websites
+- ✅ **Leave fields empty** if real data not found
+
+#### **Manual Verification Requirements**
+After automated scraping, **MANDATORY** manual verification for:
+
+1. **Contact Information Accuracy**
+   - Verify phone numbers by checking multiple page locations
+   - Cross-check email addresses (look for contact forms, mailto links)
+   - Confirm addresses match business location
+
+2. **Social Media Link Completeness**
+   - Check website footer for social media icons
+   - Look for "Follow Us" sections
+   - Scan navigation menus for social links
+   - Verify Instagram, Facebook, YouTube, X (Twitter), TikTok
+
+3. **Missing Data Recovery**
+   - If scraper misses social media, manually locate on website
+   - Check "About Us", "Contact", footer sections thoroughly
+   - Look for embedded social feeds or widgets
+
+#### **Common Scraper Limitations**
+The automated scraper may miss:
+- Social media links in website footers
+- Contact info in non-standard formats
+- Email addresses behind contact forms
+- Phone numbers in image/PDF format
+- Social links using custom icons/classes
+
+#### **Manual Update Process**
+When real data is found that scraper missed:
+
+```bash
+# Update builder data with real information
+node -e "
+const Database = require('./server/database.js');
+const db = new Database();
+setTimeout(() => {
+  const updateData = {
+    phone: 'REAL_PHONE_NUMBER',
+    email: 'REAL_EMAIL@domain.com',
+    social_media: JSON.stringify({
+      facebook: 'REAL_FACEBOOK_URL',
+      instagram: 'REAL_INSTAGRAM_URL',
+      youtube: 'REAL_YOUTUBE_URL',
+      x: 'REAL_X_URL',
+      tiktok: ''
+    })
+  };
+  db.updateBuilder('BUILDER_NAME', updateData);
+}, 2000);
+"
+```
+
+#### **Quality Assurance Checklist**
+Before considering state data complete:
+- [ ] All builders have verified contact information
+- [ ] Social media links manually checked and updated
+- [ ] No placeholder or fake data exists
+- [ ] All required fields populated with real data
+- [ ] Location verification confirmed for each builder
+
 ---
 
 ## 📸 **Step 5: Documentation & Screenshots**

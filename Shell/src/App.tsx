@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme, CssBaseline, Box, Button } from '@mui/mater
 import { LoadScript } from '@react-google-maps/api';
 import HomePage from './components/HomePage';
 import SearchResults from './components/SearchResults';
+import BuilderModal from './components/BuilderModal';
 import Header from './components/Header';
 import { Builder } from './types/builder';
 
@@ -17,6 +18,8 @@ const App: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [mode, setMode] = useState<'light' | 'dark'>('dark');
   const [currentView, setCurrentView] = useState<'home' | 'results'>('home');
+  const [selectedBuilder, setSelectedBuilder] = useState<Builder | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -113,14 +116,16 @@ const App: React.FC = () => {
       } else if (searchType === 'builder') {
         await searchBuildersByName(searchValue);
       } else if (searchType === 'zip') {
-        // For now, load all builders and filter by zip on frontend
-        // TODO: Add zip search endpoint to API
-        await loadAllBuilders();
-        const filteredBuilders = allBuilders.filter(builder => 
-          builder.zip && builder.zip.includes(searchValue)
-        );
-        setFilteredBuilders(filteredBuilders);
-        console.log(`✅ Found ${filteredBuilders.length} builders near zip ${searchValue}`);
+        // Use the new zip search endpoint
+        const response = await fetch(`http://localhost:3002/api/builders/zip/${searchValue}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFilteredBuilders(data.data);
+          console.log(`✅ Found ${data.count} builders within 100 miles of zip ${searchValue}`);
+        } else {
+          console.error('❌ Zip code not found or API error');
+          setFilteredBuilders([]);
+        }
       }
       
       setCurrentView('results');
@@ -142,7 +147,8 @@ const App: React.FC = () => {
   // Handle builder selection (for future detail view)
   const handleBuilderSelect = (builder: Builder) => {
     console.log('Selected builder:', builder);
-    // TODO: Implement builder detail view
+    setSelectedBuilder(builder);
+    setModalOpen(true);
   };
 
   // Handle navigation to home
@@ -202,7 +208,7 @@ const App: React.FC = () => {
               </Button>
             </Box>
           </>
-        ) : (
+        ) : currentView === 'results' ? (
           <>
             <Box sx={{ p: 2, display: 'flex', justifyContent: 'flex-start', bgcolor: 'background.paper', boxShadow: 1 }}>
               <Button 
@@ -234,8 +240,13 @@ const App: React.FC = () => {
               searchValue={searchValue}
               onBuilderSelect={handleBuilderSelect}
             />
+            <BuilderModal 
+              builder={selectedBuilder} 
+              open={modalOpen} 
+              onClose={() => setModalOpen(false)} 
+            />
           </>
-        )}
+        ) : null}
       </LoadScript>
     </ThemeProvider>
   );

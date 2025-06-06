@@ -61,6 +61,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
         {/* Results Section */}
         <BuildersList
           builders={builders}
+          searchType={searchType}
           selectedState={searchType === 'state' ? searchValue : undefined}
           selectedZipCode={searchType === 'zip' ? searchValue : undefined}
           searchedBuilderName={searchType === 'builder' ? searchValue : undefined}

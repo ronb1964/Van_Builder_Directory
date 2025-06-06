@@ -22,6 +22,7 @@ const GridContainer = styled(Box)(({ theme }) => ({
 interface BuildersListProps {
   selectedState?: string;
   selectedZipCode?: string;
+  searchType?: 'state' | 'zip' | 'builder';
   onBuilderSelect?: (builder: Builder) => void;
   onZoomToLocation?: (builder: Builder) => void;
   searchedBuilderName?: string;
@@ -35,6 +36,7 @@ const DEFAULT_MESSAGE = "We don't have builder data for this state yet. Please s
 const BuildersList: React.FC<BuildersListProps> = ({ 
   selectedState = "New Jersey", 
   selectedZipCode,
+  searchType,
   onBuilderSelect,
   onZoomToLocation,
   searchedBuilderName,
@@ -56,6 +58,7 @@ const BuildersList: React.FC<BuildersListProps> = ({
                 builder={builder} 
                 onViewDetails={onBuilderSelect || (() => {})} 
                 onZoomToLocation={onZoomToLocation || (() => {})} 
+                searchType={searchType}
               />
             ))}
           </GridContainer>

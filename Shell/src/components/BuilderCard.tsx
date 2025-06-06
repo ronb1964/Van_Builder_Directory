@@ -23,7 +23,8 @@ import {
   DirectionsCar,
   YouTube,
   Instagram,
-  Facebook
+  Facebook,
+  X as XIcon
 } from '@mui/icons-material';
 import { Builder } from '../types/builder';
 
@@ -65,6 +66,15 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
     : typeof vanTypes === 'string' && vanTypes.trim()
       ? vanTypes.split(',').map((type: string) => type.trim()).filter((type: string) => type.length > 0)
       : [];
+
+  // Transform builder name to title case
+  const formatBuilderName = (name: string): string => {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
 
   return (
     <Zoom in={true} style={{ transitionDelay: '100ms' }}>
@@ -125,8 +135,6 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
             justifyContent: 'center',
             background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
             color: 'white',
-            fontSize: '1.4rem',
-            fontWeight: '500',
             transition: 'all 0.3s ease-in-out',
             textAlign: 'center',
             px: 2,
@@ -150,9 +158,25 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
             }
           }}
         >
-          <Box sx={{ position: 'relative', zIndex: 1 }}>
-            {name}
-          </Box>
+          <Typography
+            variant="h6"
+            sx={{
+              position: 'relative',
+              zIndex: 1,
+              fontSize: '1.4rem',
+              fontWeight: '500',
+              lineHeight: 1.2,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
+              wordBreak: 'break-word'
+            }}
+          >
+            {formatBuilderName(name)}
+          </Typography>
         </Box>
 
         <CardContent sx={{ flexGrow: 1, pt: 1.5, pb: 1, px: 2 }}>
@@ -512,6 +536,44 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   }}
                 >
                   <TikTokIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {socialMedia?.x && (
+              <Tooltip title="X Profile">
+                <IconButton 
+                  size="small" 
+                  color="primary" 
+                  aria-label="x"
+                  component="a"
+                  href={socialMedia.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ 
+                    bgcolor: theme.palette.mode === 'dark' 
+                      ? alpha('#ffffff', 0.1) 
+                      : alpha('#1DA1F2', 0.1),
+                    borderRadius: '50%',
+                    width: 32,
+                    height: 32,
+                    minWidth: 32,
+                    minHeight: 32,
+                    color: theme.palette.mode === 'dark' 
+                      ? 'white' 
+                      : '#1DA1F2',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? 'white' 
+                        : '#1DA1F2',
+                      color: theme.palette.mode === 'dark' 
+                        ? '#1DA1F2' 
+                        : 'white',
+                      transform: 'scale(1.1)'
+                    }
+                  }}
+                >
+                  <XIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}

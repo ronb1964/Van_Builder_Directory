@@ -11,25 +11,20 @@ import {
   Chip,
   styled,
   useTheme,
-  alpha
+  alpha,
 } from '@mui/material';
 import {
   Close as CloseIcon,
   Phone as PhoneIcon,
   Email as EmailIcon,
   Language as WebsiteIcon,
-  YouTube as YouTubeIcon,
+  Facebook as FacebookIcon,
   Instagram as InstagramIcon,
-  Facebook as FacebookIcon
+  YouTube as YouTubeIcon,
+  X as XIcon,
+  LocationOn as LocationOnIcon,
 } from '@mui/icons-material';
 import { Builder } from '../types/builder';
-
-// Custom TikTok icon component
-const TikTokIcon = (props: any) => (
-  <svg {...props} viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43V7.56a8.16 8.16 0 0 0 4.77 1.52v-3.39z"/>
-  </svg>
-);
 
 // Styled Components
 const ModalContent = styled(Box)(({ theme }) => ({
@@ -39,7 +34,7 @@ const ModalContent = styled(Box)(({ theme }) => ({
   transform: 'translate(-50%, -50%)',
   width: '90%',
   maxWidth: 900,
-  maxHeight: '90vh',
+  maxHeight: '85vh',
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[24],
   borderRadius: 12,
@@ -48,7 +43,7 @@ const ModalContent = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   [theme.breakpoints.down('md')]: {
     width: '95%',
-    maxHeight: '95vh',
+    maxHeight: '90vh',
   },
 }));
 
@@ -67,7 +62,7 @@ const ModalHeader = styled(Box)(({ theme }) => ({
 const ModalBody = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
   overflowY: 'auto',
-  flexGrow: 1,
+  maxHeight: 'calc(85vh - 180px)', // Account for header (~80px) + tabs (~50px) + footer (~50px)
   backgroundColor: theme.palette.background.paper
 }));
 
@@ -125,8 +120,7 @@ const ModalFooter = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginTop: theme.spacing(4),
-  paddingTop: theme.spacing(3),
+  padding: theme.spacing(3),
   borderTop: `1px solid ${theme.palette.divider}`,
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
@@ -167,6 +161,15 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
       ? vanTypes.split(',').map((type: string) => type.trim()).filter((type: string) => type.length > 0)
       : [];
 
+  // Transform builder name to title case
+  const formatBuilderName = (name: string): string => {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   const handleClose = (event: {}, reason: string) => {
     if (reason === 'backdropClick') {
       return; // Prevent closing on backdrop click
@@ -195,19 +198,22 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
   const renderOverviewTab = () => (
     <Box>
       {location && (
-        <Box sx={{ mb: 1 }}>
+        <Box sx={{ mb: 2.5 }}>
           <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600, fontSize: '1rem', mb: 0.5 }}>
             Location
           </Typography>
-          <Typography variant="body1" sx={{ mb: 0 }}>
-            {location.city}, {location.state} {location.zip}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <LocationOnIcon sx={{ fontSize: 18, mr: 1 }} />
+            <Typography variant="body1" sx={{ mb: 0 }}>
+              {location.city}, {location.state}
+            </Typography>
+          </Box>
         </Box>
       )}
 
-      <Box sx={{ mb: 2 }}>
+      <Box sx={{ mb: 4 }}>
         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600, fontSize: '1rem', mb: 0.5 }}>
-          About {name}
+          About {formatBuilderName(name)}
         </Typography>
         <Typography variant="body1" sx={{ lineHeight: 1.6, mb: 0 }}>
           {description}
@@ -316,7 +322,7 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
         <GalleryGrid>
           {gallery.map((image, index) => {
             const imageUrl = typeof image === 'string' ? image : image.url;
-            const imageAlt = typeof image === 'string' ? `${name} conversion ${index + 1}` : image.alt || `${name} conversion ${index + 1}`;
+            const imageAlt = typeof image === 'string' ? `${formatBuilderName(name)} conversion ${index + 1}` : image.alt || `${formatBuilderName(name)} conversion ${index + 1}`;
             
             return (
               <GalleryImage
@@ -362,7 +368,7 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
           {/* Header */}
           <ModalHeader>
             <Typography variant="h4" component="h2" sx={{ fontWeight: 600 }}>
-              {name}
+              {formatBuilderName(name)}
             </Typography>
             <IconButton
               onClick={onClose}
@@ -401,16 +407,17 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                   startIcon={<PhoneIcon />}
                   onClick={() => handleContactClick('phone', phone)}
                   sx={{
-                    borderColor: theme.palette.primary.main,
-                    color: theme.palette.primary.main,
+                    borderColor: '#5b9bd5',
+                    color: '#5b9bd5',
                     fontWeight: 600,
                     padding: '8px 16px',
                     minHeight: '40px',
+                    borderRadius: 2,
                     '&:hover': {
-                      borderColor: theme.palette.primary.dark,
-                      bgcolor: alpha(theme.palette.primary.main, 0.08),
+                      borderColor: '#4a8bc2',
+                      bgcolor: alpha('#5b9bd5', 0.08),
                       transform: 'translateY(-1px)',
-                      boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.2)}`
+                      boxShadow: `0 4px 12px ${alpha('#5b9bd5', 0.2)}`
                     },
                     transition: 'all 0.2s ease-in-out'
                   }}
@@ -424,16 +431,17 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                   startIcon={<EmailIcon />}
                   onClick={() => handleContactClick('email', email)}
                   sx={{
-                    borderColor: theme.palette.primary.main,
-                    color: theme.palette.primary.main,
+                    borderColor: '#5b9bd5',
+                    color: '#5b9bd5',
                     fontWeight: 600,
                     padding: '8px 16px',
                     minHeight: '40px',
+                    borderRadius: 2,
                     '&:hover': {
-                      borderColor: theme.palette.primary.dark,
-                      bgcolor: alpha(theme.palette.primary.main, 0.08),
+                      borderColor: '#4a8bc2',
+                      bgcolor: alpha('#5b9bd5', 0.08),
                       transform: 'translateY(-1px)',
-                      boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.2)}`
+                      boxShadow: `0 4px 12px ${alpha('#5b9bd5', 0.2)}`
                     },
                     transition: 'all 0.2s ease-in-out'
                   }}
@@ -447,16 +455,17 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                   startIcon={<WebsiteIcon />}
                   onClick={() => handleContactClick('website', website)}
                   sx={{
-                    borderColor: theme.palette.primary.main,
-                    color: theme.palette.primary.main,
+                    borderColor: '#5b9bd5',
+                    color: '#5b9bd5',
                     fontWeight: 600,
                     padding: '8px 16px',
                     minHeight: '40px',
+                    borderRadius: 2,
                     '&:hover': {
-                      borderColor: theme.palette.primary.dark,
-                      bgcolor: alpha(theme.palette.primary.main, 0.08),
+                      borderColor: '#4a8bc2',
+                      bgcolor: alpha('#5b9bd5', 0.08),
                       transform: 'translateY(-1px)',
-                      boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.2)}`
+                      boxShadow: `0 4px 12px ${alpha('#5b9bd5', 0.2)}`
                     },
                     transition: 'all 0.2s ease-in-out'
                   }}
@@ -474,8 +483,13 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                       onClick={() => window.open(socialMedia.youtube, '_blank')}
                       sx={{ 
                         color: theme.palette.mode === 'dark' ? '#ffffff' : '#FF0000',
+                        bgcolor: theme.palette.mode === 'dark' 
+                          ? alpha('#ffffff', 0.1) 
+                          : alpha('#FF0000', 0.1),
                         '&:hover': { 
-                          bgcolor: alpha('#FF0000', 0.1),
+                          bgcolor: theme.palette.mode === 'dark' 
+                            ? alpha('#ffffff', 0.2) 
+                            : alpha('#FF0000', 0.2),
                           transform: 'scale(1.1)'
                         },
                         transition: 'all 0.2s ease-in-out'
@@ -489,8 +503,13 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                       onClick={() => window.open(socialMedia.instagram, '_blank')}
                       sx={{ 
                         color: theme.palette.mode === 'dark' ? '#ffffff' : '#E4405F',
+                        bgcolor: theme.palette.mode === 'dark' 
+                          ? alpha('#ffffff', 0.1) 
+                          : alpha('#E4405F', 0.1),
                         '&:hover': { 
-                          bgcolor: alpha('#E4405F', 0.1),
+                          bgcolor: theme.palette.mode === 'dark' 
+                            ? alpha('#ffffff', 0.2) 
+                            : alpha('#E4405F', 0.2),
                           transform: 'scale(1.1)'
                         },
                         transition: 'all 0.2s ease-in-out'
@@ -504,8 +523,13 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                       onClick={() => window.open(socialMedia.facebook, '_blank')}
                       sx={{ 
                         color: theme.palette.mode === 'dark' ? '#ffffff' : '#1877F2',
+                        bgcolor: theme.palette.mode === 'dark' 
+                          ? alpha('#ffffff', 0.1) 
+                          : alpha('#1877F2', 0.1),
                         '&:hover': { 
-                          bgcolor: alpha('#1877F2', 0.1),
+                          bgcolor: theme.palette.mode === 'dark' 
+                            ? alpha('#ffffff', 0.2) 
+                            : alpha('#1877F2', 0.2),
                           transform: 'scale(1.1)'
                         },
                         transition: 'all 0.2s ease-in-out'
@@ -514,19 +538,24 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                       <FacebookIcon />
                     </IconButton>
                   )}
-                  {socialMedia.tiktok && (
+                  {socialMedia.x && (
                     <IconButton
-                      onClick={() => window.open(socialMedia.tiktok, '_blank')}
+                      onClick={() => window.open(socialMedia.x, '_blank')}
                       sx={{ 
-                        color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+                        color: theme.palette.mode === 'dark' ? '#ffffff' : '#1DA1F2',
+                        bgcolor: theme.palette.mode === 'dark' 
+                          ? alpha('#ffffff', 0.1) 
+                          : alpha('#1DA1F2', 0.1),
                         '&:hover': { 
-                          bgcolor: alpha('#000000', 0.1),
+                          bgcolor: theme.palette.mode === 'dark' 
+                            ? alpha('#ffffff', 0.2) 
+                            : alpha('#1DA1F2', 0.2),
                           transform: 'scale(1.1)'
                         },
                         transition: 'all 0.2s ease-in-out'
                       }}
                     >
-                      <TikTokIcon />
+                      <XIcon />
                     </IconButton>
                   )}
                 </>

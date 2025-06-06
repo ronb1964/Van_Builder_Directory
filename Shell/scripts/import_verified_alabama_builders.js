@@ -4,28 +4,6 @@ const path = require('path');
 // Only import verified Alabama builders
 const verifiedBuilders = [
     {
-        name: "ALABAMA CUSTOM TRAILER & RV",
-        website: "https://actrvalabama.com/",
-        city: "Pelham",
-        state: "Alabama",
-        lat: 33.2859,
-        lng: -86.8103,
-        zip: "35124",
-        phone: "205-624-3291",
-        email: "info@actrvalabama.com",
-        description: "Food Truck Builders, Trailer Customization, Parts and Services",
-        specialties: "Custom trailers, RV modifications, food truck builds",
-        van_types: "Custom trailers, RVs",
-        services: "Custom builds, repairs, modifications",
-        photos: JSON.stringify([]),
-        social_media: JSON.stringify({
-            facebook: "https://www.facebook.com/actrvalabama",
-            instagram: "",
-            youtube: "",
-            tiktok: ""
-        })
-    },
-    {
         name: "Gearbox Adventure Rentals",
         website: "https://gearboxrentals.com/",
         city: "Birmingham",
@@ -43,6 +21,50 @@ const verifiedBuilders = [
         social_media: JSON.stringify({
             facebook: "https://www.facebook.com/gearboxadventurerentals",
             instagram: "https://www.instagram.com/gearboxadventurerentals",
+            youtube: "",
+            tiktok: ""
+        })
+    },
+    {
+        name: "Storyteller Overland",
+        website: "https://storytelleroverland.com/",
+        city: "Birmingham",
+        state: "Alabama",
+        lat: 33.5186,
+        lng: -86.8104,
+        zip: "35203",
+        phone: "205-414-6164",
+        email: "info@storytelleroverland.com",
+        description: "Adventure van manufacturer specializing in MODE camper vans",
+        specialties: "Adventure van manufacturing, MODE camper vans",
+        van_types: "Ford Transit, Mercedes Sprinter",
+        services: "Van manufacturing, custom builds",
+        photos: JSON.stringify([]),
+        social_media: JSON.stringify({
+            facebook: "",
+            instagram: "https://www.instagram.com/storytelleroverland",
+            youtube: "",
+            tiktok: ""
+        })
+    },
+    {
+        name: "Vulcan Coach",
+        website: "https://vulcancoach.com/",
+        city: "Midfield",
+        state: "Alabama",
+        lat: 33.4651,
+        lng: -86.9069,
+        zip: "35228",
+        phone: "205-923-7356",
+        email: "info@vulcancoach.com",
+        description: "Family-owned since 1964, custom bus and RV conversions",
+        specialties: "Custom bus conversions, RV modifications",
+        van_types: "Buses, RVs, custom vehicles",
+        services: "Custom builds, repairs, modifications",
+        photos: JSON.stringify([]),
+        social_media: JSON.stringify({
+            facebook: "",
+            instagram: "",
             youtube: "",
             tiktok: ""
         })

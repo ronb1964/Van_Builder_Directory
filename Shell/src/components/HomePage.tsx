@@ -19,7 +19,7 @@ const PageContainer = styled.div<{ darkMode: boolean }>`
   position: relative;
 `;
 
-const HeroSection = styled.section<{ darkMode: boolean }>`
+const HeroSection = styled.section`
   padding: 4rem 2rem;
   text-align: center;
   position: relative;
@@ -103,7 +103,7 @@ const HeroImage = styled.div`
 const HomePage: React.FC<HomePageProps> = ({ darkMode, toggleDarkMode, onSearch, builderCount }) => {
   return (
     <PageContainer darkMode={darkMode}>
-      <HeroSection darkMode={darkMode}>
+      <HeroSection>
         <HeroContainer>
           <HeroContent>
             <HeroText>

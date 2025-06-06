@@ -12,6 +12,32 @@ const db = new DatabaseService();
 app.use(cors());
 app.use(express.json());
 
+// Helper function to calculate distance between two coordinates using Haversine formula
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 3959; // Earth's radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+// Helper function to get coordinates from zip code (simplified - in production use a geocoding service)
+function getZipCoordinates(zipCode) {
+  // For now, using some Alabama zip codes as examples
+  const zipCoords = {
+    '35203': { lat: 33.5186, lng: -86.8025 }, // Birmingham
+    '35801': { lat: 34.7304, lng: -86.5861 }, // Huntsville  
+    '35228': { lat: 33.4734, lng: -86.8025 }, // Birmingham area
+    '36101': { lat: 32.3617, lng: -86.2792 }, // Montgomery
+    '35004': { lat: 33.6398, lng: -86.7494 }, // Moody
+  };
+  return zipCoords[zipCode] || null;
+}
+
 // Routes
 
 // Get all builders
@@ -72,6 +98,39 @@ app.get('/api/builders/search/:query', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to search builders'
+    });
+  }
+});
+
+// Search builders by zip code
+app.get('/api/builders/zip/:zip', async (req, res) => {
+  try {
+    const { zip } = req.params;
+    const zipCoords = getZipCoordinates(zip);
+    if (!zipCoords) {
+      res.status(404).json({
+        success: false,
+        error: 'Zip code not found'
+      });
+      return;
+    }
+    const builders = await db.getAllBuilders();
+    const filteredBuilders = builders.filter(builder => {
+      const distance = calculateDistance(zipCoords.lat, zipCoords.lng, builder.lat, builder.lng);
+      return distance <= 100;
+    });
+    
+    res.json({
+      success: true,
+      data: filteredBuilders,
+      count: filteredBuilders.length,
+      zip: zip
+    });
+  } catch (error) {
+    console.error('Error searching builders by zip:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to search builders by zip'
     });
   }
 });

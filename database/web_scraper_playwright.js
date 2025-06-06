@@ -516,6 +516,13 @@ class VanBuilderScraper {
             if (!builderData.name) builderData.name = result.title;
             if (!builderData.state) builderData.state = targetState;
             
+            // VALIDATE: Ensure this is actually a van conversion builder
+            const isVanBuilder = this.validateVanBuilder(builderData);
+            if (!isVanBuilder.isValid) {
+                console.log(`❌ SKIPPING: ${builderData.name} - ${isVanBuilder.reason}`);
+                return null;
+            }
+            
             // Ensure arrays have at least one item
             if (builderData.van_types.length === 0) {
                 builderData.van_types.push('custom van');
@@ -656,6 +663,53 @@ class VanBuilderScraper {
             'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY'
         };
         return stateAbbreviations[state];
+    }
+
+    validateVanBuilder(builderData) {
+        const content = `${builderData.name} ${builderData.description} ${builderData.van_types.join(' ')} ${builderData.amenities.join(' ')}`.toLowerCase();
+        
+        // EXCLUSION KEYWORDS - Immediate disqualification
+        const excludeKeywords = [
+            'food truck', 'food trailer', 'concession', 'catering', 'restaurant',
+            'mobile kitchen', 'food service', 'food cart', 'coffee truck',
+            'ice cream truck', 'taco truck', 'food vendor', 'commercial kitchen'
+        ];
+        
+        const hasExcludedContent = excludeKeywords.some(keyword => content.includes(keyword));
+        if (hasExcludedContent) {
+            return { isValid: false, reason: 'Builds food trucks/commercial vehicles, not camper vans' };
+        }
+        
+        // VAN CONVERSION KEYWORDS - Must have at least one
+        const vanKeywords = [
+            'camper van', 'van conversion', 'custom van', 'adventure van',
+            'sprinter conversion', 'transit conversion', 'promaster conversion',
+            'class b rv', 'class b+', 'motorhome', 'recreational vehicle',
+            'van build', 'van life', 'overland', 'expedition vehicle'
+        ];
+        
+        const hasVanKeywords = vanKeywords.some(keyword => content.includes(keyword));
+        
+        // GENERAL KEYWORDS - Secondary check
+        const generalKeywords = ['rv', 'conversion', 'custom', 'build'];
+        const hasGeneralKeywords = generalKeywords.some(keyword => content.includes(keyword));
+        
+        // VAN TYPES CHECK - Look for actual van models
+        const vanModels = ['sprinter', 'transit', 'promaster', 'express', 'savana', 'nv200'];
+        const hasVanModels = vanModels.some(model => content.includes(model));
+        
+        // SCORING SYSTEM - Need minimum score to qualify
+        let score = 0;
+        if (hasVanKeywords) score += 3;      // Strong van conversion indicators
+        if (hasVanModels) score += 2;        // Specific van models mentioned
+        if (hasGeneralKeywords) score += 1;  // General conversion keywords
+        
+        if (score < 2) {
+            return { isValid: false, reason: `Insufficient van conversion indicators (score: ${score}/3 minimum)` };
+        }
+        
+        console.log(`✅ VALIDATED: ${builderData.name} - Van conversion score: ${score}/3`);
+        return { isValid: true, reason: `Van conversion validated (score: ${score})` };
     }
 }
 

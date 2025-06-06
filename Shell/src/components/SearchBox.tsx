@@ -28,13 +28,13 @@ interface SearchBoxProps {
   onSearch: (searchType: 'state' | 'zip' | 'builder', searchValue: string) => void;
 }
 
-const SearchSection = styled.section<{ darkMode: boolean }>`
+const SearchSection = styled.section`
   padding: 0 2rem 2rem 2rem;
   max-width: 800px;
   margin: 0 auto;
 `;
 
-const SearchContainer = styled(Paper)<{ darkMode: boolean }>`
+const SearchContainer = styled(Paper)`
   padding: 1.5rem;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
@@ -42,7 +42,7 @@ const SearchContainer = styled(Paper)<{ darkMode: boolean }>`
   color: white !important;
 `;
 
-const SearchTitle = styled.h2<{ darkMode: boolean }>`
+const SearchTitle = styled.h2`
   text-align: center;
   margin-bottom: 1.5rem;
   color: white !important;
@@ -143,9 +143,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
   };
 
   return (
-    <SearchSection darkMode={true}>
-      <SearchContainer darkMode={true}>
-        <SearchTitle darkMode={true}>Search Van Builders</SearchTitle>
+    <SearchSection>
+      <SearchContainer>
+        <SearchTitle>Search Van Builders</SearchTitle>
         
         <TabContainer>
           <Tabs 
