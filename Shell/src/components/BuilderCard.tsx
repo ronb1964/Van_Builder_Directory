@@ -24,7 +24,8 @@ import {
   YouTube,
   Instagram,
   Facebook,
-  X as XIcon
+  X as XIcon,
+  Description
 } from '@mui/icons-material';
 import { Builder } from '../types/builder';
 
@@ -181,37 +182,41 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
 
         <CardContent sx={{ flexGrow: 1, pt: 1.5, pb: 1, px: 2 }}>
           {/* Location */}
-          <Box sx={{ mb: 1 }}>
+          <Box sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
               <LocationOn color="action" fontSize="small" sx={{ mr: 1 }} />
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body1" color="text.secondary">
                 {location.city}, {location.state}
               </Typography>
             </Box>
           </Box>
 
           {/* Description */}
-          <Typography 
-            variant="body2" 
-            paragraph 
-            sx={{ 
-              mb: 2, 
-              color: 'text.secondary',
-              display: '-webkit-box',
-              overflow: 'hidden',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 3,
-              lineHeight: 1.5,
-              height: '4.5em'
-            }}
-          >
-            {description}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
+            <Description color="action" fontSize="small" sx={{ mr: 1, mt: 0.25 }} />
+            <Typography 
+              variant="body1" 
+              paragraph 
+              sx={{ 
+                mb: 0, 
+                color: 'text.secondary',
+                display: '-webkit-box',
+                overflow: 'hidden',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 3,
+                lineHeight: 1.5,
+                height: '4.5em',
+                flex: 1
+              }}
+            >
+              {description}
+            </Typography>
+          </Box>
 
           {/* Van Types */}
           {processedVanTypes.length > 0 && (
             <Box sx={{ mb: 1 }}>
-              <Typography variant="subtitle2" gutterBottom sx={{ 
+              <Typography variant="subtitle1" gutterBottom sx={{ 
                 fontWeight: 'bold', 
                 color: '#5b9bd5'
               }}>
@@ -222,7 +227,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   <Chip
                     key={type}
                     label={type}
-                    size="small"
+                    size="medium"
                     sx={{ 
                       borderRadius: 1.5,
                       bgcolor: theme.palette.mode === 'dark' 
@@ -232,8 +237,8 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                         ? 'white' 
                         : '#2c3e50',
                       fontWeight: '500',
-                      fontSize: '0.7rem',
-                      height: '22px',
+                      fontSize: '0.9rem',
+                      height: '28px',
                       border: theme.palette.mode === 'dark' 
                         ? '1px solid rgba(255, 255, 255, 0.3)' 
                         : '1px solid rgba(44, 62, 80, 0.2)',
@@ -258,7 +263,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
             variant="contained"
             onClick={() => onViewDetails && onViewDetails(builder)}
             sx={{
-              py: 0.6,
+              py: 1,
               px: 2,
               fontWeight: '600',
               borderRadius: 2,
@@ -266,6 +271,9 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
               fontSize: '0.85rem',
               background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
               transition: 'all 0.2s ease-in-out',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               '&:hover': {
                 background: 'linear-gradient(135deg, #34495e 0%, #5c6bc0 100%)',
                 transform: 'translateY(-1px)',

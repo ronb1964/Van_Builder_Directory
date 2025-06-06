@@ -25,6 +25,7 @@ class DatabaseService {
         lat REAL NOT NULL,
         lng REAL NOT NULL,
         zip TEXT,
+        address TEXT,
         phone TEXT,
         email TEXT,
         website TEXT,
@@ -86,6 +87,7 @@ class DatabaseService {
             lat: 33.5186,
             lng: -86.8025,
             zip: '35203',
+            address: '123 Main St',
             phone: null,
             email: null,
             website: null,
@@ -112,6 +114,7 @@ class DatabaseService {
             lat: 34.7304,
             lng: -86.5861,
             zip: '35801',
+            address: '456 Elm St',
             phone: null,
             email: null,
             website: null,
@@ -138,6 +141,7 @@ class DatabaseService {
             lat: 33.4734,
             lng: -86.8025,
             zip: '35228',
+            address: '789 Oak St',
             phone: '(205) 555-0101',
             email: 'info@alabamavanworks.com',
             website: 'https://alabamavanworks.com',
@@ -159,8 +163,8 @@ class DatabaseService {
         ];
 
         const insertSQL = `
-          INSERT INTO builders (name, city, state, lat, lng, zip, phone, email, website, description, specialties, van_types, price_range_min, price_range_max, pricing_tiers, amenities, services, certifications, years_in_business, lead_time, photos, social_media, gallery)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO builders (name, city, state, lat, lng, zip, address, phone, email, website, description, specialties, van_types, price_range_min, price_range_max, pricing_tiers, amenities, services, certifications, years_in_business, lead_time, photos, social_media, gallery)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         alabamaBuilders.forEach(builder => {
@@ -171,6 +175,7 @@ class DatabaseService {
             builder.lat,
             builder.lng,
             builder.zip,
+            builder.address,
             builder.phone,
             builder.email,
             builder.website,
@@ -293,7 +298,7 @@ class DatabaseService {
     return {
       id: row.id,
       name: row.name,
-      address: `${row.address || ''} ${row.city}, ${row.state} ${row.zip || ''}`.trim(),
+      address: row.address || '',
       phone: row.phone || '',
       email: row.email || '',
       website: row.website || '',
