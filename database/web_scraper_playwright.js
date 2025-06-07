@@ -151,7 +151,7 @@ class VanBuilderScraper {
                     hasStateAddress = addressCheck;
                 }
                 
-                // Check for OUT-OF-STATE addresses that should disqualify
+                // Check for OUT-OF-STATE addresses that would disqualify
                 const otherStateAbbrevs = ['PA', 'NY', 'CT', 'DE', 'MD', 'VA', 'NC', 'SC', 'GA', 'FL', 'OH', 'MI', 'IL', 'IN', 'WI', 'MN', 'IA', 'MO', 'AR', 'LA', 'MS', 'TN', 'KY', 'WV'];
                 const currentStateAbbrev = targetStateAbbrev.toLowerCase();
                 
@@ -281,25 +281,27 @@ class VanBuilderScraper {
                 };
             }, { targetState, stateVariations: stateVariations, stateAbbrev: this.getStateAbbreviation(targetState) });
 
-            // Calculate verification score with enhanced weighting
+            // SIMPLIFIED HUMAN-LIKE VERIFICATION
             let verificationScore = 0;
             
-            // Positive factors
-            if (mentionedInSearch) verificationScore += 2;
-            if (locationData.foundInContent) verificationScore += 1;
-            if (locationData.hasStateAddress) verificationScore += 6;
-            if (locationData.hasStateZip) verificationScore += 4;
-            if (locationData.hasStatePhone) verificationScore += 4;
-            if (locationData.hasBusinessLocation) verificationScore += 3;
+            // If they're mentioned in search results for the state, that's a strong indicator
+            if (mentionedInSearch) verificationScore += 3;
             
-            // Negative factors (reduced penalties)
-            if (locationData.hasOtherStateAddress) verificationScore -= 5; // Reduced from -10
-            if (locationData.hasOtherState) verificationScore -= 3; // Reduced from -5
-            if (locationData.isServiceAreaOnly) verificationScore -= 3;
-            if (locationData.isDirectorySite) verificationScore -= 3;
+            // If they mention the state anywhere on their site, that's good
+            if (locationData.foundInContent) verificationScore += 2;
             
-            // Lower threshold for verification (was 6, now 4)
-            const isVerified = verificationScore >= 4;
+            // Strong positive indicators
+            if (locationData.hasStateAddress) verificationScore += 3;
+            if (locationData.hasStateZip) verificationScore += 2;
+            if (locationData.hasStatePhone) verificationScore += 2;
+            
+            // Only penalize if they clearly have a DIFFERENT state as their primary location
+            if (locationData.hasOtherStateAddress && !locationData.hasStateAddress) {
+                verificationScore -= 3; // Only if they don't have target state address
+            }
+            
+            // Much more forgiving threshold - if they show up in state search and mention the state, they're probably legitimate
+            const isVerified = verificationScore >= 2;
             
             // Log detailed verification info
             const details = {
@@ -324,7 +326,7 @@ class VanBuilderScraper {
                 if (locationData.otherStateAddresses.length > 0) {
                     console.log(`   ⚠️  Found addresses in: ${locationData.otherStateAddresses.join(', ')}`);
                 }
-                return { isValid: false, reason: `Location verification failed (score: ${verificationScore}/4 required)` };
+                return { isValid: false, reason: `Location verification failed (score: ${verificationScore}/2 required)` };
             }
             
         } catch (error) {
