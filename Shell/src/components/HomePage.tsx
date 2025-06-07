@@ -27,7 +27,7 @@ const HeroSection = styled.section`
 
 const HeroContainer = styled.div`
   background: linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%);
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 4rem 2rem;
   position: relative;
   overflow: hidden;
@@ -90,7 +90,7 @@ const HeroImage = styled.div`
   img {
     max-width: 100%;
     height: auto;
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
     

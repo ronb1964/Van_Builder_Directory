@@ -16,9 +16,14 @@ class VanBuilderScraper {
         this.screenshots = [];
         this.results = [];
         this.braveApiKey = process.env.BRAVE_SEARCH_API_KEY;
+        this.googleApiKey = process.env.GOOGLE_MAPS_API_KEY;
         
         if (!this.braveApiKey) {
             throw new Error('❌ BRAVE_SEARCH_API_KEY not found in environment variables');
+        }
+        
+        if (!this.googleApiKey) {
+            console.warn('⚠️ GOOGLE_MAPS_API_KEY not found - Google Places search will be disabled');
         }
     }
 
@@ -97,6 +102,51 @@ class VanBuilderScraper {
             
         } catch (error) {
             console.error('❌ Error during Brave search:', error.message);
+            return [];
+        }
+    }
+
+    async searchGooglePlaces(query, location) {
+        if (!this.googleApiKey) {
+            console.log('⚠️ Skipping Google Places search - API key not configured');
+            return [];
+        }
+
+        console.log(`🗺️ Searching Google Places for: "${query}" in ${location}`);
+        
+        try {
+            // First, get place_id candidates using Text Search
+            const textSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query + ' ' + location)}&key=${this.googleApiKey}`;
+            
+            const response = await fetch(textSearchUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
+                throw new Error(`Google Places API error: ${data.status} - ${data.error_message || 'Unknown error'}`);
+            }
+            
+            const places = (data.results || []).map(place => ({
+                title: place.name,
+                url: place.website || `https://www.google.com/maps/place/?q=place_id:${place.place_id}`,
+                snippet: `${place.formatted_address} - ${place.types?.join(', ') || 'Business'} - Rating: ${place.rating || 'N/A'} (${place.user_ratings_total || 0} reviews)`,
+                place_id: place.place_id,
+                rating: place.rating,
+                address: place.formatted_address,
+                phone: place.formatted_phone_number,
+                source: 'google_places'
+            }));
+            
+            console.log(`🏢 Found ${places.length} Google Places results`);
+            
+            return places;
+            
+        } catch (error) {
+            console.error('❌ Error during Google Places search:', error.message);
             return [];
         }
     }
@@ -795,18 +845,26 @@ class VanBuilderScraper {
         console.log(`\n🏗️ Starting scrape for ${state}...`);
         
         // Use multiple search queries for better coverage
-        const queries = [
+        const webQueries = [
             `custom camper van builders in ${state}`,
             `van conversion companies ${state}`,
             `custom van builds ${state}`,
             `van conversions ${state.split(' ')[0] === 'New' ? state.split(' ').map(w => w[0]).join('') : state.substring(0, 2)}`
         ];
         
+        // Google Places specific queries
+        const placesQueries = [
+            `van conversion ${state}`,
+            `camper van builder ${state}`,
+            `RV conversion ${state}`,
+            `custom van ${state}`
+        ];
+        
         const allResults = [];
         const seenUrls = new Set();
         
-        // Search with multiple queries
-        for (const query of queries) {
+        // Search with multiple web queries
+        for (const query of webQueries) {
             console.log(`🔍 Searching: "${query}"`);
             const searchResults = await this.searchBrave(query);
             
@@ -819,10 +877,26 @@ class VanBuilderScraper {
             }
             
             // Wait between searches to be respectful
-            await this.page.waitForTimeout(3000);
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
-        console.log(`📋 Found ${allResults.length} unique results from ${queries.length} queries`);
+        // Search Google Places for local businesses
+        for (const query of placesQueries) {
+            const placesResults = await this.searchGooglePlaces(query, state);
+            
+            // Add unique results
+            for (const result of placesResults) {
+                if (!seenUrls.has(result.url)) {
+                    seenUrls.add(result.url);
+                    allResults.push(result);
+                }
+            }
+            
+            // Wait between searches to be respectful
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        console.log(`📋 Found ${allResults.length} unique results from ${webQueries.length + placesQueries.length} queries`);
         
         if (allResults.length === 0) {
             console.log('❌ No search results found');
@@ -846,7 +920,7 @@ class VanBuilderScraper {
             }
             
             // Wait 2 seconds between verifications (respectful crawling)
-            await this.page.waitForTimeout(2000);
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
 
         this.results = verifiedBuilders;
@@ -920,7 +994,8 @@ class VanBuilderScraper {
                 `);
 
                 let insertedCount = 0;
-                const insertPromises = this.results.map(builder => {
+                const buildersToInsert = this.results; // Store reference before callback
+                const insertPromises = buildersToInsert.map(builder => {
                     return new Promise((resolveInsert, rejectInsert) => {
                         // Extract city from address or use empty string
                         const city = builder.city || this.extractCityFromAddress(builder.address) || '';

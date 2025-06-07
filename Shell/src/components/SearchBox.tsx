@@ -354,6 +354,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
                   disabled={!zipValue || zipValue.length !== 5}
                   sx={{
                     py: 1.5,
+                    px: 3,
                     borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: 600,
@@ -361,6 +362,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
                     color: '#5b9bd5',
                     borderColor: '#5b9bd5',
                     backgroundColor: 'rgba(91, 155, 213, 0.05)',
+                    alignSelf: 'center',
+                    width: 'fit-content',
+                    minWidth: '200px',
                     '&:hover': {
                       backgroundColor: 'rgba(91, 155, 213, 0.1)',
                       borderColor: '#4a8bc2',
@@ -453,6 +457,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
                   disabled={!builderValue.trim()}
                   sx={{
                     py: 1.5,
+                    px: 3,
                     borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: 600,
@@ -460,6 +465,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
                     color: '#5b9bd5',
                     borderColor: '#5b9bd5',
                     backgroundColor: 'rgba(91, 155, 213, 0.05)',
+                    alignSelf: 'center',
+                    width: 'fit-content',
+                    minWidth: '200px',
                     '&:hover': {
                       backgroundColor: 'rgba(91, 155, 213, 0.1)',
                       borderColor: '#4a8bc2',

@@ -16,7 +16,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ builderCount }) => {
       sx={{
         p: 4,
         background: 'linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%)',
-        borderRadius: 2,
+        borderRadius: '16px',
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',

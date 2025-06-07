@@ -137,30 +137,58 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
               left: -8,
               zIndex: 10,
               cursor: 'pointer',
+              transform: 'rotate(-8deg)',
               transition: 'all 0.2s ease-in-out',
+              animation: 'wiggle 2s ease-in-out infinite',
               '&:hover': {
-                transform: 'scale(1.1)',
-                boxShadow: '0 4px 12px rgba(220, 53, 69, 0.3)'
+                transform: 'rotate(-8deg) scale(1.1)',
+                boxShadow: '0 4px 12px rgba(220, 53, 69, 0.3)',
+                animation: 'none'
+              },
+              '@keyframes wiggle': {
+                '0%, 100%': { transform: 'rotate(-8deg)' },
+                '25%': { transform: 'rotate(-6deg)' },
+                '75%': { transform: 'rotate(-10deg)' }
               }
             }}
           >
-            <Chip
-              label={`${builder.distanceFromZip.miles} mi`}
-              size="small"
+            <Box
               sx={{
                 bgcolor: '#dc3545',
                 color: 'white',
-                fontWeight: 'bold',
-                fontSize: '0.75rem',
-                height: '24px',
-                '& .MuiChip-label': {
-                  px: 1.5
-                },
+                borderRadius: '12px',
+                px: 1.5,
+                py: 0.5,
+                textAlign: 'center',
+                minWidth: '60px',
                 '&:hover': {
                   bgcolor: '#c82333'
                 }
               }}
-            />
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 'bold',
+                  fontSize: '0.75rem',
+                  display: 'block',
+                  lineHeight: 1.2
+                }}
+              >
+                {builder.distanceFromZip.miles} mi
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: '0.65rem',
+                  display: 'block',
+                  lineHeight: 1,
+                  opacity: 0.9
+                }}
+              >
+                View on Map
+              </Typography>
+            </Box>
           </Box>
         )}
 

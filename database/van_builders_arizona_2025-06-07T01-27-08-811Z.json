@@ -1,0 +1,1523 @@
+{
+  "state": "Arizona",
+  "scraped_at": "2025-06-07T01:27:08.811Z",
+  "total_builders": 20,
+  "total_photos": 130,
+  "avg_photos_per_builder": 6.5,
+  "screenshots": [
+    "builder_1749259281532.png",
+    "builder_1749259292330.png",
+    "builder_1749259302551.png",
+    "builder_1749259315712.png",
+    "builder_1749259331276.png",
+    "builder_1749259344973.png",
+    "builder_1749259365859.png",
+    "builder_1749259381663.png",
+    "builder_1749259397992.png",
+    "builder_1749259407242.png",
+    "builder_1749259434591.png",
+    "builder_1749259477671.png",
+    "builder_1749259490175.png",
+    "builder_1749259499887.png",
+    "builder_1749259513770.png",
+    "builder_1749259521450.png",
+    "builder_1749259537354.png",
+    "builder_1749259553031.png",
+    "builder_1749259566918.png",
+    "builder_1749259598997.png",
+    "builder_1749259622585.png"
+  ],
+  "builders": [
+    {
+      "name": "Custom Camper Vans | Arizona | Action Van",
+      "website": "https://www.actionvan.com/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "480-579-3969",
+      "email": "480-579-3969Info@actionvan.com",
+      "description": "Action Van creates outdoor lifestyle camper vans tailored to the specific needs of each client.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "express"
+      ],
+      "amenities": [
+        "generator",
+        "bed",
+        "storage"
+      ],
+      "photos": [
+        {
+          "url": "https://static.wixstatic.com/media/0710e8_48d664f5580c414988e3fd3b3eb36f71~mv2_d_5380_1949_s_2.png/v1/crop/x_0,y_52,w_5380,h_1845/fill/w_980,h_336,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0710e8_48d664f5580c414988e3fd3b3eb36f71~mv2_d_5380_1949_s_2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/0710e8_34a01f01ba0e4099a99a030e85aa4e91~mv2.png/v1/fill/w_980,h_167,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0710e8_34a01f01ba0e4099a99a030e85aa4e91~mv2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/0710e8_34a01f01ba0e4099a99a030e85aa4e91~mv2.png/v1/fill/w_980,h_167,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0710e8_34a01f01ba0e4099a99a030e85aa4e91~mv2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/0710e8_315bd11c64b2439b97eaf6ec2d08426ef000.jpg/v1/fill/w_980,h_222,al_c,q_80,usm_0.33_1.00_0.00,enc_avif,quality_auto/0710e8_315bd11c64b2439b97eaf6ec2d08426ef000.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/0710e8_04639052bc6943ce8ae5a444b10e01a0~mv2_d_2717_1229_s_2.png/v1/crop/x_0,y_1,w_2717,h_1228/fill/w_489,h_221,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0710e8_04639052bc6943ce8ae5a444b10e01a0~mv2_d_2717_1229_s_2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/0710e8_4e06ed386f5e4091a09ae35971dd4f47~mv2_d_2705_1229_s_2.png/v1/crop/x_0,y_2,w_2705,h_1226/fill/w_490,h_222,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/0710e8_4e06ed386f5e4091a09ae35971dd4f47~mv2_d_2705_1229_s_2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/action_van/",
+        "facebook": "https://www.facebook.com/actionvans/"
+      }
+    },
+    {
+      "name": "Tommy Camper Vans | Camper Vans Built in Arizona",
+      "website": "https://www.tommycampervans.com/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "210-701-0740",
+      "email": "general@tommycampervans.com",
+      "description": "VanLife camper vans in Phoenix, Arizona. Shop camper vans or build your custom camper van. All hand-built & designed for VanLife living.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "dinette"
+      ],
+      "photos": [
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2021/05/MercedesPM_Bench_70-020921-11-scaled.jpg",
+          "alt": "custom camper van interior",
+          "caption": "",
+          "vanScore": 15,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2021/11/tcv-mercedes-jumpseat-93-filter-0010.jpg",
+          "alt": "custom camper van",
+          "caption": "",
+          "vanScore": 12,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2021/07/ram-white-dinette-210701074007-scaled.jpg",
+          "alt": "camper van interior",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2025/04/250328134342-tcv-specvan-373-HDR.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2025/03/250307100216-tcv-knittle-364.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2024/02/240222104609-tcv-philray-reshoot.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2023/10/231019084519-tommy-spec-van-pollak-3-HDR.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2022/12/IMG_1402.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 10,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/Tommy-Camper-Vans-108811580565191/",
+        "instagram": "https://www.instagram.com/tommycampervans/",
+        "youtube": "https://www.youtube.com/channel/UCnIgo2kbE-SHYdloSPDdOEQ"
+      }
+    },
+    {
+      "name": "Boho Camper Vans for Sale or Rent | Arizona Van Life",
+      "website": "https://www.boho.life/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "480-530-0800",
+      "email": "States4805300800go@boho.life",
+      "description": "Custom camper vans for sale or rent at Boho Camper Vans in Arizona. Enjoy \nvan life freedom and off-grid living. Start your adventure today!",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "bed"
+      ],
+      "photos": [
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/31b97b24-e82b-4200-bd26-c3648f96c9a1/Custom%2BCamper%2BVan%2BBuilds%2BBoho.jpeg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1737395524164-NQYVS692HJBK4LNY86KZ/30-boho-camper-vans-ram-promaster-carovan.jpg?format=1500w",
+          "alt": "30-boho-camper-vans-ram-promaster-carovan.jpg",
+          "caption": "",
+          "vanScore": 11,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/0404177b-41e2-4bbd-a595-a6e92fe55e7f/boho-camper-vans-hero-web.jpg?format=1500w",
+          "alt": "boho-camper-vans-hero-web.jpg",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/33692948-1749-46a6-a3d7-353a0759cdcb/Camper%2BVan%2BRentals%2BBoho.jpeg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/b4430c65-62c6-4dee-831b-1761065de6e1/Camper%2BVan%2BPhoto%2BGallery%2BBoho.jpeg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1741808676935-HLTSNAKZNCFBETOV4JZ5/boho-vans-easy-adventure-hero.png?format=1500w",
+          "alt": "boho-vans-easy-adventure-hero.png",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/3f5ed9ff-338f-4ca7-8d98-4169fdeebf0a/Camper+Van+Financing",
+          "alt": "Camper Van Financing",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/55752a71-7fc5-4efa-b138-cd82c1b6ce8c/Camper+Van+Warranty",
+          "alt": "Camper Van Warranty",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/bohovans",
+        "facebook": "https://www.facebook.com/bohovans",
+        "youtube": "https://www.youtube.com/@bohovans",
+        "tiktok": "https://www.tiktok.com/@bohovans"
+      }
+    },
+    {
+      "name": "Van Builders | Campervan and RV builders in USA | Explore VanX",
+      "website": "https://explorevanx.com/van-builders",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "234567891",
+      "email": "sales@explorevanx.com.VISIT",
+      "description": "Discover the best Van Builders all over the USA at Van X. Whether you’re looking for a custom van conversion, DIY camper van kits. Find a van builder easily.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster",
+        "express",
+        "savana",
+        "metris"
+      ],
+      "amenities": [
+        "solar",
+        "battery",
+        "kitchen",
+        "stove",
+        "bed",
+        "seating",
+        "storage",
+        "cabinets",
+        "bathroom",
+        "shower",
+        "heating",
+        "fan",
+        "bike rack",
+        "roof rack",
+        "ladder"
+      ],
+      "photos": [
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/55df29879256a3b907c9f3e973702d0879b97756-630x220.jpg",
+          "alt": "off the grid van works",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/e812e3b5208a3bfe753068d1be5baf699d63f4f7-350x349.png?rect=1,0,349,349&w=215&h=215&q=30&auto=format",
+          "alt": "Off The Grid Van Works ad image",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/6d138e3f6198c36835f6285f01c4593741fa5e18-1000x656.png?rect=6,0,988,656&w=500&h=332&q=75&auto=format",
+          "alt": "Tommy Camper Vans company logo",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/106268c2912af2bed6106bb2ca7136d9a9ee3fd7-1920x1080.png?rect=420,0,1080,1080&w=400&h=400&q=60&auto=format",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/9eabe5c0cbe175d09a41b2c08964b7b4a51b7603-630x220.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/4f7fcdb9b1a6c39ed3cbb28008dd6e8073df93c0-1920x1280.jpg?rect=320,0,1280,1280&w=400&h=400&q=60&auto=format",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/956644f661eb896bac551e18bc4fe52b73b7e037-1920x1280.jpg?rect=320,0,1280,1280&w=400&h=400&q=60&auto=format",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.sanity.io/images/jlfpc73d/production/75c610e7424db50a71937e04732a05105dae1cd0-1920x1280.jpg?rect=320,0,1280,1280&w=400&h=400&q=60&auto=format",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "twitter": "https://explorevanx.com/raffle",
+        "instagram": "https://instagram.com/explorevanx",
+        "facebook": "https://facebook.com/explorevanx",
+        "youtube": "https://youtube.com/@explorevanx",
+        "tiktok": "https://www.tiktok.com/@findyouroutside"
+      }
+    },
+    {
+      "name": "Mountain View Adventure Vehicles | Conversion Vans & Expedition Trucks",
+      "website": "https://mvav.co/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "520-797-1699",
+      "email": "Info@mvav.co",
+      "description": "Mercedes-Benz Sprinter camper vans and overlanding expedition campers for sale | Custom class B motorhomes built in our Tucson factory",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster",
+        "express",
+        "savana"
+      ],
+      "amenities": [
+        "storage"
+      ],
+      "photos": [
+        {
+          "url": "https://mvav.co/wp-content/uploads/2024/07/DSC03242-scaled.jpg",
+          "alt": "Line of finished vans",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "youtube": "https://youtube.com/@mountainviewadventurevehicles?si=FqUa8-9QFa3lgyWu",
+        "instagram": "https://www.instagram.com/mountainviewadventurevehicles/",
+        "facebook": "https://www.facebook.com/MVAVAZ",
+        "tiktok": "http://tiktok.com/@mvadventurevehicles"
+      }
+    },
+    {
+      "name": "Van Conversion Companies :: Buyers Guide - Expedition Portal",
+      "website": "https://expeditionportal.com/van-conversion-companies-buyers-guide/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "1632673270",
+      "email": "hello@outandaboutcampers.co.uk",
+      "description": "In this Buyers Guide, we've curated a list of professional van builders currently offering their services for customizing vans.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster",
+        "express"
+      ],
+      "amenities": [
+        "solar",
+        "bed",
+        "dinette",
+        "seating",
+        "storage",
+        "cabinets",
+        "toilet",
+        "shower",
+        "heating",
+        "awning"
+      ],
+      "photos": [
+        {
+          "url": "https://expeditionportal.com/media/2024/10/665f1980aecbe8630909cba6_Vanlife-Conversions-gallery-kunu-05-427x640.webp?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 9,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/665f18ed214507fd737c1178_Vanlife-Conversions-gallery-kunu-08-427x640.webp?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 9,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/665f1b3601733e505e240049_Vanlife-Conversions-gallery-milo-10.webp?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 9,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/conversion-example-sp-sprinter-rb-150s-pht-08-640x427.jpg?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/665f198e2055ff5128db0a62_Vanlife-Conversions-gallery-kunu-21-640x427.webp?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/665f16d62d46e674d1e6fec1_Vanlife-Conversions-gallery-highlights-15-640x427.webp?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/TCV_Promaster_TashaShannon_HighRes_380-512x640.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://expeditionportal.com/media/2024/10/240712084152-tcv-specvan-333-HDR.jpg?resolution=1366,1",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/ExpeditionPortal",
+        "twitter": "https://twitter.com/expoportal",
+        "youtube": "https://www.youtube.com/channel/UCv8r-RJLjr6zNVtM2xxGR-g",
+        "instagram": "https://www.instagram.com/expeditionportal/"
+      }
+    },
+    {
+      "name": "Camper van builds, installs, service & van sales",
+      "website": "https://www.outpostvans.com/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "760-643-7896",
+      "email": "info@outpostvans.com",
+      "description": "Custom van builds, gear installs & van sales. Specializing in Sprinter conversions.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "solar",
+        "battery",
+        "inverter",
+        "generator",
+        "kitchen",
+        "stove",
+        "refrigerator",
+        "bed",
+        "dinette",
+        "seating",
+        "storage",
+        "cabinets",
+        "shower",
+        "air conditioning",
+        "fan",
+        "awning",
+        "roof rack",
+        "ladder"
+      ],
+      "photos": [
+        {
+          "url": "https://lh3.googleusercontent.com/a-/ALV-UjWPDYuzVANP-YFhBLYSXl3tQd3aG4GjCY_NUjV_eEVWF1V0UdY8=s120-c-rp-mo-br100",
+          "alt": "Zoltan Kaszas's Image",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://lirp.cdn-website.com/8104eb4b/dms3rep/multi/opt/Outpost+Vans-01-1920w.png",
+          "alt": "A logo for outpost vans that says make camp anywhere",
+          "caption": "",
+          "vanScore": -1,
+          "source": "main"
+        },
+        {
+          "url": "https://lirp.cdn-website.com/8104eb4b/dms3rep/multi/opt/SKULL+COLOR+-+Outpost+Vans+design-01-1920w.png",
+          "alt": "the logo for outpost vans shows a skull with cactus growing out of it .",
+          "caption": "",
+          "vanScore": -1,
+          "source": "main"
+        },
+        {
+          "url": "https://lirp.cdn-website.com/8104eb4b/dms3rep/multi/opt/SKULL+COLOR+-+Outpost+Vans+design-01-1920w.png",
+          "alt": "The logo for outpost vans shows a skull with cactus growing out of it.",
+          "caption": "",
+          "vanScore": -2,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://instagram.com/outpostvans",
+        "youtube": "https://youtube.com/user/UCaBBSXY-wRc40Vi1LbWk6Qw",
+        "facebook": "https://facebook.com/OutpostVans",
+        "tiktok": "https://www.tiktok.com/@outpostvans",
+        "twitter": "https://twitter.com/outpostvans"
+      }
+    },
+    {
+      "name": "The BEST 7 Camper Van Builders | Divine On The Road",
+      "website": "https://divineontheroad.com/best-camper-van-builders/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "000-000-0000",
+      "email": "",
+      "description": "There are so many builders out there but which are the best ones?! I have met many builders on the road and THESE are the very best camper van builders.",
+      "van_types": [
+        "sprinter",
+        "transit"
+      ],
+      "amenities": [
+        "solar",
+        "kitchen",
+        "bed",
+        "bathroom",
+        "toilet",
+        "shower",
+        "fan"
+      ],
+      "photos": [
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/camper-van-builders-683x1024.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 9,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/custom-van-conversions-1024x693.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/custom-van-builds-1024x681.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/van-life-custom-builds.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/van-build-custom-1.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/BEST-VAN-CONVERSION-COMPANY-832x1024.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2018/08/van-conversion-guide.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://divineontheroad.com/wp-content/uploads/2019/12/VAN-BUILDERS-BEST-827x1024.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 5,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/divineontheroad/",
+        "facebook": "https://www.facebook.com/divineontheroad/",
+        "youtube": "https://www.youtube.com/channel/UCxuSWQk4e9wo4YJ0I8oE6lg",
+        "twitter": "https://twitter.com/divineontheroad"
+      }
+    },
+    {
+      "name": "Arizona Campervan Conversions - Papago Vans",
+      "website": "https://papagovans.com/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "602-560-7459",
+      "email": "info@papagovans.com",
+      "description": "Papago Vans specializes in Arizona van conversions, providing expert craftsmanship and attention to detail in every build. Explore the beauty of the Grand Canyon State and beyond in your dream Papago Van. Contact us today to start your journey towards van life.\"",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "heating"
+      ],
+      "photos": [
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2023/06/Mammoth-Build-1-1-1.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2025/04/WHAT-IS-RVIA-3.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2025/03/WHAT-IS-RVIA-2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2025/02/WHAT-IS-RVIA-1.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2023/06/zion-1.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 5,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2023/06/El_Capitan-2-1-1.png",
+          "alt": "<a href=\"/el-capitan/\">Learn More</a>",
+          "caption": "",
+          "vanScore": 5,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2023/06/zion-1.png",
+          "alt": "<a href=\"/zion/\">Learn More</a>",
+          "caption": "",
+          "vanScore": 5,
+          "source": "main"
+        },
+        {
+          "url": "https://papagovans.com/wp-content/uploads/2023/06/El_Capitan-2-1-1.png",
+          "alt": "<a href=\"/el-capitan/\">Learn More</a>",
+          "caption": "",
+          "vanScore": 5,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/Papagovans/",
+        "tiktok": "https://www.tiktok.com/@papagovans",
+        "instagram": "https://www.instagram.com/papagovans/",
+        "youtube": "https://www.youtube.com/@papagovans"
+      }
+    },
+    {
+      "name": "NewLifeConversions - Custom Camper & Van Conversions Arizona",
+      "website": "https://www.newlifeconversions.com/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "480-841-7337",
+      "email": "480-841-7337newlifeconversions@gmail.com",
+      "description": "We build the best custom van / camper van conversions in Arizona. Built by \na master home builder and Rocket Scientist. Solid construction, great \ntechnology.",
+      "van_types": [
+        "custom van"
+      ],
+      "amenities": [
+        "solar",
+        "battery"
+      ],
+      "photos": [
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/aa7dc60e-ed00-425f-b029-3a0efe491f53/Feb2021OutOnaRent.jpg",
+          "alt": "A white custom conversion van parked in the mountains.",
+          "caption": "",
+          "vanScore": 9,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/053855b3-285a-47d2-a116-b27132a74fb1/Mountaineer+Interior+-+Home+Page.jpg",
+          "alt": "the interior of a conversion van - the Mountaineer",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/080049db-e20d-4027-b96f-6c07b246b1f9/unsplash-image-oCmOCNGJM1g.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/5070d0c0-b16b-42e8-a2f5-5ba42371514b/nfgkdn.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/71ad289c-992a-4913-b1dc-cade28833067/jhbjhvjhb.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/bd5e382e-c11e-446f-af75-70ad84ce1632/IMG_0881.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5d375649e2ffc000016e0aec/1572716139060-EXSEVZK18KMXB7HJA1HZ/20140302_trade%252B151_0677.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/9ef2fc9e-21ec-464e-b5c1-b2bc1dec1bbb/99BB0E77-6ED2-4B14-BDA8-4FCE5E5BC6C1.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/newlifeconversions/",
+        "youtube": "https://www.youtube.com/@newlifeconversions"
+      }
+    },
+    {
+      "name": "Redpoint Van Conversions | Flagstaff, AZ | Redpoint Conversions",
+      "website": "https://redpointconversions.com/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "928-613-2122",
+      "email": "",
+      "description": "We build custom camper van conversions in Flagstaff, Arizona. Certified Webasto Specialist to install, service, and repair air heaters and coolant heaters.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster",
+        "express"
+      ],
+      "amenities": [
+        "solar",
+        "inverter",
+        "fan"
+      ],
+      "photos": [
+        {
+          "url": "https://redpointconversions.com/cdn/shop/files/redpoint-conversions-van-kitchens.webp?v=1707944822&width=1900",
+          "alt": "\"Mitch provided detailed, accurate estimates of the various options and completed the work on time. His attention to detail is incredible!\"",
+          "caption": "",
+          "vanScore": 8,
+          "source": "main"
+        },
+        {
+          "url": "https://redpointconversions.com/cdn/shop/files/redpoint-conversions-van-conversions.webp?v=1707944044&width=1900",
+          "alt": "Make your van the way you want it to be",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://redpointconversions.com/cdn/shop/files/redpoint-conversions-full-custom-builds.jpg?v=1707948378&width=460",
+          "alt": "Full Custom Builds",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://redpointconversions.com/cdn/shop/files/redpoint-conversions-small-jobs-and-repairs.jpg?v=1707948379&width=460",
+          "alt": "Small Jobs & Repairs",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://redpointconversions.com/cdn/shop/files/redpoint-conversions-webasto-air-heaters.jpg?v=1707948379&width=460",
+          "alt": "Webasto Base Heater Kits",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://redpointconversions.com/cdn/shop/files/havelock-wool-lock.png?v=1707946676&width=200",
+          "alt": "Havelock wool lock",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/Redpoint-Conversions-100076047580014",
+        "youtube": "https://www.youtube.com/@redpointconversions2309"
+      }
+    },
+    {
+      "name": "TOP 10 BEST Van Conversion in Phoenix, AZ",
+      "website": "https://www.yelp.com/search?find_desc=Van+Conversion&find_loc=Phoenix%2C+AZ",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "",
+      "email": "",
+      "description": "",
+      "van_types": [
+        "custom van"
+      ],
+      "amenities": [
+        "custom build"
+      ],
+      "photos": [
+        {
+          "url": "",
+          "alt": "No photos available",
+          "caption": "Photos not found on website"
+        }
+      ],
+      "social_media": {}
+    },
+    {
+      "name": "Conversion Van for sale Arizona | Conversion Vans For Sale at Paul Sherry Conversion Vans",
+      "website": "https://www.paulsherryconversionvans.com/conversion-van-for-sale-arizona/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "866-906-8303",
+      "email": "",
+      "description": "New and Used Conversion Vans",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "bathroom"
+      ],
+      "photos": [
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2023/02/custom-order-ram-promaster-conversion-van-braunability-uvl-wheelchair-lift-sherry-vans-1-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2023/02/custom-order-ram-promaster-conversion-van-braunability-uvl-wheelchair-lift-sherry-vans-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2014/10/Arizona-Conversion-Van.png",
+          "alt": "Conversion Van for sale Arizona",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2025/02/extended-body-ram-promaster-conversion-van-9-passenger-waldoch-galaxy-for-sale-31336T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2024/11/tempest-x-braunability-uvl-wheelchair-van-2023-ram-promaster-31298T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2025/02/used-gmc-conversion-van-for-sale-2022-savana-explorer-vans-7-passenger-high-top-custom-fade-paint-CP17416T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2025/02/custom-gmc-conversion-van-for-sale-explorer-vans-9-passenger-fade-paint-CP17402T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2014/10/Conversion-Vans-for-sale.jpg",
+          "alt": "Conversion Van Dealership",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/paul_sherry_vans/",
+        "facebook": "https://www.facebook.com/PaulSherryConversionVans/",
+        "youtube": "https://www.youtube.com/user/sherryvans"
+      }
+    },
+    {
+      "name": "Shop Conversion Vans in Arizona",
+      "website": "https://www.gmcconversionvans.com/conversion-van-arizona/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "",
+      "email": "",
+      "description": "This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.",
+      "van_types": [
+        "custom van"
+      ],
+      "amenities": [
+        "custom build"
+      ],
+      "photos": [
+        {
+          "url": "",
+          "alt": "No photos available",
+          "caption": "Photos not found on website"
+        }
+      ],
+      "social_media": {}
+    },
+    {
+      "name": "About Us: Our Story — New Life Conversions",
+      "website": "https://www.newlifeconversions.com/about",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "480-841-7337",
+      "email": "480-841-7337newlifeconversions@gmail.com",
+      "description": "Custom Camper / Van Conversions built by a family built that loves \nadventure, togetherness, and a life of joy. Learn about our passion and how \nwe build vans.",
+      "van_types": [
+        "transit"
+      ],
+      "amenities": [
+        "custom build"
+      ],
+      "photos": [
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/1607635488515-IE79HSV7KBZZMRNWPGMO/van1.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/1613517569436-1IL0Z9Z5LV8KY23ENDPH/family3.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/5f4bc5ec-808e-4be1-a665-ef3d4998c66f/smaller.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/7fff87d8-467c-4b48-b757-d35fd91e8fa1/loren-rowland.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/f16b89c0-c676-4f7a-8ed6-0d36850002ed/tom-birk.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/ad2c7734-4d58-4d44-83b8-0d5a43437fcc/tom-and-loren.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/c2b0947e-4028-4f51-84fb-56b53a1036a1/transparent+NLC+logo.png?format=1500w",
+          "alt": "New Life Conversions",
+          "caption": "",
+          "vanScore": -1,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/newlifeconversions/",
+        "youtube": "https://www.youtube.com/@newlifeconversions"
+      }
+    },
+    {
+      "name": "50+ Custom Camper Van Conversion Companies Listed By State » Parked In Paradise",
+      "website": "https://www.parkedinparadise.com/camper-van-conversion-companies/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "748434144",
+      "email": "Will@FieldVan.com",
+      "description": "The best custom van conversion companies in the US. Example builds including the Sprinter, Transit, ProMaster, minivans, and car campers.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster",
+        "express",
+        "savana",
+        "metris"
+      ],
+      "amenities": [
+        "solar",
+        "kitchen",
+        "refrigerator",
+        "bed",
+        "seating",
+        "storage",
+        "cabinets",
+        "bathroom",
+        "heating",
+        "fan",
+        "roof rack"
+      ],
+      "photos": [
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='764'%20height='764'%20viewBox='0%200%20764%20764'%3E%3C/svg%3E",
+          "alt": "glampervan custom camper conversion and rentals",
+          "caption": "",
+          "vanScore": 15,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1024'%20height='683'%20viewBox='0%200%201024%20683'%3E%3C/svg%3E",
+          "alt": "outside van mercedes sprinter camper conversion",
+          "caption": "",
+          "vanScore": 13,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1000'%20height='667'%20viewBox='0%200%201000%20667'%3E%3C/svg%3E",
+          "alt": "advanture company custom camper conversions",
+          "caption": "",
+          "vanScore": 12,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='980'%20height='640'%20viewBox='0%200%20980%20640'%3E%3C/svg%3E",
+          "alt": "aspen custom camper van conversions",
+          "caption": "",
+          "vanScore": 12,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='800'%20height='877'%20viewBox='0%200%20800%20877'%3E%3C/svg%3E",
+          "alt": "custom camper van conversion built in brooklyn new york",
+          "caption": "",
+          "vanScore": 12,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='800'%20height='500'%20viewBox='0%200%20800%20500'%3E%3C/svg%3E",
+          "alt": "blue ridge adventure vehicles camper van conversions",
+          "caption": "",
+          "vanScore": 12,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='663'%20height='511'%20viewBox='0%200%20663%20511'%3E%3C/svg%3E",
+          "alt": "humble handcraft camper van conversions",
+          "caption": "",
+          "vanScore": 10,
+          "source": "main"
+        },
+        {
+          "url": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1000'%20height='800'%20viewBox='0%200%201000%20800'%3E%3C/svg%3E",
+          "alt": "van craft camper van conversion company in california",
+          "caption": "",
+          "vanScore": 10,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.parkedinparadise.com%2Fcamper-van-conversion-companies%2F&t=50%2B%20Custom%20Camper%20Van%20Conversion%20Companies%20Listed%20by%20State",
+        "linkedin": "https://www.linkedin.com/in/kate-moore-designbyfit/",
+        "instagram": "https://www.instagram.com/parkedinparadise/",
+        "youtube": "https://www.youtube.com/c/ParkedInParadise"
+      }
+    },
+    {
+      "name": "Builders - The Vanlife Directory",
+      "website": "https://vanlifedirectory.co/builders",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "646763700",
+      "email": "",
+      "description": "Discovery the best Vanlife Upfitters located near you!",
+      "van_types": [
+        "transit"
+      ],
+      "amenities": [
+        "custom build"
+      ],
+      "photos": [
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/623a29dc936c0fc1d3e76827_outsidevan2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/623a2ac21b48df82009bd5e5_customcrafted.jpeg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/623a29dc936c0fc1d3e76827_outsidevan2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/62f409649a714447b05c9476_4a115a72dd00-Bemyvan_Louise_card.jpeg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/623a2ac21b48df82009bd5e5_customcrafted.jpeg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b299a60d966a/6232225a6ccc531f0eb767dd_onx-offroad-2Xypuusxmi4-unsplash.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/623a28693bc28d720beb8fcc_storyteller.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://cdn.prod.website-files.com/62019924ee96b27ed50d9692/623a28693bc28d720beb8fcc_storyteller.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/VanlifeDirectory",
+        "instagram": "https://www.instagram.com/vanlifedirectory/",
+        "youtube": "https://www.youtube.com/channel/UC6hJX3Z3JW4uYKFz_po2Anw/featured"
+      }
+    },
+    {
+      "name": "Camper Van Builder in Phoenix, Arizona | Tommy Camper Vans",
+      "website": "https://www.tommycampervans.com/tcv-van-builder/camper-van-builder/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "333-333-3333",
+      "email": "general@tommycampervans.com",
+      "description": "Superior Craftsmanship, Hand-Selected Vans, Designed for VanLife Living on The Road - Trust Tommy Camper Vans in Phoenix, Arizona",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "custom build"
+      ],
+      "photos": [
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2024/07/rsz_1img_9587.jpg",
+          "alt": "ford transit custom camper van",
+          "caption": "",
+          "vanScore": 15,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2025/03/Untitled-design-1.jpg",
+          "alt": "custom camper van builder",
+          "caption": "",
+          "vanScore": 14,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2022/03/tcv-136-eclass-Bennett-220224-78-1024x683.jpg",
+          "alt": "ford econoline camper van build",
+          "caption": "",
+          "vanScore": 12,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2022/01/tcv-mercedes-bennett-128-220112-05790-1024x683.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 10,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2024/02/img_9610-scaled.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 10,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2024/02/custom-adventure-truck-tommy-camper-vans-2024-scaled.jpg",
+          "alt": "custom adventure truck, tommy camper vans, 2024",
+          "caption": "",
+          "vanScore": 9,
+          "source": "main"
+        },
+        {
+          "url": "https://www.tommycampervans.com/wp-content/uploads/2021/06/original-clear-logo-e1623544374772.png",
+          "alt": "Tommy Camper Vans Logo",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://pixel.wp.com/g.gif?v=ext&blog=194330541&post=866&tz=-7&srv=www.tommycampervans.com&j=1%3A14.7&host=www.tommycampervans.com&ref=&fcp=0&rand=0.9991995966681891",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/Tommy-Camper-Vans-108811580565191/",
+        "instagram": "https://www.instagram.com/tommycampervans/",
+        "youtube": "https://www.youtube.com/channel/UCnIgo2kbE-SHYdloSPDdOEQ"
+      }
+    },
+    {
+      "name": "Glampervan | The Camper Van Company | Custom Van Conversions",
+      "website": "https://www.glampervan.us/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "415-696-0087",
+      "email": "Info@Glampervan.us",
+      "description": "Glampervan is a premier builder of high-quality, handcrafted camper vans, specializing in RAM Promaster van conversions perfect for Vanlife, glamping, and more.",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster",
+        "express"
+      ],
+      "amenities": [
+        "generator",
+        "sink",
+        "bed",
+        "storage",
+        "shower",
+        "water tank",
+        "heating"
+      ],
+      "photos": [
+        {
+          "url": "https://static.wixstatic.com/media/365c4e_eea8a4f2697144bb801d9897255cac2f~mv2.png/v1/fill/w_123,h_153,al_c,q_85,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/365c4e_eea8a4f2697144bb801d9897255cac2f~mv2.png",
+          "alt": "Glampervan swipe.png",
+          "caption": "",
+          "vanScore": 7,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/ae51b2_a245dda9929b48f3818ab2333a200a22~mv2.png/v1/fill/w_1366,h_768,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/ae51b2_a245dda9929b48f3818ab2333a200a22~mv2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/365c4e_01ff498b023f46238c23ab2b62b2ea38f000.jpg/v1/fill/w_1366,h_768,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/365c4e_01ff498b023f46238c23ab2b62b2ea38f000.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/365c4e_04f5700978034b9cb2b6efc3195316e7f000.jpg/v1/fill/w_187,h_105,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/365c4e_04f5700978034b9cb2b6efc3195316e7f000.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/ae51b2_a245dda9929b48f3818ab2333a200a22~mv2.png/v1/fill/w_1366,h_768,al_tl,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/ae51b2_a245dda9929b48f3818ab2333a200a22~mv2.png",
+          "alt": "",
+          "caption": "",
+          "vanScore": 2,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/365c4e_8ff4aa53444e4e56a10abe3a298dec6e~mv2.jpg/v1/fill/w_123,h_163,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/365c4e_8ff4aa53444e4e56a10abe3a298dec6e~mv2.jpg",
+          "alt": "PXL_20220627_235756800.jpg",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/365c4e_90e34c139bfd49b3abdc7ff3431608bcf000.jpg/v1/fill/w_91,h_51,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/365c4e_90e34c139bfd49b3abdc7ff3431608bcf000.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 1,
+          "source": "main"
+        },
+        {
+          "url": "https://static.wixstatic.com/media/365c4e_8e842726c5334600bb10860798fd25a4~mv2.jpeg/v1/fill/w_64,h_64,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/rob%20report%20nice.jpeg",
+          "alt": "rob report nice.jpeg",
+          "caption": "",
+          "vanScore": 0,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "facebook": "https://www.facebook.com/glampervanus/",
+        "instagram": "https://www.instagram.com/glampervan.us/?hl=en",
+        "linkedin": "https://www.linkedin.com/company/glampervan-global/"
+      }
+    },
+    {
+      "name": "Conversion Van for sale Arkansas | Conversion Vans For Sale at Paul Sherry Conversion Vans",
+      "website": "https://www.paulsherryconversionvans.com/conversion-van-for-sale-arkansas/",
+      "address": "",
+      "city": "",
+      "state": "Arizona",
+      "zip": "",
+      "phone": "866-906-8303",
+      "email": "",
+      "description": "New and Used Conversion Vans",
+      "van_types": [
+        "sprinter",
+        "transit",
+        "promaster"
+      ],
+      "amenities": [
+        "bathroom"
+      ],
+      "photos": [
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2023/02/custom-order-ram-promaster-conversion-van-braunability-uvl-wheelchair-lift-sherry-vans-1-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2023/02/custom-order-ram-promaster-conversion-van-braunability-uvl-wheelchair-lift-sherry-vans-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2014/10/Arkansas-Conversion-Vans.png",
+          "alt": "Conversion Van for sale Arkansas",
+          "caption": "",
+          "vanScore": 6,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2025/02/extended-body-ram-promaster-conversion-van-9-passenger-waldoch-galaxy-for-sale-31336T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2024/11/tempest-x-braunability-uvl-wheelchair-van-2023-ram-promaster-31298T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 4,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2025/02/used-gmc-conversion-van-for-sale-2022-savana-explorer-vans-7-passenger-high-top-custom-fade-paint-CP17416T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2025/02/custom-gmc-conversion-van-for-sale-explorer-vans-9-passenger-fade-paint-CP17402T-1-200x150.jpg",
+          "alt": "",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        },
+        {
+          "url": "https://www.paulsherryconversionvans.com/wp-content/uploads/2014/10/Conversion-Vans-for-sale.jpg",
+          "alt": "Conversion Van Dealership",
+          "caption": "",
+          "vanScore": 3,
+          "source": "main"
+        }
+      ],
+      "social_media": {
+        "instagram": "https://www.instagram.com/paul_sherry_vans/",
+        "facebook": "https://www.facebook.com/PaulSherryConversionVans/",
+        "youtube": "https://www.youtube.com/user/sherryvans"
+      }
+    }
+  ]
+}
