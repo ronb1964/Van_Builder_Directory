@@ -6,6 +6,17 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
+// Import all scraper modules
+const playwrightConfig = require('./scraper_modules/playwright_config');
+const searchEngines = require('./scraper_modules/search_engines');
+const extractionUtils = require('./scraper_modules/extraction_utils');
+const dataExtraction = require('./scraper_modules/data_extraction');
+const photoProcessing = require('./scraper_modules/photo_processing');
+const validation = require('./scraper_modules/validation');
+const locationUtils = require('./scraper_modules/location_utils');
+const databaseOps = require('./scraper_modules/database_operations');
+const cleanupUtils = require('./scraper_modules/cleanup_utils');
+
 class VanBuilderScraper {
     constructor(options = {}) {
         this.headless = !options.headed;
@@ -28,361 +39,56 @@ class VanBuilderScraper {
     }
 
     async initialize() {
-        console.log('🚀 Initializing Playwright scraper...');
-        
-        // Launch browser with realistic settings
-        this.browser = await chromium.launch({
+        const { browser, context, page } = await playwrightConfig.launchBrowserAndCreatePage({
             headless: this.headless,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--no-first-run',
-                '--no-zygote',
-                '--disable-gpu'
-            ]
+            fastMode: this.fastMode
         });
-
-        // Create context with realistic user agent and viewport
-        this.context = await this.browser.newContext({
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            viewport: { width: 1366, height: 768 },
-            locale: 'en-US',
-            timezoneId: 'America/New_York'
-        });
-
-        // Block resources in fast mode for better performance
-        if (this.fastMode) {
-            await this.context.route('**/*', (route) => {
-                const resourceType = route.request().resourceType();
-                if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
-                    route.abort();
-                } else {
-                    route.continue();
-                }
-            });
-        }
-
-        this.page = await this.context.newPage();
-        
-        // Set longer timeout for slow websites
-        this.page.setDefaultTimeout(30000);
-        
-        console.log('✅ Browser initialized successfully');
+        this.browser = browser;
+        this.context = context;
+        this.page = page;
     }
 
     async searchBrave(query) {
-        console.log(`🔍 Searching Brave for: "${query}"`);
-        
-        try {
-            const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=10`;
-            const response = await fetch(url, {
-                headers: {
-                    'X-Subscription-Token': this.braveApiKey,
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            const searchResults = (data.web?.results || []).map(result => ({
-                title: result.title,
-                url: result.url,
-                snippet: result.description
-            }));
-            
-            console.log(`📋 Found ${searchResults.length} search results`);
-            
-            return searchResults;
-            
-        } catch (error) {
-            console.error('❌ Error during Brave search:', error.message);
-            return [];
-        }
+        return searchEngines.searchBrave(query, this.braveApiKey);
     }
 
     async searchGooglePlaces(query, location) {
-        if (!this.googleApiKey) {
-            console.log('⚠️ Skipping Google Places search - API key not configured');
-            return [];
-        }
+        return searchEngines.searchGooglePlaces(query, location, this.googleApiKey);
+    }
 
-        console.log(`🗺️ Searching Google Places for: "${query}" in ${location}`);
+    async search(query) {
+        console.log(`   🔍 Searching: "${query}"`);
+        const results = [];
         
+        // Try Brave search first
         try {
-            // First, get place_id candidates using Text Search
-            const textSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query + ' ' + location)}&key=${this.googleApiKey}`;
-            
-            const response = await fetch(textSearchUrl);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            const braveResults = await this.searchBrave(query);
+            if (braveResults && braveResults.length > 0) {
+                console.log(`   ✅ Brave Search found ${braveResults.length} results`);
+                results.push(...braveResults);
             }
-            
-            const data = await response.json();
-            
-            if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-                throw new Error(`Google Places API error: ${data.status} - ${data.error_message || 'Unknown error'}`);
-            }
-            
-            const places = (data.results || []).map(place => ({
-                title: place.name,
-                url: place.website || `https://www.google.com/maps/place/?q=place_id:${place.place_id}`,
-                snippet: `${place.formatted_address} - ${place.types?.join(', ') || 'Business'} - Rating: ${place.rating || 'N/A'} (${place.user_ratings_total || 0} reviews)`,
-                place_id: place.place_id,
-                rating: place.rating,
-                address: place.formatted_address,
-                phone: place.formatted_phone_number,
-                source: 'google_places'
-            }));
-            
-            console.log(`🏢 Found ${places.length} Google Places results`);
-            
-            return places;
-            
         } catch (error) {
-            console.error('❌ Error during Google Places search:', error.message);
-            return [];
+            console.log(`   ⚠️ Brave Search failed: ${error.message}`);
         }
+        
+        // Try Google Places if available
+        if (this.googleApiKey) {
+            try {
+                const googleResults = await this.searchGooglePlaces(query);
+                if (googleResults && googleResults.length > 0) {
+                    console.log(`   ✅ Google Places found ${googleResults.length} results`);
+                    results.push(...googleResults);
+                }
+            } catch (error) {
+                console.log(`   ⚠️ Google Places search failed: ${error.message}`);
+            }
+        }
+        
+        return results;
     }
 
     async verifyBuilderLocation(result, targetState) {
-        console.log(`🔍 Verifying location for: ${result.title}`);
-        
-        // Check if state is mentioned in title or snippet
-        const stateVariations = [
-            targetState.toLowerCase(),
-            this.getStateAbbreviation(targetState)?.toLowerCase()
-        ].filter(Boolean);
-        
-        const titleLower = result.title.toLowerCase();
-        const snippetLower = (result.snippet || '').toLowerCase();
-        
-        const mentionedInSearch = stateVariations.some(state => 
-            titleLower.includes(state) || snippetLower.includes(state)
-        );
-
-        try {
-            // Visit the website to verify location
-            await this.page.goto(result.url, { waitUntil: 'domcontentloaded', timeout: 20000 });
-            
-            // Wait for page to load
-            await this.page.waitForTimeout(2000);
-            
-            // Enhanced location verification with stricter address requirements
-            const locationData = await this.page.evaluate(({ targetState, stateVariations, stateAbbrev }) => {
-                // Get cleaner content by removing scripts and styles first
-                const scripts = document.querySelectorAll('script, style, noscript');
-                scripts.forEach(el => el.remove());
-                
-                const content = document.body.textContent.toLowerCase();
-                const originalHTML = document.body.innerHTML;
-                
-                // Look for state mentions in content
-                const foundInContent = stateVariations.some(state => content.includes(state));
-                
-                // SIMPLIFIED: Look for actual business addresses with state abbreviations
-                let hasStateAddress = false;
-                const targetStateAbbrev = targetState === 'New Jersey' ? 'NJ' : 
-                                   targetState === 'Alabama' ? 'AL' :
-                                   targetState === 'California' ? 'CA' :
-                                   targetState === 'Texas' ? 'TX' :
-                                   targetState === 'Florida' ? 'FL' : '';
-                
-                if (targetStateAbbrev) {
-                    // Simple check for state abbreviation with zip code
-                    const addressCheck = content.includes(targetStateAbbrev.toLowerCase()) || 
-                                        originalHTML.toLowerCase().includes(targetStateAbbrev.toLowerCase());
-                    hasStateAddress = addressCheck;
-                }
-                
-                // Check for OUT-OF-STATE addresses that would disqualify
-                const otherStateAbbrevs = ['PA', 'NY', 'CT', 'DE', 'MD', 'VA', 'NC', 'SC', 'GA', 'FL', 'OH', 'MI', 'IL', 'IN', 'WI', 'MN', 'IA', 'MO', 'AR', 'LA', 'MS', 'TN', 'KY', 'WV'];
-                const currentStateAbbrev = targetStateAbbrev.toLowerCase();
-                
-                let hasOtherStateAddress = false;
-                let otherStateAddresses = [];
-                
-                // More specific detection for actual addresses vs casual mentions
-                otherStateAbbrevs.forEach(abbrev => {
-                    if (abbrev.toLowerCase() !== currentStateAbbrev) {
-                        // Look for ACTUAL address patterns, not just any mention
-                        const addressPatterns = [
-                            new RegExp(`\\b\\d+[^,\\n]*,\\s*[^,\\n]*,?\\s*${abbrev}\\s+\\d{5}`, 'gi'),
-                            new RegExp(`located in [^,\\n]*,\\s*${abbrev}\\b`, 'gi'),
-                            new RegExp(`based in [^,\\n]*,\\s*${abbrev}\\b`, 'gi'),
-                            new RegExp(`headquarters in [^,\\n]*,\\s*${abbrev}\\b`, 'gi'),
-                            new RegExp(`office in [^,\\n]*,\\s*${abbrev}\\b`, 'gi')
-                        ];
-                        
-                        const hasActualAddress = addressPatterns.some(pattern => 
-                            pattern.test(content) || pattern.test(originalHTML)
-                        );
-                        
-                        if (hasActualAddress) {
-                            hasOtherStateAddress = true;
-                            otherStateAddresses.push(abbrev);
-                        }
-                    }
-                });
-                
-                // More comprehensive zip code detection
-                const stateZipPatterns = {
-                    'New Jersey': /\b08\d{3}\b/g,
-                    'Alabama': /\b3[0-6]\d{3}\b/g,
-                    'California': /\b9[0-6]\d{3}\b/g,
-                    'Texas': /\b7[0-9]\d{3}\b/g,
-                    'Florida': /\b3[0-4]\d{3}\b/g
-                };
-                
-                let hasStateZip = false;
-                const zipPattern = stateZipPatterns[targetState];
-                if (zipPattern) {
-                    hasStateZip = zipPattern.test(content) || zipPattern.test(originalHTML);
-                }
-                
-                // Get state-specific area codes with comprehensive phone detection
-                const getAreaCodes = (state) => {
-                    const areaCodes = {
-                        'New Jersey': ['201', '551', '609', '732', '848', '856', '862', '908', '973'],
-                        'Alabama': ['205', '251', '256', '334', '938'],
-                        'California': ['209', '213', '310', '323', '408', '415', '510', '530', '559', '562', '619', '626', '628', '650', '657', '661', '669', '707', '714', '747', '760', '805', '818', '831', '858', '909', '916', '925', '949', '951'],
-                        'Texas': ['214', '254', '281', '325', '361', '409', '430', '432', '469', '512', '713', '737', '806', '817', '830', '832', '903', '915', '936', '940', '956', '972', '979'],
-                        'Florida': ['239', '305', '321', '352', '386', '407', '561', '727', '754', '772', '786', '813', '850', '863', '904', '941', '954'],
-                        'New York': ['212', '315', '347', '516', '518', '585', '607', '631', '646', '716', '718', '845', '914', '917', '929', '934']
-                    };
-                    return areaCodes[state] || [];
-                };
-                
-                const stateAreaCodes = getAreaCodes(targetState);
-                let hasStatePhone = false;
-                
-                // Simple phone detection
-                stateAreaCodes.forEach(code => {
-                    if (content.includes(code) || originalHTML.includes(code)) {
-                        hasStatePhone = true;
-                    }
-                });
-                
-                // Check for actual business location indicators (not just service area)
-                const stateLower = targetState.toLowerCase();
-                const locationKeywords = {
-                    'New Jersey': ['hamilton twp', 'trenton', 'jersey city', 'newark', 'princeton', 'camden'],
-                    'Alabama': ['birmingham', 'montgomery', 'huntsville', 'mobile', 'tuscaloosa'],
-                    'California': ['los angeles', 'san francisco', 'san diego', 'sacramento', 'oakland'],
-                    'Texas': ['houston', 'dallas', 'austin', 'san antonio', 'fort worth'],
-                    'Florida': ['miami', 'tampa', 'orlando', 'jacksonville', 'tallahassee']
-                };
-                
-                const stateKeywords = locationKeywords[targetState] || [];
-                const hasBusinessLocation = content.includes(`located in ${stateLower}`) || 
-                                          content.includes(`based in ${stateLower}`) ||
-                                          content.includes(`${stateLower} office`) ||
-                                          content.includes(`${stateLower} location`) ||
-                                          content.includes(`headquarters in ${stateLower}`) ||
-                                          content.includes(`hq in ${stateLower}`) ||
-                                          stateKeywords.some(keyword => content.includes(keyword));
-                
-                // Check for service area mentions (which should NOT count as location)
-                const serviceAreaIndicators = [
-                    `serving ${stateLower}`, `service ${stateLower}`, `deliver to ${stateLower}`,
-                    `available in ${stateLower}`, `${stateLower} customers`, `${stateLower} clients`,
-                    `${stateLower} delivery`, `${stateLower} installation`
-                ];
-                const isServiceAreaOnly = serviceAreaIndicators.some(indicator => content.includes(indicator));
-                
-                // Check for other states that would disqualify
-                const otherStates = ['california', 'colorado', 'texas', 'florida', 'pennsylvania', 'new york', 'alabama', 'arizona', 'washington', 'oregon'];
-                const hasOtherState = otherStates
-                    .filter(state => state !== stateLower)
-                    .some(state => 
-                        content.includes('located in ' + state) || 
-                        content.includes('based in ' + state) ||
-                        content.includes(state + ' office') ||
-                        content.includes(state + ' location') ||
-                        content.includes('headquarters in ' + state)
-                    );
-                
-                // Check for directory/listing site indicators
-                const directoryIndicators = [
-                    'directory', 'listing', 'find builders', 'search builders', 
-                    'builders in usa', 'van builders | campervan', 'explore vanx'
-                ];
-                const isDirectorySite = directoryIndicators.some(indicator => 
-                    content.includes(indicator)
-                );
-                
-                return {
-                    foundInContent,
-                    hasStateAddress,
-                    hasOtherStateAddress,
-                    hasStateZip,
-                    hasStatePhone,
-                    hasBusinessLocation,
-                    isServiceAreaOnly,
-                    hasOtherState,
-                    isDirectorySite,
-                    otherStateAddresses
-                };
-            }, { targetState, stateVariations: stateVariations, stateAbbrev: this.getStateAbbreviation(targetState) });
-
-            // SIMPLIFIED HUMAN-LIKE VERIFICATION
-            let verificationScore = 0;
-            
-            // If they're mentioned in search results for the state, that's a strong indicator
-            if (mentionedInSearch) verificationScore += 3;
-            
-            // If they mention the state anywhere on their site, that's good
-            if (locationData.foundInContent) verificationScore += 2;
-            
-            // Strong positive indicators
-            if (locationData.hasStateAddress) verificationScore += 3;
-            if (locationData.hasStateZip) verificationScore += 2;
-            if (locationData.hasStatePhone) verificationScore += 2;
-            
-            // Only penalize if they clearly have a DIFFERENT state as their primary location
-            if (locationData.hasOtherStateAddress && !locationData.hasStateAddress) {
-                verificationScore -= 3; // Only if they don't have target state address
-            }
-            
-            // Much more forgiving threshold - if they show up in state search and mention the state, they're probably legitimate
-            const isVerified = verificationScore >= 2;
-            
-            // Log detailed verification info
-            const details = {
-                search: mentionedInSearch,
-                content: locationData.foundInContent,
-                address: locationData.hasStateAddress,
-                otherAddress: locationData.hasOtherStateAddress,
-                zip: locationData.hasStateZip,
-                phone: locationData.hasStatePhone,
-                business: locationData.hasBusinessLocation,
-                serviceOnly: locationData.isServiceAreaOnly,
-                otherState: locationData.hasOtherState,
-                directory: locationData.isDirectorySite
-            };
-            
-            if (isVerified) {
-                console.log(`✅ Location verified for: ${result.title} (score: ${verificationScore})`);
-                return { isValid: true, reason: `Location verified (score: ${verificationScore})` };
-            } else {
-                console.log(`❌ Location not verified for: ${result.title} (score: ${verificationScore})`);
-                console.log(`   Details: search=${details.search}, content=${details.content}, address=${details.address}, otherAddress=${details.otherAddress}, zip=${details.zip}, phone=${details.phone}, business=${details.business}, serviceOnly=${details.serviceOnly}, otherState=${details.otherState}, directory=${details.directory}`);
-                if (locationData.otherStateAddresses.length > 0) {
-                    console.log(`   ⚠️  Found addresses in: ${locationData.otherStateAddresses.join(', ')}`);
-                }
-                return { isValid: false, reason: `Location verification failed (score: ${verificationScore}/2 required)` };
-            }
-            
-        } catch (error) {
-            console.log(`❌ Error verifying location for ${result.title}: ${error.message}`);
-            return { isValid: false, reason: `Error during verification: ${error.message}` };
-        }
+        return extractionUtils.verifyBuilderLocation(this, result, targetState);
     }
 
     async extractBuilderData(result, targetState) {
@@ -424,10 +130,10 @@ class VanBuilderScraper {
             });
             this.screenshots.push(builderScreenshot);
 
-            // Extract comprehensive data with enhanced header/footer/contact page scanning
+            // Extract comprehensive data using modular functions
             const builderData = await this.page.evaluate(({ url, title, targetState }) => {
                 const data = {
-                    name: title,
+                    name: title, // Will be improved below
                     website: url,
                     address: '',
                     city: '',
@@ -441,292 +147,54 @@ class VanBuilderScraper {
                     photos: [],
                     social_media: {}
                 };
-
-                // ENHANCED: Extract contact info from headers, footers, and main content
-                const extractContactInfo = () => {
-                    // Check header, footer, and main content areas
-                    const contentAreas = [
-                        document.querySelector('header'),
-                        document.querySelector('footer'), 
-                        document.querySelector('main'),
-                        document.querySelector('.contact'),
-                        document.querySelector('#contact'),
-                        document.querySelector('.about'),
-                        document.querySelector('#about'),
-                        document.body
-                    ].filter(Boolean);
-
-                    contentAreas.forEach(area => {
-                        const text = area.textContent || '';
-                        const html = area.innerHTML || '';
-
-                        // Enhanced phone extraction
-                        const phonePatterns = [
-                            /(\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4})/g,
-                            /(\d{3}[-.\s]\d{3}[-.\s]\d{4})/g,
-                            /(\+1[-.\s]?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4})/g
-                        ];
-                        
-                        phonePatterns.forEach(pattern => {
-                            const matches = text.match(pattern);
-                            if (matches && !data.phone) {
-                                // Clean up phone number
-                                data.phone = matches[0].replace(/[^\d]/g, '').replace(/^1/, '');
-                                if (data.phone.length === 10) {
-                                    data.phone = data.phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
-                                }
-                            }
-                        });
-
-                        // Enhanced email extraction
-                        const emailPattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
-                        const emailMatches = text.match(emailPattern);
-                        if (emailMatches && !data.email) {
-                            // Filter out common non-business emails
-                            const businessEmail = emailMatches.find(email => 
-                                !email.includes('noreply') && 
-                                !email.includes('no-reply') &&
-                                !email.includes('example.com') &&
-                                !email.includes('domain.com') &&
-                                !email.includes('yoursite.com')
-                            ) || emailMatches[0];
-                            if (businessEmail && !businessEmail.includes('user@domain.com')) {
-                                data.email = businessEmail;
-                            }
-                        }
-
-                        // Enhanced address extraction with multiple patterns
-                        const addressPatterns = [
-                            // Full address with street number, city, state, zip
-                            /(\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Circle|Cir|Court|Ct|Place|Pl)[^,]*,\s*[A-Za-z\s]+,\s*(?:NJ|New Jersey)\s+\d{5})/i,
-                            // Address with city, state, zip
-                            /([A-Za-z\s]+,\s*(?:NJ|New Jersey)\s+\d{5})/i,
-                            // Street address followed by city and state
-                            /(\d+\s+[A-Za-z0-9\s,.-]+(?:NJ|New Jersey))/i,
-                            // Look for address labels
-                            /(?:address|location|based in|located at)[:\s]*([^<\n]+(?:NJ|New Jersey)[^<\n]*\d{5}?)/i
-                        ];
-                        
-                        addressPatterns.forEach(pattern => {
-                            const matches = text.match(pattern);
-                            if (matches && !data.address) {
-                                let address = matches[1] || matches[0];
-                                address = address.replace(/(?:address|location|based in|located at)[:\s]*/i, '').trim();
-                                if (address.length > 10 && address.length < 200) {
-                                    data.address = address;
-                                }
-                            }
-                        });
-
-                        // Enhanced description extraction
-                        if (!data.description) {
-                            const descriptionSelectors = [
-                                '.description', '.about', '.intro', '.summary', 
-                                '[class*="description"]', '[class*="about"]',
-                                'meta[name="description"]', 'meta[property="og:description"]'
-                            ];
-                            
-                            for (const selector of descriptionSelectors) {
-                                const element = area.querySelector(selector);
-                                if (element) {
-                                    let desc = element.content || element.textContent || '';
-                                    desc = desc.trim();
-                                    if (desc.length > 50 && desc.length < 500) {
-                                        data.description = desc;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    });
-                };
-
-                // ENHANCED: Extract social media from headers, footers, and links with better patterns
-                const extractSocialMedia = () => {
-                    const socialPatterns = {
-                        facebook: /(?:facebook\.com|fb\.com)\/([a-zA-Z0-9.]+)/,
-                        instagram: /instagram\.com\/([a-zA-Z0-9_.]+)/,
-                        youtube: /(?:youtube\.com\/(?:channel\/|user\/|c\/|@)|youtu\.be\/)([a-zA-Z0-9_-]+)/,
-                        twitter: /(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]+)/,
-                        linkedin: /linkedin\.com\/(?:company\/|in\/)([a-zA-Z0-9-]+)/,
-                        tiktok: /tiktok\.com\/@([a-zA-Z0-9_.]+)/
-                    };
-
-                    // Check all links on the page, prioritizing header/footer
-                    const linkAreas = [
-                        document.querySelector('header'),
-                        document.querySelector('footer'),
-                        document.querySelector('.social'),
-                        document.querySelector('#social'),
-                        document.querySelector('.social-media'),
-                        document.querySelector('.social-links'),
-                        document.body
-                    ].filter(Boolean);
-
-                    // Also check for text mentions of social media handles
-                    const textContent = document.body.textContent || '';
-                    
-                    // Look for YouTube mentions in text
-                    const youtubeTextPatterns = [
-                        /@([a-zA-Z0-9_-]+)/g, // @handle format
-                        /youtube\.com\/(@[a-zA-Z0-9_-]+)/g,
-                        /youtube\.com\/c\/([a-zA-Z0-9_-]+)/g,
-                        /youtube\.com\/channel\/([a-zA-Z0-9_-]+)/g,
-                        /youtube\.com\/user\/([a-zA-Z0-9_-]+)/g
-                    ];
-
-                    youtubeTextPatterns.forEach(pattern => {
-                        const matches = textContent.match(pattern);
-                        if (matches && !data.social_media.youtube) {
-                            matches.forEach(match => {
-                                if (match.includes('nomadrvs') || match.includes('nomad_rvs')) {
-                                    data.social_media.youtube = `https://www.youtube.com/${match.replace('@', 'c/')}`;
-                                }
-                            });
-                        }
-                    });
-
-                    linkAreas.forEach(area => {
-                        const links = area.querySelectorAll('a[href]');
-                        links.forEach(link => {
-                            const href = link.href;
-                            for (const [platform, pattern] of Object.entries(socialPatterns)) {
-                                const match = href.match(pattern);
-                                if (match && !data.social_media[platform]) {
-                                    data.social_media[platform] = href;
-                                }
-                            }
-                        });
-                    });
-                };
-
-                // Execute enhanced extraction
-                extractContactInfo();
-                extractSocialMedia();
-
-                // Get description from meta tags and content
-                const metaDescription = document.querySelector('meta[name="description"]');
-                if (metaDescription) {
-                    data.description = metaDescription.content;
-                } else {
-                    // Fallback to first paragraph or content
-                    const firstParagraph = document.querySelector('p');
-                    if (firstParagraph) {
-                        data.description = firstParagraph.textContent.substring(0, 300);
-                    }
-                }
-
-                // Extract van types and amenities from content
-                const content = document.body.textContent.toLowerCase();
                 
-                const vanTypes = ['sprinter', 'transit', 'promaster', 'express', 'savana', 'nv200', 'metris'];
-                vanTypes.forEach(type => {
-                    if (content.includes(type)) {
-                        data.van_types.push(type);
-                    }
-                });
-
-                const amenities = [
-                    'solar', 'battery', 'inverter', 'shore power', 'generator',
-                    'kitchen', 'sink', 'stove', 'refrigerator', 'microwave',
-                    'bed', 'dinette', 'seating', 'storage', 'cabinets',
-                    'bathroom', 'toilet', 'shower', 'water tank', 'grey tank',
-                    'heating', 'air conditioning', 'ventilation', 'fan',
-                    'awning', 'bike rack', 'roof rack', 'ladder'
-                ];
-                
-                amenities.forEach(amenity => {
-                    if (content.includes(amenity)) {
-                        data.amenities.push(amenity);
-                    }
-                });
-
-                // Enhanced photo collection with van-relevance scoring
-                const scoreVanRelevance = (img) => {
-                    const searchText = `${img.src} ${img.alt} ${img.className} ${img.title}`.toLowerCase();
-                    let score = 0;
-                    
-                    const vanKeywords = {
-                        high: ['van', 'sprinter', 'transit', 'promaster', 'conversion', 'camper', 'motorhome', 'rv'],
-                        medium: ['interior', 'exterior', 'build', 'custom', 'adventure', 'overland', 'expedition'],
-                        low: ['kitchen', 'bed', 'bathroom', 'solar', 'awning', 'gear']
-                    };
-                    
-                    const excludeKeywords = [
-                        'logo', 'icon', 'avatar', 'profile', 'team', 'staff', 'owner', 'founder',
-                        'office', 'building', 'storefront', 'workshop', 'factory', 'facility',
-                        'food', 'restaurant', 'catering', 'truck', 'trailer', 'commercial',
-                        'badge', 'award', 'certificate', 'testimonial', 'review'
-                    ];
-                    
-                    // Score based on keywords
-                    vanKeywords.high.forEach(keyword => {
-                        if (searchText.includes(keyword)) score += 3;
-                    });
-                    vanKeywords.medium.forEach(keyword => {
-                        if (searchText.includes(keyword)) score += 2;
-                    });
-                    vanKeywords.low.forEach(keyword => {
-                        if (searchText.includes(keyword)) score += 1;
-                    });
-                    
-                    // Penalty for excluded keywords
-                    excludeKeywords.forEach(keyword => {
-                        if (searchText.includes(keyword)) score -= 5;
-                    });
-                    
-                    // Size bonuses/penalties
-                    const width = parseInt(img.width) || 0;
-                    const height = parseInt(img.height) || 0;
-                    if (width >= 400 && height >= 300) score += 1;
-                    if (width >= 800 && height >= 600) score += 1;
-                    if (width < 200 || height < 150) score -= 3;
-                    
-                    return score;
-                };
-
-                // Collect and score all images
-                const images = document.querySelectorAll('img[src]');
-                const scoredImages = Array.from(images).map(img => ({
-                    img,
-                    score: scoreVanRelevance(img),
-                    src: img.src
-                }));
-
-                // Sort by relevance score and take top images
-                scoredImages.sort((a, b) => b.score - a.score);
-                
-                for (let i = 0; i < Math.min(scoredImages.length, 8); i++) {
-                    const photo = scoredImages[i];
-                    if (photo.score > -3) { // Only include photos with reasonable scores
-                        data.photos.push({
-                            url: photo.src.startsWith('http') ? photo.src : new URL(photo.src, url).href,
-                            alt: photo.img.alt || '',
-                            caption: '',
-                            vanScore: photo.score,
-                            source: 'main'
-                        });
-                        console.log(`   📷 Added photo (score: ${photo.score}): ${photo.img.alt || 'No alt text'}`);
-                    }
-                }
-
-                // ENHANCED: Search gallery/portfolio pages for more photos
-                if (data.photos.length < 8) {
-                    console.log(`   🔍 Searching for gallery/portfolio pages (current photos: ${data.photos.length})`);
-                    
-                    // Find gallery links from the main page
-                    const galleryLinks = document.querySelectorAll('a[href*="gallery" i], a[href*="portfolio" i], a[href*="work" i], a[href*="projects" i], a[href*="builds" i], a[href*="conversions" i]');
-                    
-                    console.log(`   📋 Found ${galleryLinks.length} potential gallery pages`);
-                    
-                    // Note: Gallery page navigation would need to be handled outside this evaluate block
-                    // This is a limitation of the current implementation
-                }
-                
+                // Use dataExtraction module functions (these need to be passed in)
                 return data;
             }, { url: result.url, title: result.title, targetState });
+            
+            // Extract business name using modular function
+            builderData.name = await dataExtraction.extractBusinessName(this.page) || result.title;
+            
+            // Extract contact information
+            const contactInfo = await dataExtraction.extractContactInfo(this.page, targetState);
+            builderData.phone = contactInfo.phone || builderData.phone;
+            builderData.email = contactInfo.email || builderData.email;
+            builderData.address = contactInfo.address || builderData.address;
+            
+            // Extract city from address
+            if (builderData.address) {
+                builderData.city = locationUtils.extractCityFromAddress(builderData.address);
+            }
+            
+            // Extract description
+            builderData.description = await dataExtraction.extractDescription(this.page);
+            
+            // Extract social media
+            builderData.social_media = await dataExtraction.extractSocialMedia(this.page);
+            
+            // Extract photos
+            const photos = await photoProcessing.extractPhotos(this.page);
+            
+            // Score and format photos
+            const scoredPhotos = photos.map(photo => ({
+                ...photo,
+                score: photoProcessing.scorePhotoRelevance(photo.url, photo.alt || '')
+            }));
+            
+            // Sort by score and take top 8
+            scoredPhotos.sort((a, b) => b.score - a.score);
+            builderData.photos = photoProcessing.formatPhotosForDatabase(scoredPhotos.slice(0, 8));
+            
+            // Check for gallery pages if we need more photos
+            if (builderData.photos.length < 8) {
+                console.log(`   🔍 Searching for gallery/portfolio pages (current photos: ${builderData.photos.length})`);
+                const hasGallery = await photoProcessing.detectGalleryPage(this.page);
+                if (hasGallery) {
+                    console.log(`   📸 Gallery page detected but not navigated (would need additional implementation)`);
+                }
+            }
 
-            // ENHANCED: Check About and Contact pages for additional info
+            // Check About and Contact pages for additional info if needed
             if (!builderData.phone || !builderData.email || !builderData.address) {
                 console.log(`   🔍 Checking About/Contact pages for missing info`);
                 
@@ -756,40 +224,21 @@ class VanBuilderScraper {
                         await this.page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
                         await this.page.waitForTimeout(2000);
 
-                        const additionalData = await this.page.evaluate(() => {
-                            const text = document.body.textContent;
-                            const result = { phone: '', email: '', address: '' };
-
-                            // Phone extraction
-                            const phonePattern = /(\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4})/;
-                            const phoneMatch = text.match(phonePattern);
-                            if (phoneMatch) result.phone = phoneMatch[0];
-
-                            // Email extraction
-                            const emailPattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/;
-                            const emailMatch = text.match(emailPattern);
-                            if (emailMatch) result.email = emailMatch[0];
-
-                            // Address extraction
-                            const addressPattern = /(\d+\s+[A-Za-z0-9\s,.-]+(?:NJ|New Jersey)\s+\d{5})/i;
-                            const addressMatch = text.match(addressPattern);
-                            if (addressMatch) result.address = addressMatch[0];
-
-                            return result;
-                        });
-
+                        const additionalContact = await dataExtraction.extractContactInfo(this.page, targetState);
+                        
                         // Update missing data
-                        if (!builderData.phone && additionalData.phone) {
-                            builderData.phone = additionalData.phone;
-                            console.log(`   📞 Found phone on ${pageUrl}: ${additionalData.phone}`);
+                        if (!builderData.phone && additionalContact.phone) {
+                            builderData.phone = additionalContact.phone;
+                            console.log(`   📞 Found phone on ${pageUrl}: ${additionalContact.phone}`);
                         }
-                        if (!builderData.email && additionalData.email) {
-                            builderData.email = additionalData.email;
-                            console.log(`   📧 Found email on ${pageUrl}: ${additionalData.email}`);
+                        if (!builderData.email && additionalContact.email) {
+                            builderData.email = additionalContact.email;
+                            console.log(`   📧 Found email on ${pageUrl}: ${additionalContact.email}`);
                         }
-                        if (!builderData.address && additionalData.address) {
-                            builderData.address = additionalData.address;
-                            console.log(`   📍 Found address on ${pageUrl}: ${additionalData.address}`);
+                        if (!builderData.address && additionalContact.address) {
+                            builderData.address = additionalContact.address;
+                            builderData.city = locationUtils.extractCityFromAddress(builderData.address);
+                            console.log(`   📍 Found address on ${pageUrl}: ${additionalContact.address}`);
                         }
 
                     } catch (error) {
@@ -805,36 +254,39 @@ class VanBuilderScraper {
             if (!builderData.name) builderData.name = result.title;
             if (!builderData.state) builderData.state = targetState;
             
-            // VALIDATE: Ensure this is actually a van conversion builder
-            const isVanBuilder = this.validateVanBuilder(builderData);
-            if (!isVanBuilder.isValid) {
-                console.log(`❌ SKIPPING: ${builderData.name} - ${isVanBuilder.reason}`);
+            // Validate this is actually a van conversion builder
+            const validationResult = validation.validateVanConversion(builderData);
+            if (!validationResult.isValid) {
+                console.log(`❌ SKIPPING: ${builderData.name} - ${validationResult.reason}`);
                 return null;
             }
             
+            // Clean and format the builder data
+            const cleanedData = validation.cleanBuilderData(builderData);
+            
             // Ensure arrays have at least one item
-            if (builderData.van_types.length === 0) {
-                builderData.van_types.push('custom van');
+            if (cleanedData.van_types.length === 0) {
+                cleanedData.van_types.push('custom van');
             }
-            if (builderData.amenities.length === 0) {
-                builderData.amenities.push('custom build');
+            if (cleanedData.amenities.length === 0) {
+                cleanedData.amenities.push('custom build');
             }
-            if (builderData.photos.length === 0) {
-                builderData.photos.push({
+            if (cleanedData.photos.length === 0) {
+                cleanedData.photos.push({
                     url: '',
                     alt: 'No photos available',
                     caption: 'Photos not found on website'
                 });
             }
 
-            console.log(`✅ Data extracted for: ${builderData.name}`);
-            console.log(`   📧 Email: ${builderData.email || 'Not found'}`);
-            console.log(`   📞 Phone: ${builderData.phone || 'Not found'}`);
-            console.log(`   📍 Address: ${builderData.address || 'Not found'}`);
-            console.log(`   📱 Social Media: ${Object.keys(builderData.social_media).length} platforms found`);
-            console.log(`   📷 Photos: ${builderData.photos.length} photos collected (target: 8)`);
+            console.log(`✅ Data extracted for: ${cleanedData.name}`);
+            console.log(`   📧 Email: ${cleanedData.email || 'Not found'}`);
+            console.log(`   📞 Phone: ${cleanedData.phone || 'Not found'}`);
+            console.log(`   📍 Address: ${cleanedData.address || 'Not found'}`);
+            console.log(`   📱 Social Media: ${Object.keys(cleanedData.social_media).length} platforms found`);
+            console.log(`   📷 Photos: ${cleanedData.photos.length} photos collected (target: 8)`);
             
-            return builderData;
+            return cleanedData;
         } catch (error) {
             console.error(`❌ Error extracting data for ${result.title}:`, error.message);
             return null;
@@ -866,7 +318,7 @@ class VanBuilderScraper {
         // Search with multiple web queries
         for (const query of webQueries) {
             console.log(`🔍 Searching: "${query}"`);
-            const searchResults = await this.searchBrave(query);
+            const searchResults = await this.search(query);
             
             // Add unique results
             for (const result of searchResults) {
@@ -1050,13 +502,49 @@ class VanBuilderScraper {
                             } else {
                                 console.log(`🎉 Successfully saved ${insertedCount} builders to database`);
                                 console.log('🗄️ Database connection closed');
-                                resolve();
+                                resolve({ savedCount: insertedCount });
                             }
                         });
                     })
                     .catch(reject);
             });
         });
+    }
+
+    async analyzeSearchResults(targetState) {
+        console.log(`\n📊 Analyzing search results for ${targetState}...\n`);
+        const validResults = [];
+        const rejectedResults = [];
+
+        for (const result of this.searchResults) {
+            console.log(`🔍 Checking: ${result.title}`);
+            console.log(`   URL: ${result.url}`);
+            console.log(`   Description: ${result.snippet || 'No description'}`);
+            
+            // Use modular location verification
+            const locationCheck = await extractionUtils.verifyBuilderLocation(this, result, targetState);
+            
+            if (locationCheck.isValid) {
+                console.log(`   ✅ VALID: ${locationCheck.reason}`);
+                validResults.push(result);
+            } else {
+                console.log(`   ❌ INVALID: ${locationCheck.reason}`);
+                rejectedResults.push({ ...result, reason: locationCheck.reason });
+            }
+        }
+
+        console.log(`\n📈 Analysis Summary:`);
+        console.log(`   Valid Results: ${validResults.length}`);
+        console.log(`   Rejected Results: ${rejectedResults.length}`);
+        
+        if (rejectedResults.length > 0) {
+            console.log(`\n❌ Rejected builders:`);
+            rejectedResults.forEach(r => {
+                console.log(`   - ${r.title}: ${r.reason}`);
+            });
+        }
+
+        return validResults;
     }
 
     extractCityFromAddress(address) {
@@ -1069,10 +557,9 @@ class VanBuilderScraper {
         const patterns = [
             /([^,\d]+),\s*[A-Z]{2}\s*\d{5}/,          // City, ST ZIP
             /([^,\d]+),\s*[A-Z]{2}/,                  // City, ST
-            /([^,\d]+),\s*New Jersey/,                // City, New Jersey
-            /([^,\d]+),\s*NJ/,                        // City, NJ
-            /([A-Za-z\s]+),\s*(?:NJ|New Jersey)/,     // Any city before NJ
-            /(?:^|\s)([A-Za-z\s]+)\s+(?:NJ|New Jersey)/, // City before state
+            /([^,\d]+),\s*(?:AZ|AL|CA|TX|FL|NJ)/,            // City, Arizona
+            /([A-Za-z\s]+),\s*(?:AZ|AL|CA|TX|FL|NJ)/,        // Any city before AZ
+            /(?:^|\s)([A-Za-z\s]+)\s+(?:AZ|AL|CA|TX|FL|NJ)/, // City before state
             /([A-Za-z\s]+)\s+\d{5}/                   // City before ZIP
         ];
         
@@ -1091,54 +578,23 @@ class VanBuilderScraper {
             }
         }
         
-        // If no pattern matches, try to extract from common New Jersey cities
-        const njCities = [
-            'Newark', 'Jersey City', 'Paterson', 'Elizabeth', 'Edison', 'Woodbridge', 'Lakewood',
-            'Toms River', 'Hamilton', 'Trenton', 'Clifton', 'Camden', 'Brick', 'Cherry Hill',
-            'Passaic', 'Union City', 'Middletown', 'Gloucester', 'East Orange', 'Bayonne',
-            'Vineland', 'New Brunswick', 'Hoboken', 'Perth Amboy', 'West New York', 'Plainfield',
-            'Hackensack', 'Sayreville', 'Kearny', 'Linden', 'Atlantic City', 'Fort Lee',
-            'Fair Lawn', 'Garfield', 'Paramus', 'Wayne', 'West Orange', 'Ridgewood',
-            'Princeton', 'Morristown', 'Freehold', 'Marlboro', 'Manasquan', 'Hamilton Twp'
+        // If no pattern matches, try to extract from common Arizona cities
+        const azCities = [
+            'Phoenix', 'Tucson', 'Mesa', 'Chandler', 'Scottsdale', 'Glendale', 'Gilbert', 'Tempe', 'Peoria', 'Surprise', 'Yuma', 'Avondale', 'Flagstaff', 'Goodyear', 'Buckeye', 'Lake Havasu City', 'Casa Grande', 'Sierra Vista', 'Maricopa', 'Oro Valley', 'Prescott', 'Apache Junction', 'Marana', 'Fountain Hills', 'Bullhead City', 'Prescott Valley', 'Sahuarita', 'Kingman', 'Drexel Heights', 'San Tan Valley', 'El Mirage', 'Fortuna Foothills', 'Anthem', 'Cave Creek', 'Sedona', 'Show Low', 'Catalina Foothills', 'Florence', 'Paradise Valley', 'Casas Adobes', 'Litchfield Park', 'Nogales', 'Douglas', 'Benson', 'Safford', 'Payson', 'Page', 'Globe', 'Winslow', 'Holbrook', 'Willcox', 'Tombstone', 'Bisbee', 'Cottonwood', 'Camp Verde', 'Wickenburg', 'Parker', 'Quartzsite', 'Lake Havasu', 'Sun City', 'Sun City West', 'Ahwatukee', 'Carefree', 'Fountain Hills'
         ];
         
-        for (const city of njCities) {
+        for (const city of azCities) {
             if (address.toLowerCase().includes(city.toLowerCase())) {
                 return city;
             }
         }
-        
+
         return '';
     }
 
     async cleanup() {
-        console.log('🧹 Starting cleanup...');
-        
-        // Close browser
-        if (this.browser) {
-            await this.browser.close();
-            console.log('✅ Browser closed');
-        }
-        
-        // Clean up screenshot files
-        if (this.screenshots && this.screenshots.length > 0) {
-            console.log(`🗑️ Removing ${this.screenshots.length} screenshot files...`);
-            
-            for (const screenshot of this.screenshots) {
-                try {
-                    if (fs.existsSync(screenshot)) {
-                        fs.unlinkSync(screenshot);
-                        console.log(`   ✅ Removed: ${screenshot}`);
-                    }
-                } catch (error) {
-                    console.log(`   ❌ Failed to remove ${screenshot}: ${error.message}`);
-                }
-            }
-            
-            console.log('✅ Screenshot cleanup completed');
-        }
-        
-        console.log('🎉 Cleanup finished');
+        await playwrightConfig.closeBrowserAndCleanup(this.browser, this.screenshots);
+        this.screenshots = []; // Clear the array after cleanup, as the module handles deletion
     }
 
     getStateAbbreviation(state) {
@@ -1157,54 +613,210 @@ class VanBuilderScraper {
         return stateAbbreviations[state];
     }
 
-    validateVanBuilder(builderData) {
-        const content = `${builderData.name} ${builderData.description} ${builderData.van_types.join(' ')} ${builderData.amenities.join(' ')}`.toLowerCase();
+    validateVanConversion(builderData) {
+        const { name, description, website } = builderData;
+        const text = `${name} ${description}`.toLowerCase();
         
-        // EXCLUSION KEYWORDS - Immediate disqualification
-        const excludeKeywords = [
-            'food truck', 'food trailer', 'concession', 'catering', 'restaurant',
-            'mobile kitchen', 'food service', 'food cart', 'coffee truck',
-            'ice cream truck', 'taco truck', 'food vendor', 'commercial kitchen'
+        // REJECT: Directories, articles, and generic listings
+        const rejectPatterns = [
+            /\b(directory|guide|buyers?\s+guide|article|blog|list|top\s+\d+|best\s+\d+)\b/,
+            /\b(yelp|search\s+results|marketplace|portal|listings?)\b/,
+            /\b(companies\s+listed|conversion\s+companies\s+::|shop\s+conversion)\b/,
+            /\b(explore\s+van|parked\s+in\s+paradise|expedition\s+portal)\b/,
+            /\b(divine\s+on\s+the\s+road|vanlife\s+directory)\b/,
+            /^(builders?|conversion\s+van)$/,
+            /\b(paul\s+sherry|gmc\s+conversion\s+vans)\b/
         ];
         
-        const hasExcludedContent = excludeKeywords.some(keyword => content.includes(keyword));
-        if (hasExcludedContent) {
-            return { isValid: false, reason: 'Builds food trucks/commercial vehicles, not camper vans' };
+        for (const pattern of rejectPatterns) {
+            if (pattern.test(text)) {
+                console.log(`❌ REJECTED: ${name} - Detected as directory/article/generic listing`);
+                return { isValid: false, reason: 'Directory, article, or generic listing detected' };
+            }
         }
         
-        // VAN CONVERSION KEYWORDS - Must have at least one
+        // Van conversion keywords (positive indicators)
         const vanKeywords = [
-            'camper van', 'van conversion', 'custom van', 'adventure van',
+            'van conversion', 'camper van', 'custom van', 'van build', 'van builder',
             'sprinter conversion', 'transit conversion', 'promaster conversion',
-            'class b rv', 'class b+', 'motorhome', 'recreational vehicle',
-            'van build', 'van life', 'overland', 'expedition vehicle'
+            'adventure vehicle', 'expedition vehicle', 'overland', 'van life',
+            'mobile home', 'tiny home on wheels', 'nomad', 'rv conversion'
         ];
         
-        const hasVanKeywords = vanKeywords.some(keyword => content.includes(keyword));
+        // Business type keywords
+        const businessKeywords = [
+            'llc', 'inc', 'company', 'corp', 'enterprises', 'solutions',
+            'custom', 'builds', 'conversions', 'outfitters', 'fabrication'
+        ];
         
-        // GENERAL KEYWORDS - Secondary check (enhanced for RV companies)
-        const generalKeywords = ['rv', 'conversion', 'custom', 'build', 'camper', 'nomad'];
-        const hasGeneralKeywords = generalKeywords.some(keyword => content.includes(keyword));
-        
-        // VAN TYPES CHECK - Look for actual van models
-        const vanModels = ['sprinter', 'transit', 'promaster', 'express', 'savana', 'nv200'];
-        const hasVanModels = vanModels.some(model => content.includes(model));
-        
-        // SCORING SYSTEM - Need minimum score to qualify (lowered threshold)
+        // Calculate score
         let score = 0;
-        if (hasVanKeywords) score += 3;      // Strong van conversion indicators
-        if (hasVanModels) score += 2;        // Specific van models mentioned
-        if (hasGeneralKeywords) score += 1;  // General conversion keywords
         
-        // Special bonus for RV companies (many do van conversions)
-        if (content.includes('rv') && !content.includes('food')) score += 1;
+        // Check for van conversion keywords
+        vanKeywords.forEach(keyword => {
+            if (text.includes(keyword)) {
+                score += keyword.includes('van') ? 2 : 1;
+            }
+        });
         
-        if (score < 1) { // Lowered from 2 to 1
-            return { isValid: false, reason: `Insufficient van conversion indicators (score: ${score}/1 minimum)` };
+        // Check for business indicators
+        businessKeywords.forEach(keyword => {
+            if (text.includes(keyword)) {
+                score += 1;
+            }
+        });
+        
+        // Bonus for RV companies (many do van conversions)
+        if (text.includes('rv') && !text.includes('food')) {
+            score += 1;
+        }
+        
+        // Bonus for having a business website domain
+        if (website && !website.includes('yelp') && !website.includes('google') && 
+            !website.includes('facebook') && !website.includes('expeditionportal') &&
+            !website.includes('parkedinparadise') && !website.includes('vanlifedirectory')) {
+            score += 1;
+        }
+        
+        // Must have minimum score to be considered valid
+        if (score < 1) {
+            console.log(`❌ REJECTED: ${name} - Van conversion score too low: ${score}/1`);
+            return { isValid: false, reason: `Insufficient van conversion indicators (score: ${score})` };
         }
         
         console.log(`✅ VALIDATED: ${builderData.name} - Van conversion score: ${score}/1`);
         return { isValid: true, reason: `Van conversion validated (score: ${score})` };
+    }
+
+    cleanPhone(phone) {
+        if (!phone) return phone;
+        
+        // Extract just digits
+        const digits = phone.replace(/[^\d]/g, '');
+        
+        // Format as (XXX) XXX-XXXX if we have 10 digits
+        if (digits.length === 10) {
+            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+        } else if (digits.length === 11 && digits[0] === '1') {
+            // Remove country code
+            return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
+        }
+        
+        return phone;
+    }
+
+    getSearchQueries(targetState) {
+        const stateAbbrev = locationUtils.getStateAbbreviation(targetState);
+        
+        return [
+            `custom camper van builders in ${targetState}`,
+            `van conversion companies ${targetState}`,
+            `custom van builds ${targetState}`,
+            `van conversions ${stateAbbrev}`
+        ];
+    }
+
+    async runScraper(targetState = 'New Jersey', queries = null) {
+        try {
+            console.log(`🚀 Starting Van Builder Scraper for ${targetState}`);
+            console.log(`📅 ${new Date().toLocaleString()}\n`);
+
+            // Initialize database
+            await databaseOps.initializeDatabase();
+            
+            // Initialize Playwright if not already done
+            if (!this.browser) {
+                await this.initialize();
+            }
+            
+            // Use passed queries or default ones
+            const searchQueries = queries || this.getSearchQueries(targetState);
+            
+            const allResults = [];
+            const seenUrls = new Set();
+
+            // Execute searches with all queries
+            console.log(`\n🔍 Executing ${searchQueries.length} search queries:`);
+            for (const query of searchQueries) {
+                console.log(`\n📌 Searching: "${query}"`);
+                const results = await this.search(query);
+                
+                // Deduplicate by URL
+                const newResults = results.filter(r => {
+                    if (seenUrls.has(r.url)) {
+                        console.log(`   ⚠️ Duplicate URL skipped: ${r.url}`);
+                        return false;
+                    }
+                    seenUrls.add(r.url);
+                    return true;
+                });
+                
+                console.log(`   ✅ Found ${results.length} results (${newResults.length} unique)`);
+                allResults.push(...newResults);
+            }
+            
+            console.log(`\n📊 Total unique results across all queries: ${allResults.length}`);
+            this.searchResults = allResults;
+
+            // Analyze results
+            const validResults = await this.analyzeSearchResults(targetState);
+
+            // Extract data for valid results
+            console.log(`\n📦 Extracting detailed data for ${validResults.length} builders...\n`);
+            this.builders = [];
+            
+            for (const result of validResults) {
+                const builderData = await this.extractBuilderData(result, targetState);
+                if (builderData) {
+                    this.builders.push(builderData);
+                } else {
+                    console.log(`⚠️ Failed to extract data for: ${result.title}`);
+                }
+            }
+
+            console.log(`\n✅ Successfully extracted data for ${this.builders.length} builders`);
+
+            // Save results using modular database operations
+            const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\./g, '-');
+            const filename = await databaseOps.saveResultsToFile(this.builders, targetState, timestamp);
+            
+            if (filename) {
+                console.log(`\n💾 Results saved to: ${filename}`);
+            }
+
+            // Save to database using modular database operations
+            const dbResult = await databaseOps.saveToDatabase(this.builders, targetState);
+            
+            console.log(`\n🗄️ Database Update Summary:`);
+            console.log(`   Builders saved: ${dbResult.savedCount}`);
+            console.log(`   Target state: ${targetState}`);
+
+            console.log(`\n📊 Final Summary:`);
+            console.log(`   Total search results: ${this.searchResults.length}`);
+            console.log(`   Valid results analyzed: ${validResults.length}`);
+            console.log(`   Builders extracted: ${this.builders.length}`);
+            console.log(`   Success rate: ${((this.builders.length / validResults.length) * 100).toFixed(1)}%`);
+            
+            // Cleanup using modular cleanup utilities
+            const cleanup = await cleanupUtils.cleanupTempFiles('./screenshots');
+            console.log(`\n🧹 Screenshot Cleanup: ${cleanup.deletedCount} files removed, ${cleanupUtils.formatFileSize(cleanup.totalSize)} saved`);
+            
+            // Clean up old JSON data files (keep last 7 days)
+            const dataCleanup = await cleanupUtils.cleanupOldDataFiles('./', 7);
+            
+            return this.builders;
+        } catch (error) {
+            console.error('❌ Scraper error:', error);
+            throw error;
+        } finally {
+            await this.close();
+        }
+    }
+
+    async close() {
+        if (this.browser) {
+            await this.browser.close();
+        }
     }
 }
 
@@ -1217,18 +829,18 @@ async function main() {
 🏗️ Van Builder Scraper (Playwright Edition)
 
 Usage:
-  node web_scraper_playwright.js <state> [options]
-
-Options:
-  --headed    Run in headed mode (visible browser)
-  --fast      Fast mode (block images/CSS for speed)
+    node web_scraper_playwright.js <state> [options]
 
 Examples:
-  node web_scraper_playwright.js Alabama
-  node web_scraper_playwright.js California --headed
-  node web_scraper_playwright.js Texas --fast
+    node web_scraper_playwright.js "New Jersey"
+    node web_scraper_playwright.js "Arizona" --headed
+    node web_scraper_playwright.js "California" --fast
 
-States should be full names (e.g., "New York", not "NY")
+Options:
+    --headed    Run browser in headed mode (visible)
+    --fast      Enable fast mode (blocks images/stylesheets)
+
+This enhanced scraper uses 4 different query types for comprehensive coverage.
 
 Photo Collection: Strives for 8 photos per builder (minimum 1 required)
 Cleanup: Screenshots are automatically removed after scraping completes
@@ -1251,8 +863,7 @@ Cleanup: Screenshots are automatically removed after scraping completes
 
     try {
         await scraper.initialize();
-        const results = await scraper.scrapeState(state);
-        await scraper.saveResults(state);
+        const results = await scraper.runScraper(state);
         
         console.log(`\n🎉 Scraping completed successfully!`);
         console.log(`📊 Found ${results.length} verified builders in ${state}`);
@@ -1261,7 +872,7 @@ Cleanup: Screenshots are automatically removed after scraping completes
         console.error('❌ Scraping failed:', error);
         process.exit(1);
     } finally {
-        await scraper.cleanup();
+        await scraper.close();
     }
 }
 
