@@ -1,0 +1,2 @@
+name,city,state,zip,phone,website,email,facebook,instagram,youtube,van_types,amenities,description,photos
+"Example Builder","Example City","State Name","12345","(555) 123-4567","https://example.com","info@example.com","https://facebook.com/example","https://instagram.com/example","https://youtube.com/example","Sprinter 144, Sprinter 170, Ford Transit","Solar Power, Shower, Kitchen, Heating","Full description of the builder and their specialties","photo1.jpg,photo2.jpg"
