@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f0f2f5" rx="10" ry="10"/>
+  
+  <!-- Road -->
+  <rect x="0" y="400" width="800" height="100" fill="#5a5a5a"/>
+  <rect x="0" y="445" width="800" height="10" fill="#ffffff" stroke="none" stroke-dasharray="50,50"/>
+  
+  <!-- Sky -->
+  <rect x="0" y="0" width="800" height="400" fill="#87CEEB" rx="10" ry="10"/>
+  
+  <!-- Sun -->
+  <circle cx="700" cy="100" r="60" fill="#FFD700"/>
+  <circle cx="700" cy="100" r="50" fill="#FDB813"/>
+  
+  <!-- Mountains -->
+  <polygon points="0,400 200,200 400,350 600,150 800,400" fill="#6a8d73"/>
+  <polygon points="0,400 150,250 300,350 450,200 600,300 800,400" fill="#4a6855"/>
+  
+  <!-- Camper Van Body -->
+  <rect x="150" y="300" width="500" height="120" rx="20" ry="20" fill="#3f51b5"/>
+  <rect x="150" y="320" width="500" height="100" rx="10" ry="10" fill="#5c6bc0"/>
+  
+  <!-- Van Front -->
+  <rect x="150" y="320" width="100" height="100" fill="#3949ab"/>
+  <path d="M150,320 Q100,350 150,420" fill="#3949ab"/>
+  
+  <!-- Windows -->
+  <rect x="180" y="340" width="60" height="40" rx="5" ry="5" fill="#bbdefb"/>
+  <rect x="270" y="340" width="80" height="40" rx="5" ry="5" fill="#bbdefb"/>
+  <rect x="370" y="340" width="80" height="40" rx="5" ry="5" fill="#bbdefb"/>
+  <rect x="470" y="340" width="80" height="40" rx="5" ry="5" fill="#bbdefb"/>
+  <rect x="570" y="340" width="60" height="40" rx="5" ry="5" fill="#bbdefb"/>
+  
+  <!-- Wheels -->
+  <circle cx="200" cy="420" r="30" fill="#212121"/>
+  <circle cx="200" cy="420" r="20" fill="#424242"/>
+  <circle cx="200" cy="420" r="10" fill="#616161"/>
+  
+  <circle cx="550" cy="420" r="30" fill="#212121"/>
+  <circle cx="550" cy="420" r="20" fill="#424242"/>
+  <circle cx="550" cy="420" r="10" fill="#616161"/>
+  
+  <!-- Door -->
+  <rect x="370" y="370" width="60" height="50" fill="#3949ab"/>
+  <circle cx="420" cy="395" r="5" fill="#e0e0e0"/>
+  
+  <!-- Roof Rack -->
+  <rect x="200" y="290" width="400" height="10" rx="5" ry="5" fill="#424242"/>
+  <rect x="220" y="280" width="20" height="10" fill="#424242"/>
+  <rect x="320" y="280" width="20" height="10" fill="#424242"/>
+  <rect x="420" y="280" width="20" height="10" fill="#424242"/>
+  <rect x="520" y="280" width="20" height="10" fill="#424242"/>
+  
+  <!-- Text -->
+  <text x="400" y="480" font-family="Arial" font-size="24" text-anchor="middle" fill="#ffffff">CAMPER VAN BUILDERS</text>
+</svg>

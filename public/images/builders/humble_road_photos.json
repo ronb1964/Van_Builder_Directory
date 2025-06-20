@@ -1,0 +1,18 @@
+{
+  "builderName": "Humble Road",
+  "photos": [
+    {
+      "id": "humble_road_1",
+      "url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+      "alt": "Humble Road van conversion 1",
+      "localPath": "/images/builders/humble_road_1.jpg"
+    },
+    {
+      "id": "humble_road_2",
+      "url": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop",
+      "alt": "Humble Road van conversion 2",
+      "localPath": "/images/builders/humble_road_2.jpg"
+    }
+  ],
+  "lastUpdated": "2025-05-31T01:37:00.824Z"
+}

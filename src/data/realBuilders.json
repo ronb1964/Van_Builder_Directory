@@ -1,0 +1,61 @@
+{
+  "New Jersey": [
+    {
+      "id": "nj-1",
+      "name": "VanDoIt",
+      "address": "Lakewood, NJ",
+      "phone": "(732) 555-1234",
+      "email": "info@vandoit.example.com",
+      "website": "https://www.vandoit.example.com",
+      "location": { "lat": 40.0583, "lng": -74.1371, "city": "Lakewood", "state": "New Jersey", "zip": "08701" },
+      "description": "Specializes in custom van conversions, including Mercedes Sprinter, Ford Transit, and Ram ProMaster.",
+      "rating": 4.8,
+      "reviewCount": 75,
+      "reviews": [],
+      "vanTypes": ["Sprinter", "Transit", "Promaster"],
+      "priceRange": { "min": 35000, "max": 120000 },
+      "amenities": ["Solar Power", "Kitchen", "Bathroom"],
+      "services": ["Custom Builds", "Electrical", "Plumbing"],
+      "yearsInBusiness": 5,
+      "leadTime": "3-6 months"
+    },
+    {
+      "id": "nj-2",
+      "name": "New Jersey Van Conversions",
+      "address": "Toms River, NJ",
+      "phone": "(732) 555-5678",
+      "email": "info@njvanconversions.example.com",
+      "website": "https://www.njvanconversions.example.com",
+      "location": { "lat": 39.9537, "lng": -74.1979, "city": "Toms River", "state": "New Jersey", "zip": "08753" },
+      "description": "Offers custom van conversions, including wheelchair-accessible vehicles and luxury vans.",
+      "rating": 4.7,
+      "reviewCount": 62,
+      "reviews": [],
+      "vanTypes": ["Sprinter", "Transit", "Promaster"],
+      "priceRange": { "min": 40000, "max": 130000 },
+      "amenities": ["Solar Power", "Kitchen", "Bathroom", "Heating"],
+      "services": ["Custom Builds", "Electrical", "Plumbing", "Accessibility Modifications"],
+      "yearsInBusiness": 7,
+      "leadTime": "4-7 months"
+    },
+    {
+      "id": "nj-3",
+      "name": "Garden State Vans",
+      "address": "Princeton, NJ",
+      "phone": "(609) 555-9012",
+      "email": "info@gardenstatevans.example.com",
+      "website": "https://www.gardenstatevans.example.com",
+      "location": { "lat": 40.3573, "lng": -74.6672, "city": "Princeton", "state": "New Jersey", "zip": "08540" },
+      "description": "Premium van conversions with a focus on sustainable and eco-friendly materials and systems.",
+      "rating": 4.9,
+      "reviewCount": 48,
+      "reviews": [],
+      "vanTypes": ["Sprinter", "Transit", "Promaster"],
+      "priceRange": { "min": 45000, "max": 150000 },
+      "amenities": ["Solar Power", "Kitchen", "Bathroom", "Heating", "Air Conditioning"],
+      "services": ["Custom Builds", "Electrical", "Plumbing", "Solar Installation"],
+      "yearsInBusiness": 4,
+      "leadTime": "5-8 months"
+    }
+  ]
+}

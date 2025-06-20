@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camper Van Builders - Real Data</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    #real-data-root {
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="real-data-root"></div>
+  <script>
+    // This script will load our React application
+    window.addEventListener('DOMContentLoaded', () => {
+      // Create a script element to load the React app
+      const script = document.createElement('script');
+      script.src = '/static/js/main.js'; // This will be the bundled React app
+      document.body.appendChild(script);
+      
+      // Initialize the app
+      window.initRealDataApp = () => {
+        if (window.ReactDOM && window.React && window.RealDataApp) {
+          ReactDOM.render(
+            React.createElement(RealDataApp),
+            document.getElementById('real-data-root')
+          );
+        } else {
+          console.error('React, ReactDOM, or RealDataApp not loaded');
+        }
+      };
+      
+      // Try to initialize after a short delay
+      setTimeout(() => {
+        if (typeof window.initRealDataApp === 'function') {
+          window.initRealDataApp();
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

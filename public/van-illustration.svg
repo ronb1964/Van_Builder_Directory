@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Camper Van Illustration</title>
+    <g id="Camper-Van" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Van-Body" transform="translate(100, 200)">
+            <!-- Van Body -->
+            <rect id="Van-Base" fill="#4A90E2" x="0" y="100" width="500" height="150" rx="20"></rect>
+            <rect id="Van-Top" fill="#4A90E2" x="100" y="0" width="300" height="100" rx="10"></rect>
+            <path d="M100,100 L100,0 L400,0 L400,100 L100,100 Z" id="Van-Connection" fill="#4A90E2"></path>
+            
+            <!-- Windows -->
+            <rect id="Front-Window" fill="#B8E4FF" x="110" y="20" width="90" height="60" rx="5"></rect>
+            <rect id="Side-Window-1" fill="#B8E4FF" x="220" y="20" width="70" height="60" rx="5"></rect>
+            <rect id="Side-Window-2" fill="#B8E4FF" x="310" y="20" width="70" height="60" rx="5"></rect>
+            
+            <!-- Wheels -->
+            <circle id="Wheel-Front" fill="#333333" cx="100" cy="250" r="40"></circle>
+            <circle id="Wheel-Rear" fill="#333333" cx="400" cy="250" r="40"></circle>
+            <circle id="Wheel-Front-Inner" fill="#666666" cx="100" cy="250" r="20"></circle>
+            <circle id="Wheel-Rear-Inner" fill="#666666" cx="400" cy="250" r="20"></circle>
+            
+            <!-- Details -->
+            <rect id="Door" fill="#3A7BC8" x="300" y="120" width="80" height="100"></rect>
+            <rect id="Headlight" fill="#FFDD00" x="20" y="150" width="30" height="20" rx="5"></rect>
+            <rect id="Taillight" fill="#FF5252" x="470" y="150" width="20" height="20" rx="5"></rect>
+            
+            <!-- Roof Rack -->
+            <rect id="Roof-Rack" stroke="#333333" stroke-width="4" x="150" y="-10" width="200" height="10" rx="2"></rect>
+            
+            <!-- Mountain Backdrop -->
+            <path d="M-50,300 L150,100 L300,200 L450,50 L600,300 L-50,300 Z" id="Mountains" fill="#8BC34A" opacity="0.3"></path>
+        </g>
+    </g>
+</svg>

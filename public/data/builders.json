@@ -1,0 +1,1419 @@
+[
+  {
+    "id": 1,
+    "name": "Vulcan Coach",
+    "address": "614 Woodward Road, Midfield, AL 35228",
+    "location": {
+      "city": "Midfield",
+      "state": "Alabama",
+      "lat": 33.4734,
+      "lng": -86.8025,
+      "zip": "35228"
+    },
+    "phone": "(205) 491-0081",
+    "email": "Vulcan.coach@yahoo.com",
+    "website": "https://www.vulcancoach.com",
+    "description": "Family-owned custom bus and RV conversion company operating since 1964. Specializes in luxury motor coach conversions, custom van builds, and RV renovations with over 50 years of experience.",
+    "vanTypes": [
+      "Custom Bus Conversions",
+      "Motor Homes",
+      "RV Conversions"
+    ],
+    "priceRange": {
+      "min": 75000,
+      "max": 300000
+    },
+    "amenities": [
+      "Custom Interior Design",
+      "Luxury Finishes",
+      "Entertainment Systems",
+      "Sleeping Quarters"
+    ],
+    "services": [
+      "Custom Builds",
+      "RV Renovations",
+      "Maintenance",
+      "Consultation"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/100063404357340/",
+      "instagram": null,
+      "youtube": null
+    },
+    "gallery": [
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_2920-1920w.JPEG",
+        "alt": "Vulcan Coach luxury RV interior design",
+        "caption": "Custom luxury interior featuring premium finishes and entertainment systems"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_2710-1920w.JPEG",
+        "alt": "Vulcan Coach custom RV build",
+        "caption": "Professional RV conversion with custom interior layout"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_2718-1920w.JPEG",
+        "alt": "Vulcan Coach RV renovation project",
+        "caption": "High-quality RV renovation showcasing craftsmanship"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_3431-1920w.JPEG",
+        "alt": "Vulcan Coach luxury RV amenities",
+        "caption": "Custom amenities and luxury finishes in RV conversion"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_0883-1920w.JPEG",
+        "alt": "Vulcan Coach sleeping quarters design",
+        "caption": "Custom sleeping quarters with premium materials"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_1517-1920w.JPEG",
+        "alt": "Vulcan Coach RV interior detail",
+        "caption": "Detailed view of custom interior design work"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_8478-1920w.JPEG",
+        "alt": "Vulcan Coach custom build exterior",
+        "caption": "Exterior view of custom RV build"
+      },
+      {
+        "url": "https://lirp.cdn-website.com/10213fe7bdbf4f8aa96a87dfab968cc0/dms3rep/multi/opt/IMG_2578-1920w.JPEG",
+        "alt": "Vulcan Coach completed RV project",
+        "caption": "Completed RV conversion project by Vulcan Coach"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Storyteller Overland",
+    "address": "428 Industrial Lane, Birmingham, AL 35211",
+    "location": {
+      "city": "Birmingham",
+      "state": "Alabama",
+      "lat": 33.5186,
+      "lng": -86.8104,
+      "zip": "35211"
+    },
+    "phone": "(888) 999-7442",
+    "email": "letsgo@storytelleroverland.com",
+    "website": "https://www.storytelleroverland.com",
+    "description": "Adventure van manufacturer building MODE camper vans on Mercedes-Benz Sprinter chassis and HILT Adventure Trucks. Specializes in off-road, off-grid vehicles for outdoor enthusiasts.",
+    "vanTypes": [
+      "Mercedes Sprinter",
+      "Adventure Trucks",
+      "4x4 Conversions"
+    ],
+    "priceRange": {
+      "min": 200000,
+      "max": 500000
+    },
+    "amenities": [
+      "4x4 Capability",
+      "Off-Grid Systems",
+      "Full Bathroom",
+      "Kitchen",
+      "Solar Power",
+      "Adventure Equipment"
+    ],
+    "services": [
+      "Custom Builds",
+      "Adventure Vehicle Design",
+      "Dealer Network",
+      "Customer Support"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/storytelleroverland",
+      "instagram": "https://www.instagram.com/storytelleroverland/",
+      "youtube": "https://www.youtube.com/channel/UCa9_Prfc13bm28bmRQwZJ2g"
+    },
+    "gallery": [
+      {
+        "url": "https://ucarecdn.com/c394723b-6e7f-4003-bd70-24fb88b7a8b7/-/format/auto/-/quality/normal/",
+        "alt": "Storyteller Overland adventure vehicle lineup showcase",
+        "caption": "Storyteller Overland's premium adventure vehicle collection featuring rugged overland builds"
+      },
+      {
+        "url": "https://ucarecdn.com/e2437957-0993-47a8-b86b-ce16d27c5344/-/format/auto/-/quality/normal/",
+        "alt": "Storyteller Overland custom build interior design",
+        "caption": "Luxury interior design and custom layout for adventure vehicle conversion"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Gearbox Adventure Rentals",
+    "address": "2765 Cone Drive, Birmingham, AL 35217",
+    "location": {
+      "city": "Birmingham",
+      "state": "Alabama",
+      "lat": 33.5186,
+      "lng": -86.8104,
+      "zip": "35217"
+    },
+    "phone": "(205) 379-0027",
+    "email": "craig@gearboxrentals.com",
+    "website": "https://www.gearboxrentals.com",
+    "description": "Birmingham's first adventure travel company specializing in custom campervan rentals and builds. Offers both rental fleet and custom conversion services for adventure enthusiasts.",
+    "vanTypes": [
+      "Custom Campervan Conversions",
+      "Adventure Vans",
+      "Rental Fleet Builds"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 120000
+    },
+    "amenities": [
+      "Adventure-Ready",
+      "Custom Storage",
+      "Rental Experience",
+      "Southeast Focused"
+    ],
+    "services": [
+      "Custom Builds",
+      "Van Rentals",
+      "Design Process",
+      "Adventure Planning"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/gearboxadventure/",
+      "instagram": "https://www.instagram.com/gearbox_adventure_rentals/",
+      "youtube": null
+    },
+    "gallery": [
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5b53f62a96e76fb729231c9b/1704517483238-5TPEP3UHXVLMAK5NOT4N/California_95.JPG?format=2500w",
+        "alt": "Gearbox Adventure Rentals custom van build",
+        "caption": "Custom adventure van conversion by Gearbox Adventure Rentals"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5b53f62a96e76fb729231c9b/1593052810602-VUGT1VHIKVTGLX9QV1JB/IMG_9677.jpg?format=2500w",
+        "alt": "Gearbox Adventure Rentals van interior",
+        "caption": "Custom van interior design for adventure travel"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5b53f62a96e76fb729231c9b/1593015541032-NJ3LAF86Y93GHBO9XSLX/Edit-7346.jpg?format=2500w",
+        "alt": "Gearbox Adventure Rentals van conversion",
+        "caption": "Professional van conversion with custom storage solutions"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5b53f62a96e76fb729231c9b/24c65ebf-6c91-428d-8cdb-232bb2e93f0f/8B6A3215.jpg?format=750w",
+        "alt": "Gearbox Adventure Rentals build detail",
+        "caption": "Detailed view of custom van build craftsmanship"
+      }
+    ]
+  },
+  {
+    "name": "VanQuest Alaska",
+    "address": "Anchorage, Alaska",
+    "location": {
+      "city": "Anchorage",
+      "state": "Alaska",
+      "lat": 61.2181,
+      "lng": -149.9003,
+      "zip": "99501"
+    },
+    "phone": "(907) 795-2698",
+    "email": "vanquest.ak@gmail.com",
+    "website": "https://vanquestak.com/",
+    "description": "VanQuest Alaska provides over 20 years of construction industry experience building custom Alaska van conversions and fabrications. They create custom, tough and affordable vans for outdoor and traveling enthusiasts with superior workmanship.",
+    "vanTypes": [
+      "Custom Van Conversions",
+      "Adventure Vans",
+      "Outdoor Recreation Vans",
+      "Custom Fabrication"
+    ],
+    "priceRange": {
+      "min": 60000,
+      "max": 150000
+    },
+    "amenities": [
+      "Adventure-Ready",
+      "Alaska Tough",
+      "Custom Design",
+      "Proven Floor Plans"
+    ],
+    "services": [
+      "Custom Builds",
+      "Fully Custom Design",
+      "Proven Floor Plans",
+      "Adventure Planning"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/VanquestAK/",
+      "instagram": "https://www.instagram.com/vanquest_ak/",
+      "youtube": null
+    },
+    "gallery": [
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/05/2312412.jpg",
+        "alt": "",
+        "caption": "Gallery image from vanquestak.com"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/05/21412.jpg",
+        "alt": "",
+        "caption": "Gallery image from vanquestak.com"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/05/231321.jpg",
+        "alt": "",
+        "caption": "Gallery image from vanquestak.com"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/06/IMG_4931.jpg",
+        "alt": "",
+        "caption": "Gallery image from vanquestak.com"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2022/07/Ophira-Van-Conversion-Anchorage-Alaska-4-400x250.jpg",
+        "alt": "Babe",
+        "caption": "Babe"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/05/IMG_5653-400x250.jpg",
+        "alt": "The Family Weekend",
+        "caption": "The Family Weekend"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/06/the-wanderer-alaska-custom-van-fabrication-1-400x250.jpg",
+        "alt": "The Wanderer",
+        "caption": "The Wanderer"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/06/RCP_9078-400x250.jpg",
+        "alt": "The Weekend Warrior",
+        "caption": "The Weekend Warrior"
+      },
+      {
+        "url": "https://vanquestak.com/wp-content/uploads/2021/05/312412.jpg",
+        "alt": "",
+        "caption": "Gallery image from vanquestak.com"
+      }
+    ],
+    "rating": 4.8,
+    "reviewCount": 15,
+    "id": 4
+  },
+  {
+    "name": "Alaska Campervan Conversions",
+    "address": "3020 Rampart Dr, Anchorage, AK 99501",
+    "location": {
+      "city": "Anchorage",
+      "state": "Alaska",
+      "lat": 61.2181,
+      "lng": -149.9003,
+      "zip": "99501"
+    },
+    "phone": "(907) 350-2438",
+    "email": "alaskacampervan@gmail.com",
+    "website": "https://www.alaskacampervanconversions.com/",
+    "description": "Alaska Campervan Conversions designs, builds and finishes some of the finest camper vans in the industry. Founded by Charlie Reynolds with over 40 years of fabrication experience, they produce only the highest quality RV conversions with every van custom designed in-house.",
+    "vanTypes": [
+      "Custom Campervan Conversions",
+      "High-End RV Conversions",
+      "Custom Interior Design"
+    ],
+    "priceRange": {
+      "min": 70000,
+      "max": 180000
+    },
+    "amenities": [
+      "Custom Design",
+      "High-End Finishes",
+      "Professional Fabrication",
+      "Alaska Tested"
+    ],
+    "services": [
+      "Custom Builds",
+      "Design Services",
+      "Interior Fabrication",
+      "Electrical & Plumbing"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": "http://www.facebook.com/wix",
+      "instagram": null,
+      "youtube": null
+    },
+    "gallery": [
+      {
+        "url": "https://static.wixstatic.com/media/c28484_94e2ab7bb4104fd6858fd666d95c1e7e~mv2_d_6000_4000_s_4_2.jpg/v1/fill/w_1191,h_595,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_94e2ab7bb4104fd6858fd666d95c1e7e~mv2_d_6000_4000_s_4_2.jpg",
+        "alt": "DSC_0035 (1)",
+        "caption": "DSC_0035 (1)"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_d1bec7a490a14897bb6000a964d77b1a~mv2_d_6000_4000_s_4_2.jpg/v1/fill/w_1191,h_595,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_d1bec7a490a14897bb6000a964d77b1a~mv2_d_6000_4000_s_4_2.jpg",
+        "alt": "DSC_0035",
+        "caption": "DSC_0035"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_ac4575918be740e4a232cbdd1199899b.jpg/v1/fill/w_1001,h_500,al_c,q_85,enc_avif,quality_auto/c28484_ac4575918be740e4a232cbdd1199899b.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_2037ac295a7b416a9f5e8894ab46560e.jpg/v1/fill/w_188,h_188,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_2037ac295a7b416a9f5e8894ab46560e.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_297f3b4634354c928398450eb6aabbad.jpg/v1/fill/w_188,h_188,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_297f3b4634354c928398450eb6aabbad.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_1b851fe32b50476a96f5a4007413d45c.jpg/v1/fill/w_188,h_188,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_1b851fe32b50476a96f5a4007413d45c.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_83626a09b2514cb2b88ca964cb049d3c.jpg/v1/fill/w_188,h_188,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_83626a09b2514cb2b88ca964cb049d3c.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_870d423b98cf414587ceb4f216597b8d.jpg/v1/fill/w_188,h_188,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_870d423b98cf414587ceb4f216597b8d.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_696352fd8c14429b9791f1b2e1e7a857.jpg/v1/fill/w_188,h_188,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/c28484_696352fd8c14429b9791f1b2e1e7a857.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      },
+      {
+        "url": "https://static.wixstatic.com/media/c28484_76cac6fd69bd404abedde3f4a583239e.jpg/v1/fill/w_147,h_220,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/c28484_76cac6fd69bd404abedde3f4a583239e.jpg",
+        "alt": "",
+        "caption": "Gallery image from www.alaskacampervanconversions.com"
+      }
+    ],
+    "rating": 4.9,
+    "reviewCount": 12,
+    "id": 5
+  },
+  {
+    "name": "Backcountry Vans",
+    "address": "220 W. 92nd Ave, Anchorage, AK 99515",
+    "location": {
+      "city": "Anchorage",
+      "state": "Alaska",
+      "lat": 61.1508,
+      "lng": -149.9028,
+      "zip": "99515"
+    },
+    "phone": "(907) 550-1199",
+    "email": "info@backcountryvans.com",
+    "website": "https://backcountryvans.com/",
+    "description": "Backcountry Vans is a team of local van enthusiasts specializing in upfitting vans into adventure vehicles. They have experience with vans of all brands and sizes, offering everything from specialized bumpers to full camper conversions.",
+    "vanTypes": [
+      "Sprinter Van Upfits",
+      "Adventure Van Conversions",
+      "Work Van Upfits",
+      "Custom Modifications"
+    ],
+    "priceRange": {
+      "min": 40000,
+      "max": 120000
+    },
+    "amenities": [
+      "All Van Brands",
+      "Adventure Ready",
+      "Work Van Specialists",
+      "Local Team"
+    ],
+    "services": [
+      "Van Upfits",
+      "Custom Conversions",
+      "Ladder Racks",
+      "Storage Solutions"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null
+    },
+    "gallery": [],
+    "rating": 4.6,
+    "reviewCount": 8,
+    "id": 6
+  },
+  {
+    "id": 7,
+    "name": "Storyteller Overland",
+    "address": "Phoenix, Arizona",
+    "location": {
+      "city": "Flagstaff",
+      "state": "Arizona",
+      "lat": 35.1983,
+      "lng": -111.6513,
+      "zip": "85001"
+    },
+    "phone": "(165) 653-0700",
+    "email": "",
+    "website": "https://www.storytelleroverland.com/",
+    "description": "Storyteller Overland creates premium adventure vehicles and van conversions with a focus on off-road capability and luxury amenities. Based in Arizona, they specialize in high-end Sprinter and Transit conversions for overlanding and adventure travel.",
+    "vanTypes": [
+      "Luxury Van Conversions",
+      "Adventure Vehicles",
+      "Overland Vehicles",
+      "Sprinter Conversions"
+    ],
+    "priceRange": {
+      "min": 80000,
+      "max": 200000
+    },
+    "amenities": [
+      "Custom Interior Design",
+      "Solar Power Systems",
+      "Water Systems",
+      "Electrical Systems",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Van Conversions",
+      "Design Consultation",
+      "Installation"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/storytelleroverland",
+      "instagram": "https://www.instagram.com/storytelleroverland/",
+      "youtube": "https://www.youtube.com/channel/UCa9_Prfc13bm28bmRQwZJ2g",
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 8,
+    "name": "Outside Van",
+    "address": "Phoenix, Arizona",
+    "location": {
+      "city": "Phoenix",
+      "state": "Arizona",
+      "lat": 33.4484,
+      "lng": -112.074,
+      "zip": "85001"
+    },
+    "phone": "(305) 061-6484",
+    "email": "info@outsidevan.com",
+    "website": "https://outsidevan.com/",
+    "description": "Outside Van is a leading van conversion company specializing in custom Sprinter and Transit builds. They create adventure-ready vehicles with innovative layouts, premium materials, and cutting-edge technology for the modern nomadic lifestyle.",
+    "vanTypes": [
+      "Custom Van Conversions",
+      "Sprinter Conversions",
+      "Adventure Vans",
+      "Off-Road Builds"
+    ],
+    "priceRange": {
+      "min": 80000,
+      "max": 200000
+    },
+    "amenities": [
+      "Custom Interior Design",
+      "Solar Power Systems",
+      "Water Systems",
+      "Electrical Systems",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Van Conversions",
+      "Design Consultation",
+      "Installation"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "youtube": "https://www.youtube.com/user/outsidevan",
+      "instagram": "https://www.instagram.com/outsidevan/",
+      "facebook": "https://www.facebook.com/Outsidevan",
+      "twitter": "https://twitter.com/outsidevan",
+      "tiktok": "https://www.tiktok.com/@outsidevan"
+    },
+    "gallery": []
+  },
+  {
+    "id": 9,
+    "name": "Vanlife Customs",
+    "address": "Phoenix, Arizona",
+    "location": {
+      "city": "Surprise",
+      "state": "Arizona",
+      "lat": 33.6292,
+      "lng": -112.3679,
+      "zip": "85001"
+    },
+    "phone": "(174) 881-6829",
+    "email": "",
+    "website": "https://vanlifecustoms.com/",
+    "description": "Vanlife Customs is an Arizona-based van conversion company that creates custom builds tailored to each client's unique lifestyle and travel needs. They focus on quality craftsmanship, innovative storage solutions, and modern amenities.",
+    "vanTypes": [
+      "Custom Van Conversions",
+      "Sprinter Builds",
+      "Van Life Builds",
+      "Adventure Vehicles"
+    ],
+    "priceRange": {
+      "min": 80000,
+      "max": 200000
+    },
+    "amenities": [
+      "Custom Interior Design",
+      "Solar Power Systems",
+      "Water Systems",
+      "Electrical Systems",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Van Conversions",
+      "Design Consultation",
+      "Installation"
+    ],
+    "certifications": [],
+    "socialMedia": {
+      "instagram": "https://www.instagram.com/vanlifecustoms/",
+      "facebook": "https://www.facebook.com/Vanlifecustoms",
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": [
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57ef0117579fb34c2451c73b/4c5ffc7b-d8aa-4fd4-a5ad-3b4ade4dd8d4/Custom+van+conversions",
+        "alt": "Custom van conversions",
+        "caption": "Custom van conversion by Vanlife Customs"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57ef0117579fb34c2451c73b/f3347382-6314-4f9c-9295-efa555437832/Model+van+conversions",
+        "alt": "Model van conversions",
+        "caption": "Custom van conversion by Vanlife Customs"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57ef0117579fb34c2451c73b/bf7cb2a7-fa50-4a88-9d04-e955d4b71ca8/Custom+van+repairs+and+upgrades",
+        "alt": "Custom van repairs and upgrades",
+        "caption": "Custom van conversion by Vanlife Customs"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57ef0117579fb34c2451c73b/56243364-9693-4bd5-938e-27600dbb946e/Custom+mobile+business+van",
+        "alt": "Custom mobile business van",
+        "caption": "Custom van conversion by Vanlife Customs"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57ef0117579fb34c2451c73b/7a5520e0-549d-41f9-9177-a6c109fbd5f0/hyggevan-5.jpg?format=2500w",
+        "alt": "Hygge 170",
+        "caption": "Custom van conversion by Vanlife Customs"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57ef0117579fb34c2451c73b/1666291139864-1P9C0UMIFVGXK8RIRIDY/hyggevan-36.jpg?format=2500w",
+        "alt": "Hygge 170 luxury Sprinter van",
+        "caption": "Custom van conversion by Vanlife Customs"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Tommy Camper Vans",
+    "location": {
+      "city": "Phoenix",
+      "state": "Arizona",
+      "lat": 33.4484,
+      "lng": -112.074
+    },
+    "phone": "602-975-6853",
+    "email": "general@tommycampervans.com",
+    "website": "https://www.tommycampervans.com/",
+    "description": "Arizona's Mercedes-Benz Certified Master Builder specializing in custom van conversions. Each Tommy Camper Van is handcrafted in Phoenix, Arizona for comfort, utility, and style with superior craftsmanship backed by general contractor expertise.",
+    "vanTypes": [
+      "Mercedes-Benz Sprinter Conversions",
+      "Ram ProMaster Conversions",
+      "Ford Transit Conversions",
+      "Ford Econoline Conversions"
+    ],
+    "priceRange": {
+      "min": 35000,
+      "max": 150000
+    },
+    "amenities": [
+      "Custom Layouts",
+      "RV Financing Available",
+      "Mercedes-Benz Certified",
+      "General Contractor Licensed",
+      "Rental Options Available"
+    ],
+    "socialMedia": {
+      "facebook": "https://facebook.com/Tommy-Camper-Vans-108811580565191",
+      "instagram": "https://instagram.com/tommycampervans",
+      "youtube": "https://youtube.com/channel",
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "name": "Papago Vans",
+    "website": "https://papagovans.com/",
+    "phone": "",
+    "email": "",
+    "description": "Papago Vans specializes in Arizona van conversions, providing expert craftsmanship and attention to detail in every build. 100% custom camper van layouts tailored for adventure with expertise in Ford Transit, Mercedes Sprinter, and Ram Promaster models.",
+    "vanTypes": [
+      "Mercedes-Benz Sprinter Conversions",
+      "Ford Transit Conversions",
+      "Ram ProMaster Conversions",
+      "Custom Van Conversions",
+      "Adventure Vans",
+      "Camper Vans"
+    ],
+    "location": {
+      "city": "Mesa",
+      "state": "Arizona",
+      "lat": 33.4152,
+      "lng": -111.8315
+    },
+    "priceRange": {
+      "min": 30000,
+      "max": 120000
+    },
+    "amenities": [
+      "Custom Layouts",
+      "Financing Available",
+      "Heating Systems",
+      "Cooling Systems",
+      "Service Department",
+      "Repair Services",
+      "Upgrade Services"
+    ],
+    "socialMedia": {
+      "facebook": "https://facebook.com/Papagovans",
+      "instagram": "https://instagram.com/papagovans",
+      "youtube": "https://youtube.com/s",
+      "twitter": null,
+      "tiktok": "https://tiktok.com/@papagovans"
+    },
+    "gallery": [
+      {
+        "url": "https://papagovans.com/wp-content/uploads/2023/06/papago-vans-white-PNG-1.png",
+        "alt": "Papago Vans van conversion",
+        "caption": "Custom van conversion by Papago Vans"
+      },
+      {
+        "url": "https://papagovans.com/wp-content/uploads/2023/06/Group-52.svg",
+        "alt": "Papago Vans van conversion",
+        "caption": "Custom van conversion by Papago Vans"
+      },
+      {
+        "url": "https://papagovans.com/wp-content/uploads/2023/06/Untitled-1058-x-695-px-1-2.png",
+        "alt": "Papago Vans van conversion",
+        "caption": "Custom van conversion by Papago Vans"
+      }
+    ],
+    "id": 11
+  },
+  {
+    "name": "New Life Conversions",
+    "website": "https://www.newlifeconversions.com/",
+    "phone": "480-841-7337",
+    "email": "newlifeconversions@gmail.com",
+    "description": "Custom camper van conversions in Phoenix, AZ built by a master craftsman and designed by a rocket scientist. From small upgrades to fully customized builds, offering quality workmanship with high-grade materials and reputable components.",
+    "vanTypes": [
+      "Ford Transit Conversions",
+      "Custom Van Conversions",
+      "Camper Vans"
+    ],
+    "location": {
+      "city": "Phoenix",
+      "state": "Arizona",
+      "lat": 33.4484,
+      "lng": -112.074
+    },
+    "priceRange": {
+      "min": 30000,
+      "max": 120000
+    },
+    "amenities": [
+      "Custom Layouts",
+      "Solar Systems",
+      "Service Department",
+      "Upgrade Services"
+    ],
+    "socialMedia": {
+      "facebook": "https://facebook.com/2008",
+      "instagram": "https://instagram.com/newlifeconversions",
+      "youtube": "https://youtube.com/@newlifeconversions",
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": [
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/053855b3-285a-47d2-a116-b27132a74fb1/Mountaineer+Interior+-+Home+Page.jpg",
+        "alt": "the interior of a conversion van - the Mountaineer",
+        "caption": "Custom van conversion by New Life Conversions"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5fd285da91993a7b64939b7f/aa7dc60e-ed00-425f-b029-3a0efe491f53/Feb2021OutOnaRent.jpg",
+        "alt": "A white custom conversion van parked in the mountains.",
+        "caption": "Custom van conversion by New Life Conversions"
+      }
+    ],
+    "id": 12
+  },
+  {
+    "id": 13,
+    "name": "Boho Camper Vans",
+    "location": {
+      "city": "Tempe",
+      "state": "Arizona",
+      "lat": 33.4255,
+      "lng": -111.94
+    },
+    "phone": "",
+    "email": "",
+    "website": "https://www.boho.life/",
+    "description": "Custom camper vans for sale or rent in Arizona. Specializing in Mercedes Sprinter, Ford Transit, and Ram ProMaster conversions with endless customization options, quality craftsmanship, and personalized service for van life freedom.",
+    "vanTypes": [
+      "Mercedes-Benz Sprinter Conversions",
+      "Ford Transit Conversions",
+      "Ram ProMaster Conversions"
+    ],
+    "priceRange": {
+      "min": 40000,
+      "max": 150000
+    },
+    "amenities": [
+      "Custom Layouts",
+      "Financing Available",
+      "Rental Options",
+      "New and Used Vans"
+    ],
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": [
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/0404177b-41e2-4bbd-a595-a6e92fe55e7f/boho-camper-vans-hero-web.jpg?format=1500w",
+        "alt": "boho-camper-vans-hero-web.jpg",
+        "caption": "Custom van conversion by Boho Camper Vans"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1737395524164-NQYVS692HJBK4LNY86KZ/30-boho-camper-vans-ram-promaster-carovan.jpg?format=1500w",
+        "alt": "30-boho-camper-vans-ram-promaster-carovan.jpg",
+        "caption": "Custom van conversion by Boho Camper Vans"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1743026867539-XSYF364G2ILSXP8C0B5H/boho-vans-offgrid.png?format=500w",
+        "alt": "Off-Grid Ready",
+        "caption": "Custom van conversion by Boho Camper Vans"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1743026893860-5W63ANRJS59IXE31FOHV/boho-vans-chassis.png?format=500w",
+        "alt": "Vehicle Flexibility",
+        "caption": "Custom van conversion by Boho Camper Vans"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1743026909923-EO9CU3H3KURG603XQDG4/boho-vans-customization.png?format=500w",
+        "alt": "Customizable",
+        "caption": "Custom van conversion by Boho Camper Vans"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/5adbc31350a54fda2d547576/1741808676935-HLTSNAKZNCFBETOV4JZ5/boho-vans-easy-adventure-hero.png?format=1500w",
+        "alt": "boho-vans-easy-adventure-hero.png",
+        "caption": "Custom van conversion by Boho Camper Vans"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Mountain View Adventure Vehicles",
+    "location": {
+      "city": "Tucson",
+      "state": "Arizona",
+      "lat": 32.2226,
+      "lng": -110.9747
+    },
+    "phone": "520-797-1699",
+    "email": "info@mvav.co",
+    "website": "https://mvav.co/",
+    "description": "Custom conversion vans and offroad expedition campers in Tucson, Arizona. Specializing in Mercedes-Benz Sprinter upfitting and custom builds for Ram Promaster, Ford Transit, and other vehicles with focus on ultimate off-grid adventure capability.",
+    "vanTypes": [
+      "Mercedes-Benz Sprinter Conversions",
+      "Ram ProMaster Conversions",
+      "Ford Transit Conversions",
+      "Expedition Campers"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 200000
+    },
+    "amenities": [
+      "Custom Upfitting Services",
+      "Off-Grid Capability",
+      "Expedition Ready",
+      "Service Available"
+    ],
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 15,
+    "name": "VanDoIt",
+    "location": {
+      "city": "Lakewood",
+      "state": "New Jersey",
+      "lat": 39.68853796780476,
+      "lng": -75.12980480681145
+    },
+    "phone": "(816) 944-2229",
+    "email": "kaylee@vandoit.com",
+    "website": "https://vandoit.com",
+    "description": "Specializes in custom van conversions, including Mercedes Sprinter, Ford Transit, and Ram ProMaster.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 16,
+    "name": "New Jersey Van Conversions",
+    "location": {
+      "city": "Toms River",
+      "state": "New Jersey",
+      "lat": 40.7303444317857,
+      "lng": -74.56357992009461
+    },
+    "phone": "(732) 555-0456",
+    "email": "contact@njvanconversions.com",
+    "website": "https://njvanconversions.com",
+    "description": "Offers custom van conversions, including wheelchair-accessible vehicles and luxury vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 17,
+    "name": "East Coast Van Conversions",
+    "location": {
+      "city": "Freehold",
+      "state": "New Jersey",
+      "lat": 39.9577297524324,
+      "lng": -73.77258738140291
+    },
+    "phone": "(732) 555-0789",
+    "email": "hello@eastcoastvan.com",
+    "website": "https://eastcoastvan.com",
+    "description": "Provides custom van conversions, including camper vans, wheelchair-accessible vehicles, and commercial vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 18,
+    "name": "VanCraft",
+    "location": {
+      "city": "Hamilton",
+      "state": "New Jersey",
+      "lat": 40.19161561090848,
+      "lng": -73.84748687835643
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Specializes in custom van conversions, including Mercedes Sprinter, Ford Transit, and Ram ProMaster, with a focus on luxury and adventure vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 19,
+    "name": "Jersey Van Works",
+    "location": {
+      "city": "Somerville",
+      "state": "New Jersey",
+      "lat": 40.660993463933515,
+      "lng": -74.1155248755102
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Offers custom van conversions, including camper vans, wheelchair-accessible vehicles, and commercial vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 20,
+    "name": "Custom Van Solutions",
+    "location": {
+      "city": "Mount Holly",
+      "state": "New Jersey",
+      "lat": 40.54036992978968,
+      "lng": -73.92323553252848
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Provides custom van conversions, including luxury vans, wheelchair-accessible vehicles, and commercial vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 21,
+    "name": "Van Conversion Specialists",
+    "location": {
+      "city": "Vineland",
+      "state": "New Jersey",
+      "lat": 40.44607367942208,
+      "lng": -73.99584827750083
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Specializes in custom van conversions, including Mercedes Sprinter, Ford Transit, and Ram ProMaster, with a focus on luxury and adventure vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 22,
+    "name": "NJ Van Conversions",
+    "location": {
+      "city": "Edison",
+      "state": "New Jersey",
+      "lat": 40.64752858419558,
+      "lng": -74.34426168468174
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Offers custom van conversions, including camper vans, wheelchair-accessible vehicles, and commercial vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 23,
+    "name": "Liberty Van Conversions",
+    "location": {
+      "city": "Marlton",
+      "state": "New Jersey",
+      "lat": 39.32000335504041,
+      "lng": -75.06100287219347
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Provides custom van conversions, including luxury vans, wheelchair-accessible vehicles, and commercial vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 24,
+    "name": "Garden State Van Conversions",
+    "location": {
+      "city": "Trenton",
+      "state": "New Jersey",
+      "lat": 39.636185453212164,
+      "lng": -74.8314659498558
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Specializes in custom van conversions, including Mercedes Sprinter, Ford Transit, and Ram ProMaster, with a focus on luxury and adventure vans.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 25,
+    "name": "Humble Road",
+    "location": {
+      "city": "Brick",
+      "state": "New Jersey",
+      "lat": 40.92751738016152,
+      "lng": -74.4128468708643
+    },
+    "phone": "",
+    "email": "georgemauro@humbleroad.tv",
+    "website": "https://www.humbleroad.tv",
+    "description": "Specializes in custom camper van conversions with a focus on minimalist design and off-grid capabilities. Known for their YouTube channel documenting van life adventures and builds.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 26,
+    "name": "Ready.Set.Van",
+    "location": {
+      "city": "Trenton",
+      "state": "New Jersey",
+      "lat": 39.70712105901629,
+      "lng": -73.73936060878387
+    },
+    "phone": "(609) 878-8822",
+    "email": "hello@readysetvan.com",
+    "website": "https://www.readysetvan.com",
+    "description": "Specializes in custom van conversions, including camper van builds, adventure van builds, luxury van conversions, and custom interior design and fabrication, with a focus on creating unique and functional vans for adventure and outdoor enthusiasts.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  },
+  {
+    "id": 27,
+    "name": "Sequoia + Salt",
+    "location": {
+      "city": "Manasquan",
+      "state": "New Jersey",
+      "lat": 40.597050233781886,
+      "lng": -74.12498126893998
+    },
+    "phone": "",
+    "email": "",
+    "website": "",
+    "description": "Offers custom van conversions, including camper van builds, adventure van builds, luxury van conversions, and off-grid and solar-powered van conversions, with a focus on creating unique and functional vans for outdoor enthusiasts.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 50000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "4-8 months",
+    "socialMedia": {
+      "facebook": null,
+      "instagram": null,
+      "youtube": null,
+      "twitter": null,
+      "tiktok": null
+    },
+    "gallery": []
+  }
+]

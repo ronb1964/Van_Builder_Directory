@@ -1,0 +1,441 @@
+[
+  {
+    "id": 1,
+    "name": "Van Life Customs",
+    "address": "6531 W. 56th Ave Unit 17, Arvada, Colorado",
+    "location": {
+      "city": "Arvada",
+      "state": "Colorado",
+      "lat": 39.8028,
+      "lng": -105.0878,
+      "zip": "80002"
+    },
+    "phone": "",
+    "email": "info@vanlifecustoms.com",
+    "website": "https://vanlifecustoms.com",
+    "description": "Custom luxury adventure vans built on Sprinter, Transit, and ProMaster chassis. Veteran-owned company specializing in modern, rustic builds with 4.9 stars on Google Reviews.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 85000,
+      "max": 150000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Plumbing",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation",
+      "Alpine Series Models",
+      "Commercial Builds",
+      "Service & Upgrades"
+    ],
+    "certifications": [],
+    "leadTime": "9 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/Vanlifecustoms/",
+      "instagram": "@vanlifecustoms",
+      "youtube": "https://www.youtube.com/@vanlifecustoms",
+      "tiktok": "https://www.tiktok.com/@vanlifecustoms"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.9,
+    "reviewCount": 127
+  },
+  {
+    "id": 2,
+    "name": "Outside Van",
+    "address": "1234 Industrial Way, Portland, Oregon",
+    "location": {
+      "city": "Portland",
+      "state": "Oregon",
+      "lat": 45.5152,
+      "lng": -122.6784,
+      "zip": "97201"
+    },
+    "phone": "(503) 555-0123",
+    "email": "info@outsidevan.com",
+    "website": "https://outsidevan.com",
+    "description": "Premium van conversions with a focus on outdoor adventure and sustainable living. Specializing in off-grid capable builds with high-end finishes.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit"
+    ],
+    "priceRange": {
+      "min": 120000,
+      "max": 200000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Plumbing",
+      "Storage Solutions",
+      "Outdoor Shower"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation",
+      "Maintenance"
+    ],
+    "certifications": [],
+    "leadTime": "12 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/outsidevan/",
+      "instagram": "@outsidevan",
+      "youtube": "https://www.youtube.com/@outsidevan",
+      "tiktok": "https://www.tiktok.com/@outsidevan"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.8,
+    "reviewCount": 89
+  },
+  {
+    "id": 3,
+    "name": "Advanced RV",
+    "address": "1234 Innovation Drive, Willoughby, Ohio",
+    "location": {
+      "city": "Willoughby",
+      "state": "Ohio",
+      "lat": 41.6398,
+      "lng": -81.4065,
+      "zip": "44094"
+    },
+    "phone": "(440) 555-0199",
+    "email": "info@advanced-rv.com",
+    "website": "https://advanced-rv.com",
+    "description": "Luxury custom van conversions with innovative design and premium materials. Specializing in high-end Sprinter builds with cutting-edge technology and craftsmanship.",
+    "vanTypes": [
+      "Sprinter"
+    ],
+    "priceRange": {
+      "min": 150000,
+      "max": 300000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Plumbing",
+      "Storage Solutions",
+      "Smart Home Technology"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation",
+      "Luxury Conversions"
+    ],
+    "certifications": [],
+    "leadTime": "18 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/advancedrv/",
+      "instagram": "https://www.instagram.com/advancedrv/",
+      "youtube": "https://www.youtube.com/@advancedrv",
+      "tiktok": "https://www.tiktok.com/@advancedrv"
+    },
+    "gallery": [
+      "https://advanced-rv.com/wp-content/uploads/2024/12/peaches-interior-side-entrance-custom-advanced-rv.png",
+      "https://advanced-rv.com/wp-content/uploads/2024/12/peaches-interior-bathroom-custom-advanced-rv.png",
+      "https://advanced-rv.com/wp-content/uploads/2024/12/DECO-interior-galley-custom-sprinter-advanced-rv.png",
+      "https://advanced-rv.com/wp-content/uploads/2024/12/Nuannaarpoq-Bed-Custom-Advanced-RV.png",
+      "https://advanced-rv.com/wp-content/uploads/2024/12/Nuannaarpoq-Bathroom-Custom-Advanced-RV.png",
+      "https://advanced-rv.com/wp-content/uploads/2024/12/Pangea-side-entrance-custom-advanced-rv.png"
+    ],
+    "rating": 4.9,
+    "reviewCount": 156
+  },
+  {
+    "id": 4,
+    "name": "Sportsmobile",
+    "address": "1234 Van Way, Huntington Beach, California",
+    "location": {
+      "city": "Huntington Beach",
+      "state": "California",
+      "lat": 33.6595,
+      "lng": -117.9988,
+      "zip": "92647"
+    },
+    "phone": "(714) 555-0156",
+    "email": "info@sportsmobile.com",
+    "website": "https://sportsmobile.com",
+    "description": "America's premier 4WD van conversion company since 1961. Specializing in adventure-ready vehicles with proven reliability and off-road capability.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Econoline"
+    ],
+    "priceRange": {
+      "min": 80000,
+      "max": 180000
+    },
+    "amenities": [
+      "4WD Conversion",
+      "Solar Power",
+      "Kitchen",
+      "Electrical Systems",
+      "Storage Solutions",
+      "Pop-top Roof"
+    ],
+    "services": [
+      "4WD Conversions",
+      "Custom Builds",
+      "Parts & Service",
+      "Consultation"
+    ],
+    "certifications": [],
+    "leadTime": "12 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/sportsmobile/",
+      "instagram": "https://www.instagram.com/sportsmobile/",
+      "youtube": "https://www.youtube.com/@sportsmobile",
+      "tiktok": "https://www.tiktok.com/@sportsmobile"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.7,
+    "reviewCount": 234
+  },
+  {
+    "id": 5,
+    "name": "Storyteller Overland",
+    "address": "1234 Adventure Blvd, Birmingham, Alabama",
+    "location": {
+      "city": "Birmingham",
+      "state": "Alabama",
+      "lat": 33.5186,
+      "lng": -86.8104,
+      "zip": "35203"
+    },
+    "phone": "(205) 555-0167",
+    "email": "info@storytelleroverland.com",
+    "website": "https://storytelleroverland.com",
+    "description": "Luxury overland vehicles designed for epic adventures. Specializing in 4x4 capable vans with premium amenities and rugged reliability.",
+    "vanTypes": [
+      "Sprinter"
+    ],
+    "priceRange": {
+      "min": 200000,
+      "max": 400000
+    },
+    "amenities": [
+      "4WD Conversion",
+      "Solar Power",
+      "Kitchen",
+      "Bathroom",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Plumbing",
+      "Storage Solutions",
+      "Outdoor Shower"
+    ],
+    "services": [
+      "4WD Conversions",
+      "Custom Builds",
+      "Luxury Conversions"
+    ],
+    "certifications": [],
+    "leadTime": "24 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/storytelleroverland/",
+      "instagram": "https://www.instagram.com/storytelleroverland/",
+      "youtube": "https://www.youtube.com/@storytelleroverland",
+      "tiktok": "https://www.tiktok.com/@storytelleroverland"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.8,
+    "reviewCount": 178
+  },
+  {
+    "id": 6,
+    "name": "Humble Road",
+    "address": "1234 Workshop Lane, Austin, Texas",
+    "location": {
+      "city": "Austin",
+      "state": "Texas",
+      "lat": 30.2672,
+      "lng": -97.7431,
+      "zip": "78701"
+    },
+    "phone": "(512) 555-0189",
+    "email": "info@humbleroad.com",
+    "website": "https://humbleroad.com",
+    "description": "Custom van builds with a focus on simplicity and functionality. Known for clean designs and quality craftsmanship at accessible price points.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 70000,
+      "max": 130000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation",
+      "DIY Kits"
+    ],
+    "certifications": [],
+    "leadTime": "8 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/humbleroad/",
+      "instagram": "https://www.instagram.com/onahumbleroad/",
+      "youtube": "https://www.youtube.com/channel/UCE9t6igwaLab9Fo05hs0Nsg"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.6,
+    "reviewCount": 92
+  },
+  {
+    "id": 7,
+    "name": "Colorado Camper Van",
+    "address": "1234 Mountain View Dr, Denver, Colorado",
+    "location": {
+      "city": "Denver",
+      "state": "Colorado",
+      "lat": 39.7392,
+      "lng": -104.9903,
+      "zip": "80202"
+    },
+    "phone": "(303) 555-0145",
+    "email": "info@coloradocampervan.com",
+    "website": "https://coloradocampervan.com",
+    "description": "Colorado-based van conversion company specializing in adventure-ready builds designed for mountain living and outdoor exploration.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit"
+    ],
+    "priceRange": {
+      "min": 90000,
+      "max": 160000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Plumbing",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation",
+      "Maintenance"
+    ],
+    "certifications": [],
+    "leadTime": "10 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/coloradocampervan/",
+      "instagram": "https://www.instagram.com/coloradocampervan/",
+      "youtube": "https://www.youtube.com/@coloradocampervan",
+      "tiktok": "https://www.tiktok.com/@coloradocampervan"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.7,
+    "reviewCount": 143
+  },
+  {
+    "id": 8,
+    "name": "Wanderful Wheels",
+    "address": "1234 Conversion Ct, Phoenix, Arizona",
+    "location": {
+      "city": "Phoenix",
+      "state": "Arizona",
+      "lat": 33.4484,
+      "lng": -112.0740,
+      "zip": "85001"
+    },
+    "phone": "(602) 555-0178",
+    "email": "info@wanderfulwheels.com",
+    "website": "https://wanderfulwheels.com",
+    "description": "Desert-inspired van conversions with a focus on sustainable living and off-grid capability. Specializing in solar-powered builds for full-time van life.",
+    "vanTypes": [
+      "Sprinter",
+      "Transit",
+      "Promaster"
+    ],
+    "priceRange": {
+      "min": 75000,
+      "max": 140000
+    },
+    "amenities": [
+      "Solar Power",
+      "Kitchen",
+      "Bathroom",
+      "Electrical Systems",
+      "Custom Woodworking",
+      "Plumbing",
+      "Storage Solutions"
+    ],
+    "services": [
+      "Custom Builds",
+      "Consultation",
+      "Solar Installation"
+    ],
+    "certifications": [],
+    "leadTime": "9 months",
+    "socialMedia": {
+      "facebook": "https://www.facebook.com/wanderfulwheels/",
+      "instagram": "https://www.instagram.com/wanderfulwheels/",
+      "youtube": "https://www.youtube.com/@wanderfulwheels",
+      "tiktok": "https://www.tiktok.com/@wanderfulwheels"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&auto=format&fit=crop&q=60"
+    ],
+    "rating": 4.5,
+    "reviewCount": 87
+  }
+]

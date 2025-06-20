@@ -1,0 +1,11 @@
+id,name,city,state,zip,phone,email,website,vanTypes,priceMin,priceMax,rating,reviewCount
+1,Vulcan Coach,Midfield,Alabama,35228,(205) 491-0081,Vulcan.coach@yahoo.com,https://www.vulcancoach.com,Custom Bus Conversions|Motor Homes|RV Conversions,75000,300000,,
+2,Storyteller Overland,Birmingham,Alabama,35211,(888) 999-7442,letsgo@storytelleroverland.com,https://www.storytelleroverland.com,Mercedes Sprinter|Adventure Trucks|4x4 Conversions,200000,500000,,
+3,Gearbox Adventure Rentals,Birmingham,Alabama,35217,(205) 379-0027,craig@gearboxrentals.com,https://www.gearboxrentals.com,Custom Campervan Conversions|Adventure Vans|Rental Fleet Builds,50000,120000,,
+4,VanQuest Alaska,Anchorage,Alaska,99501,(907) 795-2698,vanquest.ak@gmail.com,https://vanquestak.com/,Custom Van Conversions|Adventure Vans|Outdoor Recreation Vans|Custom Fabrication,60000,150000,4.8,15
+5,Alaska Campervan Conversions,Anchorage,Alaska,99501,(907) 350-2438,alaskacampervan@gmail.com,https://www.alaskacampervanconversions.com/,Custom Campervan Conversions|High-End RV Conversions|Custom Interior Design,70000,180000,4.9,12
+6,Backcountry Vans,Anchorage,Alaska,99515,(907) 550-1199,info@backcountryvans.com,https://backcountryvans.com/,Sprinter Van Upfits|Adventure Van Conversions|Work Van Upfits|Custom Modifications,40000,120000,4.6,8
+7,Storyteller Overland,Phoenix,Arizona,85001,(165) 653-0700,,https://www.storytelleroverland.com/,Luxury Van Conversions|Adventure Vehicles|Overland Vehicles|Sprinter Conversions,80000,200000,,
+8,Outside Van,Phoenix,Arizona,85001,(305) 061-6484,info@outsidevan.com,https://outsidevan.com/,Custom Van Conversions|Sprinter Conversions|Adventure Vans|Off-Road Builds,80000,200000,,
+9,Nomad Vanz,Phoenix,Arizona,85001,(172) 434-8582,,https://nomadvanz.com/,Custom Van Conversions|Adventure Vans|Travel Trailers|Nomadic Builds,80000,200000,,
+10,Vanlife Customs,Phoenix,Arizona,85001,(174) 881-6829,,https://vanlifecustoms.com/,Custom Van Conversions|Sprinter Builds|Van Life Builds|Adventure Vehicles,80000,200000,,

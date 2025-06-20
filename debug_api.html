@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Debug Test</title>
+</head>
+<body>
+    <h1>Van Builder API Debug</h1>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="results"></div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Testing API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/builders');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const builders = data.data;
+                    const byState = {};
+                    
+                    builders.forEach(builder => {
+                        const state = builder.state;
+                        if (!byState[state]) byState[state] = [];
+                        byState[state].push(builder.name);
+                    });
+                    
+                    let html = '<h2>API Test Results:</h2>';
+                    html += `<p><strong>Total Builders:</strong> ${builders.length}</p>`;
+                    html += '<h3>By State:</h3>';
+                    
+                    Object.keys(byState).sort().forEach(state => {
+                        html += `<p><strong>${state}:</strong> ${byState[state].length} builders</p>`;
+                        html += '<ul>';
+                        byState[state].forEach(name => {
+                            html += `<li>${name}</li>`;
+                        });
+                        html += '</ul>';
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<p style="color: red;">API Error: ' + data.error + '</p>';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = '<p style="color: red;">Connection Error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html> 
