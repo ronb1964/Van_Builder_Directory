@@ -3,7 +3,7 @@ import { Builder } from '../types/builder';
 // Use environment-specific API URL
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? '/api' 
-  : '/api'; // Use proxy in development
+  : 'http://localhost:3001/api'; // Direct connection to API server in development
 
 export class DatabaseService {
   private fallbackBuilders: Builder[] = [

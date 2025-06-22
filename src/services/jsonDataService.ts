@@ -175,39 +175,57 @@ export class ApiDataService {
   private readonly baseUrl = 'http://localhost:3001/api';
 
   async getBuilders() {
+    console.log('🔄 ApiDataService: Fetching builders from SQLite API...');
     try {
-      const response = await fetch(`${this.baseUrl}/builders`);
+      const url = `${this.baseUrl}/builders`;
+      console.log(`🔗 ApiDataService: Making request to ${url}`);
+      
+      const response = await fetch(url);
+      console.log(`📡 ApiDataService: Response status: ${response.status} ${response.statusText}`);
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const result = await response.json();
+      console.log('📊 ApiDataService: Response data:', { success: result.success, dataLength: result.data?.length });
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch builders');
       }
       
+      console.log(`✅ ApiDataService: Successfully fetched ${result.data.length} builders from SQLite`);
       return result.data;
     } catch (error) {
-      console.error('Error fetching builders from API:', error);
+      console.error('❌ ApiDataService: Error fetching builders from API:', error);
       throw error;
     }
   }
 
   async getBuildersByState(state: string) {
+    console.log(`🔄 ApiDataService: Fetching builders for state: ${state}`);
     try {
-      const response = await fetch(`${this.baseUrl}/builders/state/${encodeURIComponent(state)}`);
+      const url = `${this.baseUrl}/builders/state/${encodeURIComponent(state)}`;
+      console.log(`🔗 ApiDataService: Making request to ${url}`);
+      
+      const response = await fetch(url);
+      console.log(`📡 ApiDataService: Response status: ${response.status} ${response.statusText}`);
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const result = await response.json();
+      console.log(`📊 ApiDataService: Response data for ${state}:`, { success: result.success, dataLength: result.data?.length });
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch builders by state');
       }
       
+      console.log(`✅ ApiDataService: Successfully fetched ${result.data.length} builders for ${state}`);
       return result.data;
     } catch (error) {
-      console.error('Error fetching builders by state from API:', error);
+      console.error(`❌ ApiDataService: Error fetching builders for ${state}:`, error);
       throw error;
     }
   }

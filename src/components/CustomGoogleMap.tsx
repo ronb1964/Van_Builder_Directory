@@ -1,12 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { getGoogleMapsApiKey } from '../utils/apiUtils';
 import { Builder } from '../services/googleSheetsService';
 
 interface CustomGoogleMapProps {
   builders: Builder[];
   center: { lat: number; lng: number };
   zoom?: number;
-  fitBounds?: boolean;
   onMarkerClick: (builder: Builder) => void;
   isLoaded?: boolean;
 }
@@ -15,7 +13,6 @@ const CustomGoogleMap: React.FC<CustomGoogleMapProps> = ({
   builders,
   center,
   zoom,
-  fitBounds,
   onMarkerClick,
   isLoaded
 }) => {
@@ -65,9 +62,9 @@ const CustomGoogleMap: React.FC<CustomGoogleMapProps> = ({
     builders.forEach((builder, index) => {
       if (!builder.location?.lat || !builder.location?.lng) return;
 
-      // Add offset for overlapping markers
-      const offsetLat = builder.location.lat + (index * 0.005);
-      const offsetLng = builder.location.lng + (index * 0.005);
+      // Add offset for overlapping markers - use different pattern for better spread
+      const offsetLat = builder.location.lat + (index * 0.008) * Math.cos(index * Math.PI / 3);
+      const offsetLng = builder.location.lng + (index * 0.008) * Math.sin(index * Math.PI / 3);
 
       const marker = new google.maps.Marker({
         position: { lat: offsetLat, lng: offsetLng },
@@ -91,31 +88,86 @@ const CustomGoogleMap: React.FC<CustomGoogleMapProps> = ({
       markersRef.current.push(marker);
     });
 
-    // Fit bounds to show all markers if fitBounds is enabled
-    if (fitBounds && builders.length > 0 && mapInstanceRef.current) {
-      const bounds = new google.maps.LatLngBounds();
-      
-      builders.forEach((builder, index) => {
-        if (!builder.location?.lat || !builder.location?.lng) return;
-        // Use the same offset as markers
-        const offsetLat = builder.location.lat + (index * 0.005);
-        const offsetLng = builder.location.lng + (index * 0.005);
-        bounds.extend({ lat: offsetLat, lng: offsetLng });
-      });
-      
-      mapInstanceRef.current.fitBounds(bounds);
-      
-      // Limit zoom level for better overview
-      setTimeout(() => {
-        if (mapInstanceRef.current) {
-          const currentZoom = mapInstanceRef.current.getZoom();
-          if (currentZoom && currentZoom > 12) {
-            mapInstanceRef.current.setZoom(12);
-          }
+    // Always fit bounds to show all markers optimally when there are multiple builders
+    if (builders.length > 0 && mapInstanceRef.current) {
+      if (builders.length === 1) {
+        // For single builder, center on it with a good zoom level
+        const builder = builders[0];
+        if (builder.location?.lat && builder.location?.lng) {
+          const offsetLat = builder.location.lat + (0 * 0.005);
+          const offsetLng = builder.location.lng + (0 * 0.005);
+          mapInstanceRef.current.setCenter({ lat: offsetLat, lng: offsetLng });
+          mapInstanceRef.current.setZoom(12);
         }
-      }, 100);
+      } else {
+        // For multiple builders, use fitBounds with smart zoom limits
+        const bounds = new google.maps.LatLngBounds();
+        
+                 builders.forEach((builder, index) => {
+           if (!builder.location?.lat || !builder.location?.lng) return;
+           // Use the same offset as markers
+           const offsetLat = builder.location.lat + (index * 0.008) * Math.cos(index * Math.PI / 3);
+           const offsetLng = builder.location.lng + (index * 0.008) * Math.sin(index * Math.PI / 3);
+           bounds.extend({ lat: offsetLat, lng: offsetLng });
+         });
+        
+        // Add padding around the bounds for better visual appearance
+        const padding = { top: 80, right: 80, bottom: 80, left: 80 };
+        mapInstanceRef.current.fitBounds(bounds, padding);
+        
+        // Add padding to the bounds for better visual appearance
+        setTimeout(() => {
+          if (mapInstanceRef.current) {
+            const currentZoom = mapInstanceRef.current.getZoom();
+            
+            // Calculate the geographic spread to determine appropriate zoom limits
+            const lats = builders.map(b => b.location?.lat).filter(lat => lat !== undefined) as number[];
+            const lngs = builders.map(b => b.location?.lng).filter(lng => lng !== undefined) as number[];
+            
+            const latSpread = Math.max(...lats) - Math.min(...lats);
+            const lngSpread = Math.max(...lngs) - Math.min(...lngs);
+            const maxSpread = Math.max(latSpread, lngSpread);
+            
+            // Set zoom limits based on geographic spread
+            let minZoom = 6;  // Allow wide zoom for large spreads
+            let maxZoom = 16; // Maximum zoom for close-up view
+            
+            if (maxSpread > 2.5) {
+              // Large spread (like Arizona with Flagstaff ~3°) - force wide zoom
+              minZoom = 5;
+              maxZoom = 8;
+            } else if (maxSpread > 1.5) {
+              // Medium-large spread - moderate zoom
+              minZoom = 7;
+              maxZoom = 10;
+            } else if (maxSpread > 0.8) {
+              // Medium spread - closer zoom
+              minZoom = 9;
+              maxZoom = 12;
+            } else if (maxSpread > 0.3) {
+              // Small spread - closer zoom
+              minZoom = 11;
+              maxZoom = 14;
+            } else {
+              // Very close builders - allow close zoom
+              minZoom = 12;
+              maxZoom = 16;
+            }
+            
+            console.log(`🗺️ Geographic spread: ${maxSpread.toFixed(2)}°, zoom limits: ${minZoom}-${maxZoom}, current: ${currentZoom}`);
+            
+            if (currentZoom) {
+              if (currentZoom < minZoom) {
+                mapInstanceRef.current!.setZoom(minZoom);
+              } else if (currentZoom > maxZoom) {
+                mapInstanceRef.current!.setZoom(maxZoom);
+              }
+            }
+          }
+        }, 200);
+      }
     }
-  }, [builders, onMarkerClick, center, fitBounds, isLoaded]);
+  }, [builders, onMarkerClick, center, isLoaded]);
 
   if (!isLoaded) {
     return (

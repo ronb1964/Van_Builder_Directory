@@ -13,7 +13,7 @@ const addSecurityHeaders = () => {
       'style-src': ["'self'", "'unsafe-inline'", "*.googleapis.com", "*.gstatic.com"],
       'img-src': ["'self'", "data:", "*.googleapis.com", "*.gstatic.com", "https://static.wixstatic.com", "https://vanquestak.com", "https://papagovans.com", "https://lirp.cdn-website.com", "https://ucarecdn.com", "https://images.squarespace-cdn.com", "https://www.ozkcustoms.com", "https://camplifecustoms.com", "https://www.outpostvans.com", "https://outpostvans.files.wordpress.com", "https://maps.google.com", "https://maps.gstatic.com", "https://maps.googleapis.com", "https://*.google.com", "https://*.gstatic.com", "https://*.googleapis.com", "https://*.freepik.com", "https://images.unsplash.com", "https://advanced-rv.com", "https://*.advanced-rv.com", "https://images.ctfassets.net", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.exclusiveoutfitters.com", "https://www.vanspeedshop.com", "https://canoconversions.com", "https://www.titanvans.com", "https://vikingvancustoms.com", "https://woodpeckercraftsandbuilds.com", "https://thesummitvans.com", "https://scamperrv.com"],
       'font-src': ["'self'", "*.googleapis.com", "*.gstatic.com"],
-      'connect-src': ["'self'", "*.googleapis.com", "*.gstatic.com"],
+      'connect-src': ["'self'", "http://localhost:3001", "*.googleapis.com", "*.gstatic.com"],
       'frame-src': ["'self'"],
       'object-src': ["'none'"],
       'base-uri': ["'self'"]

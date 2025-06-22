@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { 
   ThemeProvider, 
   CssBaseline, 
@@ -10,7 +10,7 @@ import {
   Button,
   AppBar,
   Toolbar,
-  IconButton,
+
   useMediaQuery,
   Snackbar,
   Alert,
@@ -20,122 +20,32 @@ import {
 } from '@mui/material';
 import { getGoogleMapsApiKey } from './utils/apiUtils';
 import { centerElementOnScreen } from './utils/scrollUtils';
-import SimpleMapView from './components/SimpleMapView';
+
 import ViewListIcon from '@mui/icons-material/ViewList';
 import MapIcon from '@mui/icons-material/Map';
 import ClearIcon from '@mui/icons-material/Clear';
 import { 
   StateSelector, 
-  BuilderCard, 
   BuilderModal,
   ThemeToggle,
   BackToTop,
   RecentlyViewedSection,
-  SkeletonLoader,
 } from './components';
 import GoogleSheetBuildersList from './components/GoogleSheetBuildersList';
 import CustomGoogleMap from './components/CustomGoogleMap';
-import SecureImage from './components/SecureImage';
-import { Location } from './types';
+
 import { 
   useThemeMode, 
   useRecentlyViewed,
   useScrollToResults
 } from './hooks';
-import { jsonDataService, apiDataService } from './services/jsonDataService';
+import { apiDataService } from './services/jsonDataService';
 import { Builder } from './services/googleSheetsService';
 import { useJsApiLoader } from '@react-google-maps/api';
 
-const createHumbleRoadBuilder = (): Builder => ({
-  id: 'nj-1',
-  name: 'Humble Road',
-  address: 'Brick, NJ 08723',
-  phone: '(732) 555-1234',
-  email: 'georgemauro@humbleroad.tv',
-  website: 'https://www.humbleroad.tv',
-  location: { lat: 40.0583, lng: -74.1371, city: 'Brick', state: 'NJ', zip: '08723' },
-  description: 'Custom tailored camper vans built by George Mauro. Specializing in luxury conversions for full-timers and extended living in comfort. From micro-campers to full-size luxury vans.',
-  rating: 4.9,
-  reviewCount: 87,
-  reviews: [],
-  vanTypes: ['Sprinter', 'Transit', 'Promaster', 'Promaster City'],
-  priceRange: { min: 38000, max: 215000 },
-  pricingTiers: [],
-  amenities: ['Solar Power', 'Kitchen', 'Shower', 'Toilet', 'Heating', 'Air Conditioning', 'Custom Storage'],
-  services: ['Custom Builds', 'Electrical', 'Plumbing', 'Design Consultation'],
-  certifications: [],
-  yearsInBusiness: 5,
-  leadTime: '4-8 months',
-  socialMedia: {
-    youtube: 'HumbleRoad',
-    facebook: 'HumbleRoadLLC',
-  },
-  gallery: [
-    {
-      url: 'https://images.squarespace-cdn.com/content/v1/5d7f95ea7d3be50012ad8e2d/1626285444291-DSCF9146.jpg',
-      alt: 'Humble Road van conversion interior',
-      caption: 'Interior view of Humble Road van conversion'
-    },
-    {
-      url: 'https://images.squarespace-cdn.com/content/v1/5d7f95ea7d3be50012ad8e2d/1626285444291-DSCF9147.jpg',
-      alt: 'Humble Road van conversion exterior',
-      caption: 'Exterior view of Humble Road van conversion'
-    },
-    {
-      url: 'https://images.squarespace-cdn.com/content/v1/5d7f95ea7d3be50012ad8e2d/1626285444291-DSCF9148.jpg',
-      alt: 'Humble Road van conversion kitchen',
-      caption: 'Kitchen area of Humble Road van conversion'
-    },
-  ],
-});
 
-const MOCK_BUILDERS: Record<string, Builder[]> = {
-  "California": [
-    {
-      id: 'ca-1',
-      name: 'Vanlife Customs',
-      address: '123 Van Street, Los Angeles, CA 90001',
-      phone: '(555) 123-4567',
-      email: 'info@vanlifecustoms.com',
-      website: 'https://vanlifecustoms.com',
-      location: { lat: 34.0522, lng: -118.2437, city: 'Los Angeles', state: 'CA', zip: '90001' },
-      description: 'Custom van conversions with luxury finishes. Specializing in high-end Mercedes Sprinter builds.',
-      rating: 4.8,
-      reviewCount: 124,
-      reviews: [],
-      vanTypes: ['Sprinter', 'Transit', 'Promaster'],
-      priceRange: { min: 35000, max: 120000 },
-      pricingTiers: [],
-      amenities: ['Solar Power', 'Kitchen', 'Bathroom', 'Heating', 'Air Conditioning'],
-      services: ['Custom Builds', 'Mechanical Work', 'Electrical', 'Plumbing'],
-      certifications: ['RVIA Certified', 'EPA Certified'],
-      yearsInBusiness: 8,
-      leadTime: '3-6 months',
-      socialMedia: {
-        instagram: 'vanlifecustoms',
-        facebook: 'vanlifecustoms',
-        youtube: 'vanlifecustoms',
-      },
-      gallery: [
-        {
-          url: 'https://example.com/van1.jpg',
-          alt: 'Vanlife Customs van conversion interior',
-          caption: 'Interior view of Vanlife Customs van conversion'
-        },
-        {
-          url: 'https://example.com/van2.jpg',
-          alt: 'Vanlife Customs van conversion exterior',
-          caption: 'Exterior view of Vanlife Customs van conversion'
-        },
-        {
-          url: 'https://example.com/van3.jpg',
-          alt: 'Vanlife Customs van conversion kitchen',
-          caption: 'Kitchen area of Vanlife Customs van conversion'
-        },
-      ],
-    },
-  ],
-};
+
+
 
 const getTheme = (mode: PaletteMode) => createTheme({
   palette: {
@@ -276,8 +186,7 @@ const App = () => {
   const [builders, setBuilders] = useState<Builder[]>([]);
   const [buildersByState, setBuildersByState] = useState<Record<string, Builder[]>>({});
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 }); // Center of US
-  const [showMap, setShowMap] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+
   const [selectedBuilder, setSelectedBuilder] = useState<Builder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -293,39 +202,19 @@ const App = () => {
     document.head.appendChild(link);
   }, []);
   
-  // Fetch builders by state
+  // Fetch total builder count for homepage display
   useEffect(() => {
-    const fetchBuilders = async () => {
+    const fetchBuilderCount = async () => {
       try {
         const allBuilders = await apiDataService.getBuilders();
-        console.log('🏗️ App: Total builders fetched:', allBuilders.length);
-        
-        // Organize builders by state
-        const buildersByStateData: Record<string, Builder[]> = {};
-        allBuilders.forEach((builder: any) => {
-          const state = builder.state || builder.location?.state;
-          console.log(`🏗️ Processing builder: ${builder.name} in ${state}`);
-          if (!buildersByStateData[state]) {
-            buildersByStateData[state] = [];
-          }
-          buildersByStateData[state].push(builder);
-        });
-        
-        console.log('🗺️ App: Builders organized by state:', Object.keys(buildersByStateData).map(state => 
-          `${state}: ${buildersByStateData[state].length}`
-        ).join(', '));
-        
-        const totalBuilders = Object.values(buildersByStateData).reduce((acc, builders) => acc + builders.length, 0);
-        console.log('📊 App: Total builder count for homepage:', totalBuilders);
-        
-        setBuildersByState(buildersByStateData);
-        setBuilders(allBuilders);
+        console.log('🏗️ App: Total builders available:', allBuilders.length);
+        setBuilders(allBuilders); // Keep all builders for zip code searches
       } catch (err) {
         console.error('🚨 Error fetching builders:', err);
       }
     };
     
-    fetchBuilders();
+    fetchBuilderCount();
   }, []);  
 
   // Handle state selection
@@ -337,48 +226,107 @@ const App = () => {
     setIsZoomedToBuilder(false); // Reset zoom state
     
     if (!state) {
+      setBuildersByState({});
       return;
     }
 
-    // Update map center based on the new selected state
-    if (buildersByState[state] && buildersByState[state].length > 0) {
-      const builders = buildersByState[state];
-      const validBuilders = builders.filter(b => 
-        b.location?.lat && b.location?.lng && 
-        !isNaN(b.location.lat) && !isNaN(b.location.lng)
-      );
+    try {
+      // Fetch builders for the selected state directly from API
+      console.log(`🔄 Fetching builders for ${state}...`);
+      const stateBuilders = await apiDataService.getBuildersByState(state);
+      console.log(`✅ Fetched ${stateBuilders.length} builders for ${state}`);
       
-      if (validBuilders.length > 0) {
-        const totalLat = validBuilders.reduce((sum, b) => sum + b.location.lat, 0);
-        const totalLng = validBuilders.reduce((sum, b) => sum + b.location.lng, 0);
+      // Update buildersByState with the fetched data
+      setBuildersByState({ [state]: stateBuilders });
+      
+      // Update map center based on the fetched builders
+      if (stateBuilders.length > 0) {
+        const validBuilders = stateBuilders.filter((b: Builder) => 
+          b.location?.lat && b.location?.lng && 
+          !isNaN(b.location.lat) && !isNaN(b.location.lng)
+        );
         
-        setMapCenter({
-          lat: totalLat / validBuilders.length,
-          lng: totalLng / validBuilders.length
-        });
-        
-        console.log(`🗺️ Map center updated for ${state}: ${totalLat / validBuilders.length}, ${totalLng / validBuilders.length}`);
+        if (validBuilders.length > 0) {
+          const totalLat = validBuilders.reduce((sum: number, b: Builder) => sum + b.location.lat, 0);
+          const totalLng = validBuilders.reduce((sum: number, b: Builder) => sum + b.location.lng, 0);
+          
+          setMapCenter({
+            lat: totalLat / validBuilders.length,
+            lng: totalLng / validBuilders.length
+          });
+          
+          console.log(`🗺️ Map center updated for ${state}: ${totalLat / validBuilders.length}, ${totalLng / validBuilders.length}`);
+        } else {
+          // Fallback to state default center if no valid coordinates
+          setMapCenter(getStateDefaultCenter(state));
+        }
       } else {
-        // Fallback to state default center if no valid coordinates
+        // No builders found, use state default center
         setMapCenter(getStateDefaultCenter(state));
       }
-    } else {
-      // No builders found, use state default center
-      setMapCenter(getStateDefaultCenter(state));
+    } catch (error) {
+      console.error(`❌ Error fetching builders for ${state}:`, error);
+      setSnackbarMessage(`Error loading builders for ${state}`);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
     
     scrollToResults();
-  }, [buildersByState, scrollToResults]);
+  }, [scrollToResults]);
 
   // Handle builder name search
-  const handleBuilderNameSearch = useCallback((builderName: string) => {
+  const handleBuilderNameSearch = useCallback(async (builderName: string) => {
     console.log('🔍 Builder name search:', builderName);
     setSearchedBuilderName(builderName);
     setSelectedState(''); // Clear state when searching by builder name
     setSelectedZipCode(''); // Clear zip code when searching by builder name
     setIsZoomedToBuilder(false); // Reset zoom state
+    
+    if (!builderName) {
+      setBuildersByState({});
+      return;
+    }
+
+    try {
+      // Search through all builders for the name
+      const searchResults = builders.filter((builder: Builder) => 
+        builder.name.toLowerCase().includes(builderName.toLowerCase())
+      );
+      
+      console.log(`🔍 Found ${searchResults.length} builders matching "${builderName}"`);
+      
+      // Organize search results by state for display
+      const searchResultsByState: Record<string, Builder[]> = {};
+      searchResults.forEach((builder: Builder) => {
+        const state = builder.state || builder.location?.state || 'Unknown';
+        if (!searchResultsByState[state]) {
+          searchResultsByState[state] = [];
+        }
+        searchResultsByState[state].push(builder);
+      });
+      
+      setBuildersByState(searchResultsByState);
+      
+      // Set map center to first result if available
+      if (searchResults.length > 0) {
+        const firstBuilder = searchResults[0];
+        if (firstBuilder.location?.lat && firstBuilder.location?.lng) {
+          setMapCenter({
+            lat: firstBuilder.location.lat,
+            lng: firstBuilder.location.lng
+          });
+        }
+      }
+      
+    } catch (error) {
+      console.error(`❌ Error searching for builder "${builderName}":`, error);
+      setSnackbarMessage(`Error searching for builder "${builderName}"`);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+    
     scrollToResults();
-  }, [scrollToResults]);
+  }, [builders, scrollToResults]);
 
   // Handle zip code search
   const handleZipCodeSelect = useCallback(async (zipCode: string) => {
@@ -555,8 +503,8 @@ const App = () => {
         if (builderIndex === -1) builderIndex = 0;
         
         // Apply the same offset used in CustomGoogleMap
-        const offsetLat = builder.location.lat + (builderIndex * 0.005);
-        const offsetLng = builder.location.lng + (builderIndex * 0.005);
+        const offsetLat = builder.location.lat + (builderIndex * 0.008) * Math.cos(builderIndex * Math.PI / 3);
+        const offsetLng = builder.location.lng + (builderIndex * 0.008) * Math.sin(builderIndex * Math.PI / 3);
         
         // Center map on builder location with offset to match marker position
         setMapCenter({
@@ -587,8 +535,18 @@ const App = () => {
     setSelectedBuilder(null);
   }, []);
 
+  // Check if Google Maps API is available
+  const isMapAvailable = getGoogleMapsApiKey() !== 'MISSING_API_KEY' && isLoaded && !loadError;
+
   // Handle tab changes
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+    if (newValue === 1 && !isMapAvailable) {
+      // Show a message about map not being available
+      setSnackbarMessage('Map view requires Google Maps API key configuration. Check GOOGLE_MAPS_SETUP.md for instructions.');
+      setSnackbarSeverity('warning');
+      setSnackbarOpen(true);
+      return;
+    }
     setActiveTab(newValue);
   };
 
@@ -744,11 +702,19 @@ const App = () => {
                   label={
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <MapIcon />
-                      <span style={{ display: isMobile ? 'none' : 'inline' }}>Map View</span>
-                      {isMobile && <span>Map</span>}
+                      <span style={{ display: isMobile ? 'none' : 'inline' }}>
+                        Map View {!isMapAvailable && '(Setup Required)'}
+                      </span>
+                      {isMobile && <span>Map {!isMapAvailable && '⚠️'}</span>}
                     </Box>
                   } 
-                  sx={{ py: 2, fontSize: '1rem', minWidth: isMobile ? 'auto' : 120 }}
+                  sx={{ 
+                    py: 2, 
+                    fontSize: '1rem', 
+                    minWidth: isMobile ? 'auto' : 120,
+                    opacity: !isMapAvailable ? 0.6 : 1
+                  }}
+                  disabled={!isMapAvailable}
                 />
               </Tabs>
             </Box>
@@ -839,17 +805,49 @@ const App = () => {
                           
                           if (loadError) {
                             console.error('🚨 Map Load Error Details:', loadError);
+                            const isApiKeyIssue = loadError.message.includes('API key') || 
+                                                 loadError.message.includes('InvalidKeyMapError') ||
+                                                 getGoogleMapsApiKey() === 'MISSING_API_KEY';
+                            
                             return (
-                              <Box sx={{ p: 4, textAlign: 'center' }}>
+                              <Box sx={{ p: 4, textAlign: 'center', bgcolor: 'background.paper', borderRadius: 2 }}>
                                 <Typography variant="h6" color="error" gutterBottom>
-                                  Map Loading Error
+                                  🗺️ Map Not Available
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                  {loadError.message}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                  Please check browser console for more details.
-                                </Typography>
+                                {isApiKeyIssue ? (
+                                  <>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                      Google Maps API key is not configured. The map view requires a valid API key.
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                      <strong>To enable map view:</strong>
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1, textAlign: 'left', maxWidth: 400, mx: 'auto' }}>
+                                      1. Get a Google Maps API key from:<br/>
+                                      <a href="https://console.cloud.google.com/google/maps-apis/overview" target="_blank" rel="noopener noreferrer">
+                                        Google Cloud Console
+                                      </a>
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1, textAlign: 'left', maxWidth: 400, mx: 'auto' }}>
+                                      2. Create a <code>.env</code> file in your project root
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'left', maxWidth: 400, mx: 'auto' }}>
+                                      3. Add: <code>REACT_APP_GOOGLE_MAPS_API_KEY=your_key_here</code>
+                                    </Typography>
+                                    <Typography variant="body2" color="primary" sx={{ fontWeight: 'bold' }}>
+                                      💡 List view is still fully functional!
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                      {loadError.message}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                      Please check browser console for more details.
+                                    </Typography>
+                                  </>
+                                )}
                               </Box>
                             );
                           }
@@ -866,8 +864,7 @@ const App = () => {
                             <CustomGoogleMap
                               builders={validBuilders}
                               center={{ lat: mapCenter.lat, lng: mapCenter.lng }}
-                              zoom={isZoomedToBuilder ? 14 : selectedState ? 8 : selectedZipCode && !isZoomedToBuilder ? undefined : 6}
-                              fitBounds={Boolean(selectedZipCode && !isZoomedToBuilder)}
+                              zoom={isZoomedToBuilder ? 14 : undefined}
                               onMarkerClick={handleViewDetails}
                               isLoaded={isLoaded}
                             />

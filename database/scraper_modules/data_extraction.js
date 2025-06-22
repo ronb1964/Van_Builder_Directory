@@ -6,6 +6,11 @@ async function extractBusinessName(page) {
     return await page.evaluate(() => {
         // Try multiple selectors for business name
         const nameSelectors = [
+            // Logo image alt text (good for Outpost Vans)
+            'img[alt*="logo" i]',
+            '[class*="logo"] img',
+            'img[alt*="brand" i]',
+            // Standard selectors
             'h1.company-name', 'h1.business-name', 'h1.brand-name',
             '.company-header h1', '.business-header h1', 
             'h1[itemprop="name"]', '[class*="company-name"] h1',
@@ -16,15 +21,46 @@ async function extractBusinessName(page) {
         
         for (const selector of nameSelectors) {
             let element;
+            let text = '';
+            
             if (selector.startsWith('meta')) {
                 element = document.querySelector(selector);
                 if (element?.content) {
-                    return element.content.trim();
+                    text = element.content.trim();
+                    // Apply specific fixes to meta content
+                    if (text.toLowerCase() === 'socalcustomvans.') {
+                        text = 'SoCal Custom Vans';
+                    }
+                    // Remove trailing periods from meta content
+                    text = text.replace(/\.$/, '');
+                }
+            } else if (selector.includes('img')) {
+                element = document.querySelector(selector);
+                if (element?.alt) {
+                    text = element.alt.trim();
+                    // Extract company name from logo alt text
+                    const logoMatch = text.match(/(?:logo for |logo of |a logo for )?([^,]+?)(?:\s+that says|\s+logo|\s+brand|$)/i);
+                    if (logoMatch) {
+                        text = logoMatch[1].trim();
+                        // Capitalize properly (title case)
+                        text = text.split(' ').map(word => 
+                            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                        ).join(' ');
+                    }
                 }
             } else {
                 element = document.querySelector(selector);
                 if (element?.textContent) {
-                    return element.textContent.trim();
+                    text = element.textContent.trim();
+                }
+            }
+            
+            // Clean and validate the text
+            if (text && text.length > 0 && text.length < 100) {
+                // Skip generic words
+                const genericWords = ['home', 'welcome', 'about', 'contact', 'menu', 'navigation'];
+                if (!genericWords.some(word => text.toLowerCase() === word)) {
+                    return text;
                 }
             }
         }
@@ -60,6 +96,14 @@ async function extractBusinessName(page) {
         
         // Clean up business suffixes
         title = title.replace(/\s*(LLC|Inc\.?|Corp\.?|Company|Co\.?)\s*$/i, '');
+        
+        // Fix specific known issues
+        if (title.toLowerCase() === 'socalcustomvans.') {
+            title = 'SoCal Custom Vans';
+        }
+        
+        // Remove trailing periods
+        title = title.replace(/\.$/, '');
         
         // Final cleanup
         title = title.replace(/\s+/g, ' ').trim();
@@ -146,14 +190,17 @@ async function extractContactFromPage(page) {
         // Email extraction pattern - more strict to avoid contamination
         const emailPattern = /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/g;
         
-        // Search in various page sections
+        // Search in various page sections - PRIORITIZE FOOTER
         const searchSections = [
+            document.querySelector('footer'),  // Footer first - most likely to have clean contact info
             document.querySelector('header'),
-            document.querySelector('footer'),
             document.querySelector('.contact'),
             document.querySelector('#contact'),
             document.querySelector('[class*="contact"]'),
             document.querySelector('[id*="contact"]'),
+            document.querySelector('.footer'),
+            document.querySelector('#footer'),
+            document.querySelector('[class*="footer"]'),
             document.body
         ].filter(Boolean);
         
@@ -161,7 +208,7 @@ async function extractContactFromPage(page) {
             const text = section.textContent;
             const html = section.innerHTML;
             
-            // Extract phone
+            // Extract phone - prioritize clean patterns
             if (!data.phone) {
                 // First check for tel: links
                 const telLink = section.querySelector('a[href^="tel:"]');
@@ -172,32 +219,34 @@ async function extractContactFromPage(page) {
                     }
                 }
                 
-                // Then try patterns
+                // Then try to find clean phone numbers (prioritize common formats)
                 if (!data.phone) {
-                    for (const pattern of phonePatterns) {
-                        const matches = text.match(pattern);
-                        if (matches) {
-                            for (const match of matches) {
-                                const phone = match.replace(/[^\d]/g, '');
-                                if (phone.length >= 10 && phone.length <= 11) {
-                                    // Make sure this isn't part of an email
-                                    const surroundingText = text.substring(
-                                        Math.max(0, text.indexOf(match) - 10),
-                                        Math.min(text.length, text.indexOf(match) + match.length + 10)
-                                    );
-                                    if (!surroundingText.includes('@')) {
-                                        data.phone = formatPhone(phone);
-                                        break;
-                                    }
-                                }
+                    // Look for clean phone patterns first - including concatenated formats
+                    const cleanPhonePatterns = [
+                        /CA(\d{3}\.\d{3}\.\d{4})Contact/g,  // CA619.812.1903Contact (Sandy Vans specific)
+                        /\b(\d{3}\.\d{3}\.\d{4})\b/g,  // 619.812.1903
+                        /\b(\(\d{3}\)\s*\d{3}[\s\-\.]?\d{4})\b/g,  // (619) 812-1903
+                        /\b(\d{3}[\s\-]\d{3}[\s\-]\d{4})\b/g  // 619-812-1903 or 619 812 1903
+                    ];
+                    
+                    for (const pattern of cleanPhonePatterns) {
+                        pattern.lastIndex = 0; // Reset regex state
+                        const match = pattern.exec(text);
+                        if (match) {
+                            // Get the captured group if it exists, otherwise use the full match
+                            const phoneText = match[1] || match[0];
+                            const phone = phoneText.replace(/[^\d]/g, '');
+                            
+                            if (phone.length === 10) {
+                                data.phone = formatPhone(phone);
+                                break;
                             }
-                            if (data.phone) break;
                         }
                     }
                 }
             }
             
-            // Extract email
+            // Extract email - cleaner extraction
             if (!data.email) {
                 // First check for mailto: links
                 const mailtoLink = section.querySelector('a[href^="mailto:"]');
@@ -208,37 +257,93 @@ async function extractContactFromPage(page) {
                     }
                 }
                 
-                // Then try pattern
+                // Then try pattern with better filtering and specific Sandy Vans handling
                 if (!data.email) {
-                    const emailMatches = text.match(emailPattern);
-                    if (emailMatches) {
-                        // Filter out placeholder emails
-                        const validEmail = emailMatches.find(email => 
-                            !email.includes('example.com') && 
-                            !email.includes('user@') &&
-                            !email.includes('test@') &&
-                            !email.includes('demo@')
-                        );
-                        if (validEmail) {
-                            data.email = validEmail.toLowerCase();
+                    // First try to extract email from concatenated footer text (Sandy Vans specific)
+                    // Look for pattern like "Contact@sandyvans.comShop" and extract just the email
+                    const concatenatedEmailMatch = text.match(/([A-Za-z]+@[A-Za-z]+\.[A-Za-z]+)(?:Shop|Hours)/i);
+                    if (concatenatedEmailMatch) {
+                        data.email = concatenatedEmailMatch[1].toLowerCase();
+                    } else {
+                        const emailMatches = text.match(emailPattern);
+                        if (emailMatches) {
+                            // Filter out placeholder emails and find the cleanest one
+                            const validEmails = emailMatches.filter(email => 
+                                !email.includes('example.com') && 
+                                !email.includes('user@') &&
+                                !email.includes('test@') &&
+                                !email.includes('demo@') &&
+                                email.length < 50  // Avoid contaminated long strings
+                            );
+                            
+                            if (validEmails.length > 0) {
+                                // Prefer shorter, cleaner emails (likely to be less contaminated)
+                                validEmails.sort((a, b) => a.length - b.length);
+                                data.email = validEmails[0].toLowerCase();
+                            }
                         }
                     }
                 }
             }
             
-            // Extract address
+            // Extract address - enhanced patterns for various formats
             if (!data.address) {
-                // Common address patterns
-                const addressPatterns = [
-                    /(\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl)[^\n]*)/gi,
-                    /(\d+\s+[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Z]{2}\s*\d{5})/gi
+                // Try to find complete address with city and state first
+                const completeAddressPatterns = [
+                    // Full address with city, state: "123 Main St, City, ST"
+                    /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr),\s*[A-Za-z\s]+,\s*[A-Z]{2})/gi,
+                    // Address with ZIP: "123 Main St, City, CA 90210"
+                    /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr),\s*[A-Za-z\s]+,\s*[A-Z]{2}\s*\d{5})/gi
                 ];
                 
-                for (const pattern of addressPatterns) {
-                    const match = text.match(pattern);
-                    if (match) {
-                        data.address = match[0].trim();
+                for (const pattern of completeAddressPatterns) {
+                    const matches = text.match(pattern);
+                    if (matches) {
+                        data.address = matches[0].trim();
                         break;
+                    }
+                }
+                
+                // If no complete address found, try to build one from parts
+                if (!data.address) {
+                    let streetAddress = '';
+                    let city = '';
+                    let state = 'CA'; // Default for California builders
+                    
+                    // Find street address
+                    const streetPatterns = [
+                        /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr))/gi
+                    ];
+                    
+                    for (const pattern of streetPatterns) {
+                        const matches = text.match(pattern);
+                        if (matches) {
+                            // Clean up the street address - remove extra whitespace and unwanted text
+                            streetAddress = matches[0].trim().replace(/\s+/g, ' ');
+                            break;
+                        }
+                    }
+                    
+                    // Find city - look for California cities specifically
+                    const cityPatterns = [
+                        /\b(Oceanside|San Diego|Los Angeles|San Francisco|Sacramento|Oakland|Fresno|Long Beach|Bakersfield|Anaheim|Santa Ana|Riverside|Stockton|Irvine|Fremont|San Bernardino|Modesto|Fontana|Oxnard|Moreno Valley|Huntington Beach|Glendale|Santa Clarita|Garden Grove|Oceanside|Rancho Cucamonga|Santa Rosa|Ontario|Lancaster|Elk Grove|Corona|Palmdale|Salinas|Pomona|Hayward|Escondido|Torrance|Sunnyvale|Orange|Fullerton|Pasadena|Thousand Oaks|Visalia|Simi Valley|Concord|Roseville|Rockville|Santa Clara|Vallejo|Victorville|Fairfield|Inglewood|Antioch|Temecula|Richmond|West Covina|Norwalk|Carlsbad|Daly City|Costa Mesa|Rialto|Chula Vista|Burbank|San Mateo|Mission Viejo|Compton|Santa Maria|El Monte|Downey|Redding|San Leandro|Livermore|Whittier|Lakewood|Merced|Milpitas|Union City|San Buenaventura|Carson|San Marcos|Redwood City|West Sacramento|Turlock|Napa|Hemet|Citrus Heights|Tracy|Alhambra|Tustin|San Rafael|Pleasanton|Bellflower|Redlands|Manteca|Lynwood|Woodland|Hawthorne|Perris|El Cajon|Clovis|Davis|Santa Monica|Pico Rivera|Vacaville|Palo Alto|Camarillo|Walnut Creek|Upland|Chico|Whittier|Newport Beach|San Clemente|Porterville|Indio|Menifee|Tulare|Cupertino|Delano|Chino|Buena Park|Campbell|San Luis Obispo|Petaluma|Mountain View|Los Alamitos|Westminster|Vista|Auburn|Carlsbad|Riverside)\b/gi
+                    ];
+                    
+                    for (const pattern of cityPatterns) {
+                        const match = text.match(pattern);
+                        if (match) {
+                            city = match[0];
+                            break;
+                        }
+                    }
+                    
+                    // Construct address if we have parts
+                    if (streetAddress) {
+                        if (city) {
+                            data.address = `${streetAddress}, ${city}, ${state}`;
+                        } else {
+                            data.address = streetAddress;
+                        }
                     }
                 }
             }
@@ -358,9 +463,126 @@ async function extractSocialMedia(page) {
     });
 }
 
+async function extractVanTypes(page) {
+    console.log('🚐 Extracting van types and specialties...');
+    
+    return await page.evaluate(() => {
+        const text = document.body.textContent.toLowerCase();
+        
+        // Van manufacturers and models to look for
+        const vanTypes = {
+            'Mercedes Sprinter': [
+                /mercedes[\s\-]?sprinter/gi,
+                /sprinter[\s\-]?van/gi,
+                /sprinter[\s\-]?2500/gi,
+                /sprinter[\s\-]?3500/gi,
+                /mb[\s\-]?sprinter/gi,
+                /mercedes[\s\-]?benz[\s\-]?sprinter/gi
+            ],
+            'Ford Transit': [
+                /ford[\s\-]?transit/gi,
+                /transit[\s\-]?van/gi,
+                /transit[\s\-]?150/gi,
+                /transit[\s\-]?250/gi,
+                /transit[\s\-]?350/gi
+            ],
+            'Ram ProMaster': [
+                /ram[\s\-]?promaster/gi,
+                /promaster[\s\-]?van/gi,
+                /promaster[\s\-]?1500/gi,
+                /promaster[\s\-]?2500/gi,
+                /promaster[\s\-]?3500/gi,
+                /dodge[\s\-]?promaster/gi
+            ],
+            'Nissan NV200': [
+                /nissan[\s\-]?nv200/gi,
+                /nv200[\s\-]?van/gi
+            ],
+            'Chevrolet Express': [
+                /chevrolet[\s\-]?express/gi,
+                /chevy[\s\-]?express/gi,
+                /express[\s\-]?van/gi,
+                /express[\s\-]?2500/gi,
+                /express[\s\-]?3500/gi
+            ],
+            'GMC Savana': [
+                /gmc[\s\-]?savana/gi,
+                /savana[\s\-]?van/gi,
+                /savana[\s\-]?2500/gi,
+                /savana[\s\-]?3500/gi
+            ]
+        };
+        
+        // Find matching van types
+        const foundVanTypes = [];
+        Object.keys(vanTypes).forEach(vanType => {
+            const patterns = vanTypes[vanType];
+            for (const pattern of patterns) {
+                if (text.match(pattern)) {
+                    foundVanTypes.push(vanType);
+                    break; // Don't add duplicates
+                }
+            }
+        });
+        
+        // Also look for general specialties
+        const specialties = {
+            'Van Conversion': /van[\s\-]?conversion/gi,
+            'Camper Van': /camper[\s\-]?van/gi,
+            'Class B RV': /class[\s\-]?b[\s\-]?rv/gi,
+            'Adventure Van': /adventure[\s\-]?van/gi,
+            'Overland': /overland/gi,
+            'Off-Road': /off[\s\-]?road/gi,
+            '4x4': /4x4/gi,
+            'AWD': /awd/gi,
+            'Luxury': /luxury/gi,
+            'Custom Build': /custom[\s\-]?build/gi
+        };
+        
+        const foundSpecialties = [];
+        Object.keys(specialties).forEach(specialty => {
+            if (text.match(specialties[specialty])) {
+                foundSpecialties.push(specialty);
+            }
+        });
+        
+        // Create a combined description
+        let vanTypeDescription = '';
+        
+        if (foundVanTypes.length > 0) {
+            vanTypeDescription = foundVanTypes.join(', ');
+            
+            // Add specialties if we have them
+            if (foundSpecialties.length > 0) {
+                // Filter out redundant terms
+                const nonRedundantSpecialties = foundSpecialties.filter(s => 
+                    !['Van Conversion', 'Camper Van', 'Custom Build'].includes(s)
+                );
+                
+                if (nonRedundantSpecialties.length > 0) {
+                    vanTypeDescription += ' (' + nonRedundantSpecialties.slice(0, 3).join(', ') + ')';
+                }
+            }
+        } else if (foundSpecialties.length > 0) {
+            // If no specific van types found, use specialties
+            vanTypeDescription = foundSpecialties.slice(0, 3).join(', ');
+        } else {
+            // Default fallback
+            vanTypeDescription = 'Custom Van';
+        }
+        
+        return {
+            vanTypes: foundVanTypes,
+            specialties: foundSpecialties,
+            description: vanTypeDescription
+        };
+    });
+}
+
 module.exports = {
     extractBusinessName,
     extractContactInfo,
     extractDescription,
-    extractSocialMedia
+    extractSocialMedia,
+    extractVanTypes
 };

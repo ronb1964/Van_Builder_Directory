@@ -54,7 +54,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
     email,
     website,
     description,
-    vanTypes = [],
+    vanTypes = 'Custom Van',
     location,
     distanceFromZip,
     socialMedia
@@ -167,27 +167,62 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
               Van Types
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {vanTypes.map((type) => (
-                <Chip
-                  key={type}
-                  label={type}
-                  size="small"
-                  sx={{ 
-                    borderRadius: 1.5,
-                    bgcolor: alpha(theme.palette.primary.main, 0.08),
-                    color: theme.palette.primary.main,
-                    fontWeight: '500',
-                    fontSize: '0.7rem',
-                    height: '22px',
-                    '&:hover': { 
-                      bgcolor: alpha(theme.palette.primary.main, 0.15),
-                      transform: 'translateY(-1px)',
-                      boxShadow: 1 
-                    },
-                    transition: 'all 0.2s ease-in-out'
-                  }}
-                />
-              ))}
+              {(() => {
+                // Parse the van types string into separate pills
+                const parseVanTypes = (vanTypesStr: string): string[] => {
+                  if (!vanTypesStr) return ['Custom Van'];
+                  
+                  // Split by comma and handle parentheses content
+                  // Example: "Mercedes Sprinter, Ford Transit (Luxury)" 
+                  // becomes ["Mercedes Sprinter", "Ford Transit", "Luxury"]
+                  
+                  // First, extract content in parentheses
+                  const parenthesesMatch = vanTypesStr.match(/\(([^)]+)\)/);
+                  const specialties = parenthesesMatch ? parenthesesMatch[1].split(',').map(s => s.trim()) : [];
+                  
+                  // Remove parentheses content and split main types
+                  const mainTypes = vanTypesStr.replace(/\s*\([^)]*\)/, '').split(',').map(s => s.trim()).filter(s => s);
+                  
+                  return [...mainTypes, ...specialties];
+                };
+                
+                const types = parseVanTypes(typeof vanTypes === 'string' ? vanTypes : vanTypes.join(', '));
+                
+                return types.map((type, index) => (
+                  <Chip
+                    key={`${type}-${index}`}
+                    label={type}
+                    size="small"
+                    sx={{ 
+                      borderRadius: 1.5,
+                      bgcolor: theme.palette.mode === 'dark' 
+                        ? alpha(theme.palette.primary.main, 0.2)
+                        : alpha(theme.palette.primary.main, 0.12),
+                      color: theme.palette.mode === 'dark'
+                        ? theme.palette.primary.light
+                        : theme.palette.primary.dark,
+                      border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                      fontWeight: '600',
+                      fontSize: '0.7rem',
+                      height: '24px',
+                      boxShadow: theme.palette.mode === 'dark' 
+                        ? '0 1px 3px rgba(0,0,0,0.3)'
+                        : '0 1px 2px rgba(0,0,0,0.1)',
+                      '&:hover': { 
+                        bgcolor: theme.palette.mode === 'dark'
+                          ? alpha(theme.palette.primary.main, 0.3)
+                          : alpha(theme.palette.primary.main, 0.2),
+                        transform: 'translateY(-1px)',
+                        boxShadow: theme.palette.mode === 'dark'
+                          ? '0 2px 8px rgba(0,0,0,0.4)'
+                          : '0 2px 6px rgba(0,0,0,0.15)',
+                        borderColor: alpha(theme.palette.primary.main, 0.5)
+                      },
+                      transition: 'all 0.2s ease-in-out'
+                    }}
+                  />
+                ));
+              })()}
             </Box>
           </Box>
         </CardContent>

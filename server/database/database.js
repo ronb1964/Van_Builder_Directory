@@ -59,7 +59,7 @@ class DatabaseService {
         rating: 4.5, // Default rating
         reviewCount: 10, // Default review count
         leadTime: '3-6 months',
-        vanTypes: builder.van_types ? JSON.parse(builder.van_types) : ['Custom Van'],
+        vanTypes: builder.van_types || 'Custom Van',
         amenities: builder.amenities ? JSON.parse(builder.amenities) : ['Custom Build'],
         services: builder.services ? JSON.parse(builder.services) : ['Custom Builds'],
         certifications: [],
@@ -71,12 +71,41 @@ class DatabaseService {
     });
   }
 
-  // Get builders by state
+  // State name to abbreviation mapping
+  getStateAbbreviation(stateName) {
+    const stateMap = {
+      'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
+      'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
+      'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
+      'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+      'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
+      'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+      'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
+      'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+      'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
+      'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
+    };
+    
+    const lowerState = stateName.toLowerCase();
+    return stateMap[lowerState] || stateName.toUpperCase();
+  }
+
+  // Get builders by state (handles both full names and abbreviations)
   getBuildersByState(state) {
     const builders = this.getAllBuilders();
-    return builders.filter(builder => 
-      builder.state && builder.state.toLowerCase() === state.toLowerCase()
-    );
+    const stateAbbrev = this.getStateAbbreviation(state);
+    
+    return builders.filter(builder => {
+      if (!builder.state) return false;
+      
+      // Check if it matches the abbreviation (what's stored in DB)
+      if (builder.state.toUpperCase() === stateAbbrev.toUpperCase()) return true;
+      
+      // Also check direct match for backward compatibility
+      if (builder.state.toLowerCase() === state.toLowerCase()) return true;
+      
+      return false;
+    });
   }
 
   // Get builders within radius of coordinates

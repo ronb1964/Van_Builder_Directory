@@ -9,8 +9,13 @@
 export const getGoogleMapsApiKey = (): string => {
   const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   
-  if (!apiKey) {
-    console.error('Google Maps API key is not set. Please set REACT_APP_GOOGLE_MAPS_API_KEY in your environment variables.');
+  if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
+    console.error('🗺️ Google Maps API key is not configured properly.');
+    console.error('📝 To fix this:');
+    console.error('1. Create a .env file in your project root');
+    console.error('2. Add: REACT_APP_GOOGLE_MAPS_API_KEY=your_actual_api_key');
+    console.error('3. Get an API key from: https://console.cloud.google.com/google/maps-apis/overview');
+    console.error('4. Enable: Maps JavaScript API, Places API, Geocoding API');
     // Return a placeholder that will trigger the error UI rather than exposing that the key is missing
     return 'MISSING_API_KEY';
   }
