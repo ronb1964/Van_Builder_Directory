@@ -61,7 +61,7 @@ const getTheme = (mode: PaletteMode) => createTheme({
       light: '#F5F9FE',
     },
     background: {
-      default: mode === 'dark' ? '#121212' : '#F8FAFC',
+      default: mode === 'dark' ? '#121212' : '#F0F4F8',
       paper: mode === 'dark' ? '#1E1E1E' : '#FFFFFF',
     },
     text: {
@@ -136,6 +136,7 @@ const getTheme = (mode: PaletteMode) => createTheme({
         },
       },
     },
+
   },
 });
 
@@ -557,8 +558,9 @@ const App = () => {
         sx={{
           minHeight: '100vh',
           background: mode === 'dark' 
-            ? 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)'
-            : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+            ? 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%) !important'
+            : 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #F3E5F5 100%) !important',
+          backgroundAttachment: 'fixed',
         }}
       >
         <AppBar position="sticky" color="default" elevation={1}>

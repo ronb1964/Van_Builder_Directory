@@ -512,26 +512,30 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                 </Button>
               </Tooltip>
               {email && (
-                <Button
-                  variant="outlined"
-                  startIcon={<EmailIcon sx={{ fontSize: 18, mr: 1 }} />}
-                  component="a"
-                  href={`mailto:${email}`}
-                >
-                  Email
-                </Button>
+                <Tooltip title={`Email ${email}`}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<EmailIcon sx={{ fontSize: 18, mr: 1 }} />}
+                    component="a"
+                    href={`mailto:${email}`}
+                  >
+                    Email
+                  </Button>
+                </Tooltip>
               )}
               {website && (
-                <Button
-                  variant="outlined"
-                  startIcon={<WebsiteIcon sx={{ fontSize: 18, mr: 1 }} />}
-                  component="a"
-                  href={website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Website
-                </Button>
+                <Tooltip title="Visit Website">
+                  <Button
+                    variant="outlined"
+                    startIcon={<WebsiteIcon sx={{ fontSize: 18, mr: 1 }} />}
+                    component="a"
+                    href={website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Website
+                  </Button>
+                </Tooltip>
               )}
             </Box>
 

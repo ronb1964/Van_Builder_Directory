@@ -3,7 +3,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const DB_PATH = path.join(__dirname, '..', '..', 'Shell', 'server', 'van_builders.db');
+const DB_PATH = path.join(__dirname, '..', '..', 'server', 'database', 'builders.db');
 
 async function initializeDatabase() {
     return new Promise((resolve, reject) => {

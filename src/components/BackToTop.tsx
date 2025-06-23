@@ -39,18 +39,22 @@ const BackToTop: React.FC<BackToTopProps> = ({ threshold = 100 }) => {
         }}
       >
         <Fab
-          color="primary"
           size="medium"
           aria-label="scroll back to top"
           sx={{
-            boxShadow: 3,
+            backgroundColor: '#ff4444', // Bright red background
+            color: 'white',
+            boxShadow: '0 4px 16px rgba(255, 68, 68, 0.4)', // Red shadow for visibility
+            border: '2px solid white', // White border for extra contrast
             '&:hover': {
-              transform: 'scale(1.05)',
+              backgroundColor: '#ff2222', // Darker red on hover
+              transform: 'scale(1.1)',
+              boxShadow: '0 6px 20px rgba(255, 68, 68, 0.6)', // Stronger shadow on hover
             },
-            transition: 'transform 0.2s ease-in-out',
+            transition: 'all 0.3s ease-in-out',
           }}
         >
-          <KeyboardArrowUpIcon />
+          <KeyboardArrowUpIcon sx={{ fontSize: '1.5rem', fontWeight: 'bold' }} />
         </Fab>
       </Box>
     </Zoom>
