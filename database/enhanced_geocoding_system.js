@@ -4,31 +4,17 @@ const sqlite3 = require('sqlite3').verbose();
 class EnhancedGeocodingSystem {
     constructor() {
         this.services = [
+            // Google Maps Geocoding API - Most accurate geocoding service
             {
-                name: 'OpenStreetMap Nominatim',
-                url: (address) => `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&addressdetails=1`,
-                headers: { 'User-Agent': 'Van Builder Directory/1.0' },
-                parseResponse: (data) => data.length > 0 ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), accuracy: data[0].importance || 0.5 } : null
-            },
-            {
-                name: 'MapQuest Geocoding',
-                url: (address) => `https://www.mapquestapi.com/geocoding/v1/address?key=YOUR_MAPQUEST_KEY&location=${encodeURIComponent(address)}`,
-                parseResponse: (data) => data.results?.[0]?.locations?.[0] ? {
-                    lat: data.results[0].locations[0].latLng.lat,
-                    lng: data.results[0].locations[0].latLng.lng,
-                    accuracy: data.results[0].locations[0].geocodeQuality === 'EXACT' ? 0.9 : 0.6
+                name: 'Google Maps Geocoding',
+                url: (address) => `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyBX1Yk0NkpcZY7Qy7SYt2NC80b57FSjaA8`,
+                parseResponse: (data) => data.results?.[0] ? {
+                    lat: data.results[0].geometry.location.lat,
+                    lng: data.results[0].geometry.location.lng,
+                    accuracy: data.results[0].geometry.location_type === 'ROOFTOP' ? 0.95 : 0.8,
+                    formatted_address: data.results[0].formatted_address
                 } : null
             }
-            // Note: Google Maps Geocoding API requires API key and billing
-            // {
-            //     name: 'Google Maps Geocoding',
-            //     url: (address) => `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=YOUR_GOOGLE_API_KEY`,
-            //     parseResponse: (data) => data.results?.[0] ? {
-            //         lat: data.results[0].geometry.location.lat,
-            //         lng: data.results[0].geometry.location.lng,
-            //         accuracy: data.results[0].geometry.location_type === 'ROOFTOP' ? 0.95 : 0.7
-            //     } : null
-            // }
         ];
     }
 
@@ -94,7 +80,7 @@ class EnhancedGeocodingSystem {
     async fallbackGeocode(fullAddress, businessName) {
         console.log(`   🔄 Trying fallback strategies...`);
         
-        // Try just city, state
+        // Try just city, state with Google Maps
         const addressParts = fullAddress.split(',');
         if (addressParts.length >= 2) {
             const cityState = addressParts.slice(-2).join(',').trim();
@@ -102,17 +88,18 @@ class EnhancedGeocodingSystem {
             
             try {
                 const response = await axios.get(
-                    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityState)}&format=json&limit=1`,
-                    { headers: { 'User-Agent': 'Van Builder Directory/1.0' } }
+                    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityState)}&key=AIzaSyBX1Yk0NkpcZY7Qy7SYt2NC80b57FSjaA8`,
+                    { timeout: 10000 }
                 );
                 
-                if (response.data.length > 0) {
+                if (response.data.results?.[0]) {
                     return {
-                        lat: parseFloat(response.data[0].lat),
-                        lng: parseFloat(response.data[0].lon),
-                        accuracy: 0.3, // Lower accuracy for city-level
-                        service: 'OpenStreetMap Nominatim (City Fallback)',
-                        isApproximate: true
+                        lat: response.data.results[0].geometry.location.lat,
+                        lng: response.data.results[0].geometry.location.lng,
+                        accuracy: 0.4, // Lower accuracy for city-level
+                        service: 'Google Maps Geocoding (City Fallback)',
+                        isApproximate: true,
+                        formatted_address: response.data.results[0].formatted_address
                     };
                 }
             } catch (error) {

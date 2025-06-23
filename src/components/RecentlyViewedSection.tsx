@@ -8,8 +8,7 @@ import {
   Chip,
   Button,
   useTheme,
-  alpha,
-  Stack
+  alpha
 } from '@mui/material';
 import HistoryIcon from '@mui/icons-material/History';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -120,36 +119,120 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
                   </Box>
                   
                   {/* Van Types */}
-                  {builder.vanTypes && Array.isArray(builder.vanTypes) && builder.vanTypes.length > 0 && (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-                      {builder.vanTypes.slice(0, 2).map((vanType: string) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1 }}>
+                    {(() => {
+                      // Parse van types string into separate pills
+                      const parseVanTypes = (vanTypesStr: string | string[] | undefined): string[] => {
+                        if (!vanTypesStr) return [];
+                        
+                        // Handle array format
+                        if (Array.isArray(vanTypesStr)) {
+                          // If it's an array, check if first element contains comma-separated values
+                          if (vanTypesStr.length === 1 && typeof vanTypesStr[0] === 'string' && vanTypesStr[0].includes(',')) {
+                            // Single array element with comma-separated values - split it
+                            const firstElement = vanTypesStr[0];
+                            const parenthesesMatch = firstElement.match(/\(([^)]+)\)/);
+                            const specialties = parenthesesMatch ? parenthesesMatch[1].split(',').map(s => s.trim()) : [];
+                            const mainTypes = firstElement.replace(/\s*\([^)]*\)/, '').split(',').map(s => s.trim()).filter(s => s);
+                            return [...mainTypes, ...specialties].slice(0, 3);
+                          } else {
+                            // Regular array with separate elements
+                            return vanTypesStr.slice(0, 3);
+                          }
+                        }
+                        
+                        // If it's a string, split by comma and clean up
+                        if (typeof vanTypesStr === 'string') {
+                          const parenthesesMatch = vanTypesStr.match(/\(([^)]+)\)/);
+                          const specialties = parenthesesMatch ? parenthesesMatch[1].split(',').map(s => s.trim()) : [];
+                          const mainTypes = vanTypesStr.replace(/\s*\([^)]*\)/, '').split(',').map(s => s.trim()).filter(s => s);
+                          return [...mainTypes, ...specialties].slice(0, 3);
+                        }
+                        
+                        return [];
+                      };
+                      
+                      const vanTypes = parseVanTypes(builder.vanTypes);
+                      
+                      return vanTypes.map((type, index) => (
                         <Chip 
-                          key={vanType} 
-                          label={vanType} 
+                          key={`${type}-${index}`} 
+                          label={type} 
                           size="small" 
-                          variant="outlined" 
-                          color="primary"
-                          sx={{ fontSize: '0.65rem', height: '20px' }}
+                          sx={{ 
+                            fontSize: '0.65rem', 
+                            height: '20px',
+                            borderRadius: 1.5,
+                            bgcolor: theme.palette.mode === 'dark' 
+                              ? alpha(theme.palette.primary.main, 0.2)
+                              : alpha(theme.palette.primary.main, 0.15),
+                            color: theme.palette.mode === 'dark'
+                              ? theme.palette.primary.light
+                              : theme.palette.primary.dark,
+                            border: `1px solid ${theme.palette.mode === 'dark' ? alpha(theme.palette.primary.main, 0.4) : theme.palette.primary.main}`,
+                            fontWeight: '600',
+                            boxShadow: theme.palette.mode === 'dark' 
+                              ? '0 1px 3px rgba(0,0,0,0.3)'
+                              : '0 1px 2px rgba(0,0,0,0.1)',
+                            cursor: 'default'
+                          }}
                         />
-                      ))}
-                    </Box>
-                  )}
+                      ));
+                    })()}
+                  </Box>
                   
-                  {/* Services */}
-                  {builder.services && Array.isArray(builder.services) && builder.services.length > 0 && (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                      {builder.services.slice(0, 2).map((service: string) => (
+                  {/* Amenities */}
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {(() => {
+                      // Parse amenities (can be array or string)
+                      const parseAmenities = (amenitiesData: any): string[] => {
+                        if (!amenitiesData) return [];
+                        
+                        if (Array.isArray(amenitiesData)) {
+                          return amenitiesData.slice(0, 2);
+                        }
+                        
+                        if (typeof amenitiesData === 'string') {
+                          try {
+                            const parsed = JSON.parse(amenitiesData);
+                            return Array.isArray(parsed) ? parsed.slice(0, 2) : [];
+                          } catch {
+                            // If not JSON, treat as comma-separated string
+                            return amenitiesData.split(',').map(s => s.trim()).filter(s => s).slice(0, 2);
+                          }
+                        }
+                        
+                        return [];
+                      };
+                      
+                      const amenities = parseAmenities(builder.amenities);
+                      
+                      return amenities.map((amenity, index) => (
                         <Chip 
-                          key={service} 
-                          label={service} 
+                          key={`${amenity}-${index}`} 
+                          label={amenity} 
                           size="small" 
-                          variant="outlined" 
-                          color="secondary"
-                          sx={{ fontSize: '0.65rem', height: '20px' }}
+                          sx={{ 
+                            fontSize: '0.65rem', 
+                            height: '20px',
+                            borderRadius: 1.5,
+                            bgcolor: theme.palette.mode === 'dark' 
+                              ? alpha(theme.palette.secondary.main, 0.2)
+                              : alpha('#757575', 0.15),
+                            color: theme.palette.mode === 'dark'
+                              ? theme.palette.secondary.light
+                              : '#424242',
+                            border: `1px solid ${theme.palette.mode === 'dark' ? alpha(theme.palette.secondary.main, 0.4) : '#757575'}`,
+                            fontWeight: '600',
+                            boxShadow: theme.palette.mode === 'dark' 
+                              ? '0 1px 3px rgba(0,0,0,0.3)'
+                              : '0 1px 2px rgba(0,0,0,0.1)',
+                            cursor: 'default'
+                          }}
                         />
-                      ))}
-                    </Box>
-                  )}
+                      ));
+                    })()}
+                  </Box>
                 </CardContent>
               </CardActionArea>
             </Card>

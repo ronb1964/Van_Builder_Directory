@@ -7,8 +7,38 @@ async function extractPhotos(page, targetPhotoCount = 8) {
     const seenUrls = new Set();
     const originalUrl = page.url();
     
-    // PRIORITY 1: Extract photos from the main website page
-    console.log('🏠 Step 1: Checking main website page...');
+    // PRIORITY 1: Extract photos from the main website page with enhanced loading
+    console.log('🏠 Step 1: Checking main website page with dynamic content loading...');
+    
+    // Wait for dynamic content to load (for React/modern websites)
+    try {
+        await page.waitForSelector('img', { timeout: 5000 });
+        await page.waitForTimeout(3000); // Wait for lazy loading
+        
+        // Scroll to trigger lazy loading of images
+        await page.evaluate(() => {
+            return new Promise((resolve) => {
+                let totalHeight = 0;
+                const distance = 500;
+                const timer = setInterval(() => {
+                    const scrollHeight = document.body.scrollHeight;
+                    window.scrollBy(0, distance);
+                    totalHeight += distance;
+                    
+                    if(totalHeight >= scrollHeight){
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 100);
+            });
+        });
+        
+        // Wait a bit more for images to load after scrolling
+        await page.waitForTimeout(2000);
+    } catch (error) {
+        console.log('⚠️ Dynamic loading wait failed, continuing with basic extraction');
+    }
+    
     const mainPagePhotos = await extractPhotosFromPage(page, targetPhotoCount);
     for (const photo of mainPagePhotos) {
         if (!seenUrls.has(photo)) {
@@ -26,7 +56,15 @@ async function extractPhotos(page, targetPhotoCount = 8) {
             try {
                 console.log('🖼️ Step 2: Checking gallery page...');
                 await page.goto(galleryUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
-                await page.waitForTimeout(2000);
+                await page.waitForTimeout(3000);
+                
+                // Enhanced gallery loading for modern websites
+                try {
+                    await page.waitForSelector('img', { timeout: 5000 });
+                    await page.waitForTimeout(2000);
+                } catch (error) {
+                    console.log('⚠️ Gallery images slow to load, continuing...');
+                }
                 
                 const galleryPhotos = await extractPhotosFromPage(page, targetPhotoCount - photos.length);
                 for (const photo of galleryPhotos) {
@@ -216,21 +254,69 @@ async function extractFacebookPhotos(page, maxPhotos) {
 
 async function findGalleryPage(page) {
     return await page.evaluate(() => {
-        const galleryLinks = [
+        // Enhanced gallery page detection for modern websites
+        const gallerySelectors = [
+            // Standard gallery links
             'a[href*="gallery"]', 'a[href*="photos"]', 'a[href*="portfolio"]',
             'a[href*="work"]', 'a[href*="projects"]', 'a[href*="builds"]',
-            'a:contains("Gallery")', 'a:contains("Photos")', 'a:contains("Our Work")',
-            'a:contains("Portfolio")', 'a:contains("Projects")'
+            
+            // Van-specific gallery links
+            'a[href*="van"]', 'a[href*="conversion"]', 'a[href*="build"]',
+            'a[href*="interior"]', 'a[href*="exterior"]',
+            
+            // Modern website patterns
+            'a[href*="/mode"]', 'a[href*="/models"]', 'a[href*="/products"]',
+            'a[href*="/showcase"]', 'a[href*="/collection"]'
         ];
         
-        for (const selector of galleryLinks) {
-            try {
-                const link = document.querySelector(selector);
-                if (link?.href && !link.href.includes('mailto:') && !link.href.includes('tel:')) {
+        for (const selector of gallerySelectors) {
+            const links = document.querySelectorAll(selector);
+            for (const link of links) {
+                if (link.href && link.href !== window.location.href) {
+                    const text = link.textContent.toLowerCase();
+                    const href = link.href.toLowerCase();
+                    
+                    // Score potential gallery links
+                    let score = 0;
+                    
+                    // High-value gallery indicators
+                    if (text.includes('gallery') || href.includes('gallery')) score += 10;
+                    if (text.includes('photos') || href.includes('photos')) score += 10;
+                    if (text.includes('portfolio') || href.includes('portfolio')) score += 8;
+                    if (text.includes('work') || href.includes('work')) score += 6;
+                    
+                    // Van-specific galleries
+                    if (text.includes('van') || href.includes('van')) score += 8;
+                    if (text.includes('mode') || href.includes('mode')) score += 8; // Storyteller specific
+                    if (text.includes('conversion') || href.includes('conversion')) score += 8;
+                    if (text.includes('build') || href.includes('build')) score += 6;
+                    
+                    // Avoid non-gallery links
+                    if (text.includes('contact') || text.includes('about')) score -= 5;
+                    if (text.includes('blog') || text.includes('news')) score -= 3;
+                    
+                    if (score >= 6) {
+                        console.log(`🎯 Found potential gallery: ${link.href} (score: ${score})`);
+                        return link.href;
+                    }
+                }
+            }
+        }
+        
+        // Also check navigation menus for photo sections
+        const navLinks = document.querySelectorAll('nav a, .menu a, .navigation a, header a');
+        for (const link of navLinks) {
+            if (link.href && link.href !== window.location.href) {
+                const text = link.textContent.toLowerCase();
+                const href = link.href.toLowerCase();
+                
+                if ((text.includes('photo') || text.includes('gallery') || 
+                     text.includes('work') || text.includes('van') ||
+                     text.includes('mode') || text.includes('build')) &&
+                    !text.includes('contact') && !text.includes('about')) {
+                    console.log(`📋 Found nav gallery link: ${link.href}`);
                     return link.href;
                 }
-            } catch (e) {
-                // Some selectors might not be valid
             }
         }
         

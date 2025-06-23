@@ -201,17 +201,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                       boxShadow: theme.palette.mode === 'dark' 
                         ? '0 1px 3px rgba(0,0,0,0.3)'
                         : '0 1px 2px rgba(0,0,0,0.1)',
-                      '&:hover': { 
-                        bgcolor: theme.palette.mode === 'dark'
-                          ? alpha(theme.palette.primary.main, 0.3)
-                          : alpha(theme.palette.primary.main, 0.2),
-                        transform: 'translateY(-1px)',
-                        boxShadow: theme.palette.mode === 'dark'
-                          ? '0 2px 8px rgba(0,0,0,0.4)'
-                          : '0 2px 6px rgba(0,0,0,0.15)',
-                        borderColor: alpha(theme.palette.primary.main, 0.5)
-                      },
-                      transition: 'all 0.2s ease-in-out'
+                      cursor: 'default'
                     }}
                   />
                 ));

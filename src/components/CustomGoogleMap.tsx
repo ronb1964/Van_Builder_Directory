@@ -111,22 +111,29 @@ const CustomGoogleMap: React.FC<CustomGoogleMapProps> = ({
            bounds.extend({ lat: offsetLat, lng: offsetLng });
          });
         
-        // Add padding around the bounds for better visual appearance
-        const padding = { top: 80, right: 80, bottom: 80, left: 80 };
+        // Calculate initial geographic spread for padding adjustment
+        const lats = builders.map(b => b.location?.lat).filter(lat => lat !== undefined) as number[];
+        const lngs = builders.map(b => b.location?.lng).filter(lng => lng !== undefined) as number[];
+        const latSpread = Math.max(...lats) - Math.min(...lats);
+        const lngSpread = Math.max(...lngs) - Math.min(...lngs);
+        const maxSpread = Math.max(latSpread, lngSpread);
+        
+        // Adjust padding based on geographic spread - more padding for small spreads
+        let padding = { top: 80, right: 80, bottom: 80, left: 80 };
+        if (maxSpread < 0.2) {
+          // Small spread (like Alaska) - use larger padding to show more context
+          padding = { top: 120, right: 120, bottom: 120, left: 120 };
+        } else if (maxSpread < 0.5) {
+          // Medium-small spread - moderate padding
+          padding = { top: 100, right: 100, bottom: 100, left: 100 };
+        }
+        
         mapInstanceRef.current.fitBounds(bounds, padding);
         
-        // Add padding to the bounds for better visual appearance
+        // Apply zoom limits after a short delay
         setTimeout(() => {
           if (mapInstanceRef.current) {
             const currentZoom = mapInstanceRef.current.getZoom();
-            
-            // Calculate the geographic spread to determine appropriate zoom limits
-            const lats = builders.map(b => b.location?.lat).filter(lat => lat !== undefined) as number[];
-            const lngs = builders.map(b => b.location?.lng).filter(lng => lng !== undefined) as number[];
-            
-            const latSpread = Math.max(...lats) - Math.min(...lats);
-            const lngSpread = Math.max(...lngs) - Math.min(...lngs);
-            const maxSpread = Math.max(latSpread, lngSpread);
             
             // Set zoom limits based on geographic spread
             let minZoom = 6;  // Allow wide zoom for large spreads
@@ -148,10 +155,14 @@ const CustomGoogleMap: React.FC<CustomGoogleMapProps> = ({
               // Small spread - closer zoom
               minZoom = 11;
               maxZoom = 14;
+            } else if (maxSpread > 0.05) {
+              // Very close builders (like Alaska) - moderate zoom to show city context
+              minZoom = 10;
+              maxZoom = 13;
             } else {
-              // Very close builders - allow close zoom
-              minZoom = 12;
-              maxZoom = 16;
+              // Extremely close builders - still show some context
+              minZoom = 11;
+              maxZoom = 14;
             }
             
             console.log(`🗺️ Geographic spread: ${maxSpread.toFixed(2)}°, zoom limits: ${minZoom}-${maxZoom}, current: ${currentZoom}`);

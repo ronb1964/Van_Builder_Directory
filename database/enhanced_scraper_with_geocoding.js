@@ -20,40 +20,31 @@ class EnhancedWebsiteScraper {
         });
     }
 
-    // Enhanced geocoding function using multiple services
+    // Enhanced geocoding function using Google Maps API
     async geocodeAddress(address) {
         console.log(`   🌍 Geocoding address: ${address}`);
         
+        // Use the enhanced geocoding system with Google Maps
+        const { EnhancedGeocodingSystem } = require('./enhanced_geocoding_system');
+        const geocoder = new EnhancedGeocodingSystem();
+        
         try {
-            // Method 1: Use OpenStreetMap Nominatim (free service)
-            const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`;
+            const result = await geocoder.geocodeAddress(address);
             
-            const page = await this.context.newPage();
-            const response = await page.goto(nominatimUrl);
-            const data = await response.json();
-            
-            if (data && data.length > 0) {
-                const result = data[0];
-                const lat = parseFloat(result.lat);
-                const lng = parseFloat(result.lon);
-                
-                console.log(`   ✅ Geocoded: ${lat}, ${lng}`);
-                await page.close();
-                
+            if (result) {
+                console.log(`   ✅ Google Maps geocoded: ${result.lat}, ${result.lng} (accuracy: ${result.accuracy})`);
                 return {
-                    lat: lat,
-                    lng: lng,
-                    accuracy: 'high',
-                    source: 'nominatim'
+                    lat: result.lat,
+                    lng: result.lng,
+                    accuracy: result.accuracy >= 0.8 ? 'high' : 'medium',
+                    source: result.service
                 };
             }
-            
-            await page.close();
         } catch (error) {
-            console.log(`   ⚠️ Nominatim geocoding failed: ${error.message}`);
+            console.log(`   ⚠️ Google geocoding failed: ${error.message}`);
         }
 
-        // Method 2: Fallback to coordinate estimation based on city/state
+        // Fallback to coordinate estimation based on city/state
         return this.estimateCoordinatesByCity(address);
     }
 
@@ -200,8 +191,9 @@ class EnhancedWebsiteScraper {
                 console.log(`   🏙️ City: ${builderData.city}`);
                 console.log(`   📮 ZIP: ${builderData.zip}`);
                 
-                // GEOCODE THE ADDRESS
-                builderData.coordinates = await this.geocodeAddress(builderData.address);
+                // GEOCODE THE ADDRESS with Google Maps precision
+                const { scraperConfig } = require('./scraper_config');
+                builderData.coordinates = await scraperConfig.geocodeAddress(builderData.address, builderData.name);
             }
             
             // Extract social media, photos, description (same as before)

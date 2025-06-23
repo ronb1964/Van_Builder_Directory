@@ -1,5 +1,103 @@
 // Data extraction utilities for van builder scraper
 
+// Van type standardization mapping - consistent with our database standards
+const VAN_TYPE_STANDARDIZATION = {
+    // Ford Transit variations
+    'transit': 'Ford Transit',
+    'ford transit': 'Ford Transit',
+    'Transit': 'Ford Transit',
+    'TRANSIT': 'Ford Transit',
+    
+    // Mercedes Sprinter variations  
+    'sprinter': 'Mercedes Sprinter',
+    'Sprinter': 'Mercedes Sprinter',
+    'SPRINTER': 'Mercedes Sprinter',
+    'mercedes sprinter': 'Mercedes Sprinter',
+    'Mercedes Sprinter': 'Mercedes Sprinter',
+    'sprinter 144': 'Mercedes Sprinter 144',
+    'sprinter 170': 'Mercedes Sprinter 170',
+    'SPRINTER 144': 'Mercedes Sprinter 144',
+    'SPRINTER 170': 'Mercedes Sprinter 170',
+    
+    // Ram ProMaster variations
+    'promaster': 'Ram ProMaster',
+    'ProMaster': 'Ram ProMaster', 
+    'ram promaster': 'Ram ProMaster',
+    'Ram ProMaster': 'Ram ProMaster',
+    'PROMASTER': 'Ram ProMaster',
+    
+    // Other common van types
+    'nv200': 'Nissan NV200',
+    'nissan nv200': 'Nissan NV200',
+    'express': 'Chevrolet Express',
+    'chevy express': 'Chevrolet Express',
+    'chevrolet express': 'Chevrolet Express',
+    
+    // Custom/Generic terms
+    'custom van': 'Custom Van',
+    'Custom Van': 'Custom Van',
+    'custom build': 'Custom Build',
+    'Custom Build': 'Custom Build',
+    'camper van': 'Camper Van',
+    'Camper Van': 'Camper Van'
+};
+
+function standardizeVanTypes(vanTypesArray) {
+    if (!vanTypesArray || vanTypesArray.length === 0) {
+        return [];
+    }
+    
+    const standardizedTypes = vanTypesArray
+        .map(type => {
+            if (typeof type !== 'string') return null;
+            
+            // Remove parenthetical descriptions and extra whitespace
+            let cleanType = type.replace(/\s*\([^)]*\)\s*/g, '').trim();
+            
+            // Remove non-van descriptors
+            const descriptorsToRemove = [
+                'Adventure Van', 'Adventure Vans', 'Overland', 'Off-Road', '4x4', 'Luxury',
+                'Adventure Vehicles', 'Van Life Builds', 'Travel Trailers', 'Nomadic Builds',
+                'Rental Fleet Builds', 'Adventure Trucks', '4x4 Conversions', 'MODE Vans',
+                'GXV Trucks', 'Custom Overland', 'Luxury Van'
+            ];
+            
+            // Remove descriptors
+            for (const desc of descriptorsToRemove) {
+                cleanType = cleanType.replace(new RegExp(`\\b${desc}\\b`, 'gi'), '').trim();
+            }
+            
+            // Clean up spacing
+            cleanType = cleanType.replace(/\s+/g, ' ').trim();
+            
+            // Skip if empty or too short
+            if (!cleanType || cleanType.length < 3) return null;
+            
+            // Apply standardization
+            const standardized = VAN_TYPE_STANDARDIZATION[cleanType] || VAN_TYPE_STANDARDIZATION[cleanType.toLowerCase()];
+            
+            if (standardized) {
+                return standardized;
+            }
+            
+            // Skip pure descriptors
+            const lowerType = cleanType.toLowerCase();
+            if (lowerType === 'builds' || lowerType === 'conversions' || lowerType.length < 3) {
+                return null;
+            }
+            
+            // Apply basic capitalization
+            return cleanType
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        })
+        .filter(type => type !== null && type.length > 0);
+    
+    // Remove duplicates
+    return [...new Set(standardizedTypes)];
+}
+
 async function extractBusinessName(page) {
     console.log('🏢 Extracting business name...');
     
@@ -291,26 +389,22 @@ async function extractContactFromPage(page) {
                 // Try to find complete address with city and state first
                 const completeAddressPatterns = [
                     // Full address with city, state: "123 Main St, City, ST"
-                    /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr),\s*[A-Za-z\s]+,\s*[A-Z]{2})/gi,
+                    /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr)),\s*[A-Za-z\s]+,\s*[A-Z]{2}/gi,
                     // Address with ZIP: "123 Main St, City, CA 90210"
-                    /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr),\s*[A-Za-z\s]+,\s*[A-Z]{2}\s*\d{5})/gi
+                    /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr)),\s*[A-Za-z\s]+,\s*[A-Z]{2}\s*\d{5}/gi
                 ];
                 
                 for (const pattern of completeAddressPatterns) {
                     const matches = text.match(pattern);
                     if (matches) {
-                        data.address = matches[0].trim();
+                        // Extract ONLY the street address portion (first captured group)
+                        data.address = matches[0].split(',')[0].trim();
                         break;
                     }
                 }
                 
-                // If no complete address found, try to build one from parts
+                // If no complete address found, try to find just street address
                 if (!data.address) {
-                    let streetAddress = '';
-                    let city = '';
-                    let state = 'CA'; // Default for California builders
-                    
-                    // Find street address
                     const streetPatterns = [
                         /(\d+\s+[A-Za-z0-9\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Place|Pl|Plaza|Pkwy|Parkway|Circle|Cir|Trail|Tr))/gi
                     ];
@@ -319,30 +413,8 @@ async function extractContactFromPage(page) {
                         const matches = text.match(pattern);
                         if (matches) {
                             // Clean up the street address - remove extra whitespace and unwanted text
-                            streetAddress = matches[0].trim().replace(/\s+/g, ' ');
+                            data.address = matches[0].trim().replace(/\s+/g, ' ');
                             break;
-                        }
-                    }
-                    
-                    // Find city - look for California cities specifically
-                    const cityPatterns = [
-                        /\b(Oceanside|San Diego|Los Angeles|San Francisco|Sacramento|Oakland|Fresno|Long Beach|Bakersfield|Anaheim|Santa Ana|Riverside|Stockton|Irvine|Fremont|San Bernardino|Modesto|Fontana|Oxnard|Moreno Valley|Huntington Beach|Glendale|Santa Clarita|Garden Grove|Oceanside|Rancho Cucamonga|Santa Rosa|Ontario|Lancaster|Elk Grove|Corona|Palmdale|Salinas|Pomona|Hayward|Escondido|Torrance|Sunnyvale|Orange|Fullerton|Pasadena|Thousand Oaks|Visalia|Simi Valley|Concord|Roseville|Rockville|Santa Clara|Vallejo|Victorville|Fairfield|Inglewood|Antioch|Temecula|Richmond|West Covina|Norwalk|Carlsbad|Daly City|Costa Mesa|Rialto|Chula Vista|Burbank|San Mateo|Mission Viejo|Compton|Santa Maria|El Monte|Downey|Redding|San Leandro|Livermore|Whittier|Lakewood|Merced|Milpitas|Union City|San Buenaventura|Carson|San Marcos|Redwood City|West Sacramento|Turlock|Napa|Hemet|Citrus Heights|Tracy|Alhambra|Tustin|San Rafael|Pleasanton|Bellflower|Redlands|Manteca|Lynwood|Woodland|Hawthorne|Perris|El Cajon|Clovis|Davis|Santa Monica|Pico Rivera|Vacaville|Palo Alto|Camarillo|Walnut Creek|Upland|Chico|Whittier|Newport Beach|San Clemente|Porterville|Indio|Menifee|Tulare|Cupertino|Delano|Chino|Buena Park|Campbell|San Luis Obispo|Petaluma|Mountain View|Los Alamitos|Westminster|Vista|Auburn|Carlsbad|Riverside)\b/gi
-                    ];
-                    
-                    for (const pattern of cityPatterns) {
-                        const match = text.match(pattern);
-                        if (match) {
-                            city = match[0];
-                            break;
-                        }
-                    }
-                    
-                    // Construct address if we have parts
-                    if (streetAddress) {
-                        if (city) {
-                            data.address = `${streetAddress}, ${city}, ${state}`;
-                        } else {
-                            data.address = streetAddress;
                         }
                     }
                 }
@@ -490,124 +562,60 @@ async function extractSocialMedia(page) {
             });
         });
         
+        // ALWAYS RETURN OBJECT FORMAT (not array) for UI compatibility
         return socialMedia;
     });
 }
 
 async function extractVanTypes(page) {
-    console.log('🚐 Extracting van types and specialties...');
+    console.log('🚐 Extracting van types...');
     
-    return await page.evaluate(() => {
-        const text = document.body.textContent.toLowerCase();
+    const vanTypes = await page.evaluate(() => {
+        const vanKeywords = [
+            'sprinter', 'transit', 'promaster', 'express', 'nv200', 'savana',
+            'econoline', 'metris', 'crafter', 'daily', 'ducato',
+            'custom van', 'camper van', 'conversion'
+        ];
         
-        // Van manufacturers and models to look for
-        const vanTypes = {
-            'Mercedes Sprinter': [
-                /mercedes[\s\-]?sprinter/gi,
-                /sprinter[\s\-]?van/gi,
-                /sprinter[\s\-]?2500/gi,
-                /sprinter[\s\-]?3500/gi,
-                /mb[\s\-]?sprinter/gi,
-                /mercedes[\s\-]?benz[\s\-]?sprinter/gi
-            ],
-            'Ford Transit': [
-                /ford[\s\-]?transit/gi,
-                /transit[\s\-]?van/gi,
-                /transit[\s\-]?150/gi,
-                /transit[\s\-]?250/gi,
-                /transit[\s\-]?350/gi
-            ],
-            'Ram ProMaster': [
-                /ram[\s\-]?promaster/gi,
-                /promaster[\s\-]?van/gi,
-                /promaster[\s\-]?1500/gi,
-                /promaster[\s\-]?2500/gi,
-                /promaster[\s\-]?3500/gi,
-                /dodge[\s\-]?promaster/gi
-            ],
-            'Nissan NV200': [
-                /nissan[\s\-]?nv200/gi,
-                /nv200[\s\-]?van/gi
-            ],
-            'Chevrolet Express': [
-                /chevrolet[\s\-]?express/gi,
-                /chevy[\s\-]?express/gi,
-                /express[\s\-]?van/gi,
-                /express[\s\-]?2500/gi,
-                /express[\s\-]?3500/gi
-            ],
-            'GMC Savana': [
-                /gmc[\s\-]?savana/gi,
-                /savana[\s\-]?van/gi,
-                /savana[\s\-]?2500/gi,
-                /savana[\s\-]?3500/gi
-            ]
-        };
+        const text = document.body.innerText.toLowerCase();
+        const foundTypes = [];
         
-        // Find matching van types
-        const foundVanTypes = [];
-        Object.keys(vanTypes).forEach(vanType => {
-            const patterns = vanTypes[vanType];
-            for (const pattern of patterns) {
-                if (text.match(pattern)) {
-                    foundVanTypes.push(vanType);
-                    break; // Don't add duplicates
+        // Look for van type mentions in text
+        vanKeywords.forEach(keyword => {
+            if (text.includes(keyword)) {
+                // Try to extract the full context around the keyword
+                const regex = new RegExp(`\\b([\\w\\s]*${keyword}[\\w\\s]*)\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) {
+                    matches.forEach(match => {
+                        const cleaned = match.trim();
+                        if (cleaned.length > 3 && cleaned.length < 50) {
+                            foundTypes.push(cleaned);
+                        }
+                    });
                 }
             }
         });
         
-        // Also look for general specialties
-        const specialties = {
-            'Van Conversion': /van[\s\-]?conversion/gi,
-            'Camper Van': /camper[\s\-]?van/gi,
-            'Class B RV': /class[\s\-]?b[\s\-]?rv/gi,
-            'Adventure Van': /adventure[\s\-]?van/gi,
-            'Overland': /overland/gi,
-            'Off-Road': /off[\s\-]?road/gi,
-            '4x4': /4x4/gi,
-            'AWD': /awd/gi,
-            'Luxury': /luxury/gi,
-            'Custom Build': /custom[\s\-]?build/gi
-        };
-        
-        const foundSpecialties = [];
-        Object.keys(specialties).forEach(specialty => {
-            if (text.match(specialties[specialty])) {
-                foundSpecialties.push(specialty);
-            }
+        // Also look for van types in structured data like lists
+        const listItems = document.querySelectorAll('li, .van-type, .vehicle-type, [class*="van"], [class*="vehicle"]');
+        listItems.forEach(item => {
+            const text = item.textContent.toLowerCase().trim();
+            vanKeywords.forEach(keyword => {
+                if (text.includes(keyword) && text.length < 100) {
+                    foundTypes.push(text);
+                }
+            });
         });
         
-        // Create a combined description
-        let vanTypeDescription = '';
-        
-        if (foundVanTypes.length > 0) {
-            vanTypeDescription = foundVanTypes.join(', ');
-            
-            // Add specialties if we have them
-            if (foundSpecialties.length > 0) {
-                // Filter out redundant terms
-                const nonRedundantSpecialties = foundSpecialties.filter(s => 
-                    !['Van Conversion', 'Camper Van', 'Custom Build'].includes(s)
-                );
-                
-                if (nonRedundantSpecialties.length > 0) {
-                    vanTypeDescription += ' (' + nonRedundantSpecialties.slice(0, 3).join(', ') + ')';
-                }
-            }
-        } else if (foundSpecialties.length > 0) {
-            // If no specific van types found, use specialties
-            vanTypeDescription = foundSpecialties.slice(0, 3).join(', ');
-        } else {
-            // Default fallback
-            vanTypeDescription = 'Custom Van';
-        }
-        
-        return {
-            vanTypes: foundVanTypes,
-            specialties: foundSpecialties,
-            description: vanTypeDescription
-        };
+        return [...new Set(foundTypes)].slice(0, 8); // Limit to prevent spam
     });
+    
+    // Apply standardization before returning
+    const standardizedVanTypes = standardizeVanTypes(vanTypes);
+    
+    console.log(`🚐 Found ${standardizedVanTypes.length} standardized van types: ${standardizedVanTypes.join(', ')}`);
+    return standardizedVanTypes;
 }
 
 async function extractAmenities(page) {
