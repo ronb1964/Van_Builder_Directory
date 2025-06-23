@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Van Builder Dev Server
+Comment=Start Van Builder Development Environment
+Exec=/home/ron/Dev/Van_Builder_Directory/launch-van-builder.sh
+Icon=/home/ron/.local/share/applications/van-builder-app-icon.png
+Terminal=true
+Categories=Development;
+StartupNotify=true

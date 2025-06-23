@@ -41,7 +41,7 @@ class DatabaseService {
       return {
         id: builder.id,
         name: builder.name,
-        address: `${builder.city}, ${builder.state}`,
+        address: builder.address || `${builder.city}, ${builder.state}`,
         phone: builder.phone,
         email: builder.email,
         website: builder.website,
@@ -59,7 +59,9 @@ class DatabaseService {
         rating: 4.5, // Default rating
         reviewCount: 10, // Default review count
         leadTime: '3-6 months',
-        vanTypes: builder.van_types || 'Custom Van',
+        vanTypes: builder.van_types ? 
+          (typeof builder.van_types === 'string' ? [builder.van_types] : builder.van_types) : 
+          ['Custom Van'],
         amenities: builder.amenities ? JSON.parse(builder.amenities) : ['Custom Build'],
         services: builder.services ? JSON.parse(builder.services) : ['Custom Builds'],
         certifications: [],

@@ -44,6 +44,7 @@ export interface Builder {
     youtube?: string;
     pinterest?: string;
     tiktok?: string;
+    twitter?: string;
   };
   gallery?: GalleryImage[] | string[];
   distanceFromZip?: {

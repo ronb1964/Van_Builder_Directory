@@ -351,6 +351,37 @@ async function extractContactFromPage(page) {
             if (data.phone && data.email) break;
         }
         
+        // Parse city and zip from address if we have one
+        if (data.address) {
+            // Extract city and zip from address patterns like:
+            // "123 Main St, City, CA 90210" or "123 Main St, City, CA"
+            const addressParts = data.address.split(',').map(part => part.trim());
+            
+            if (addressParts.length >= 3) {
+                // Format: street, city, state [zip]
+                data.city = addressParts[1];
+                
+                // Check if state part contains zip code
+                const stateZipPart = addressParts[2];
+                const zipMatch = stateZipPart.match(/\b(\d{5})\b/);
+                if (zipMatch) {
+                    data.zip = zipMatch[1];
+                }
+            } else if (addressParts.length === 2) {
+                // Might be "street, city CA" format
+                const secondPart = addressParts[1];
+                const cityStateMatch = secondPart.match(/^(.+?)\s+[A-Z]{2}$/);
+                if (cityStateMatch) {
+                    data.city = cityStateMatch[1];
+                }
+            }
+        }
+        
+        // Clean up email - remove mailto: prefix if present
+        if (data.email && data.email.startsWith('mailto:')) {
+            data.email = data.email.replace('mailto:', '');
+        }
+        
         return data;
     });
 }
@@ -579,10 +610,121 @@ async function extractVanTypes(page) {
     });
 }
 
+async function extractAmenities(page) {
+    console.log('🔧 Extracting amenities and features...');
+    
+    return await page.evaluate(() => {
+        const text = document.body.textContent.toLowerCase();
+        const amenities = [];
+        
+        // Comprehensive amenity detection patterns
+        const amenityPatterns = {
+            // Power & Electrical
+            'Solar Power': [/solar\s*power/gi, /solar\s*panel/gi, /solar\s*system/gi, /solar(?!\s*eclipse)/gi],
+            'Lithium Batteries': [/lithium\s*batter/gi, /lithium\s*power/gi, /battle\s*born/gi],
+            'Inverter': [/inverter/gi, /power\s*inverter/gi, /2000w\s*inverter/gi, /3000w\s*inverter/gi],
+            'Shore Power': [/shore\s*power/gi, /external\s*power/gi, /30\s*amp/gi, /50\s*amp/gi],
+            'Generator': [/generator/gi, /onan/gi, /honda\s*generator/gi],
+            'LED Lighting': [/led\s*light/gi, /led\s*strip/gi, /ambient\s*light/gi],
+            '12V System': [/12v\s*system/gi, /12\s*volt/gi, /dual\s*battery/gi],
+            
+            // Water Systems
+            'Fresh Water Tank': [/fresh\s*water/gi, /water\s*tank/gi, /40\s*gallon/gi, /30\s*gallon/gi],
+            'Gray Water Tank': [/gray\s*water/gi, /grey\s*water/gi, /waste\s*water/gi],
+            'Water Heater': [/water\s*heater/gi, /hot\s*water/gi, /tankless\s*heater/gi, /truma/gi],
+            'Water Pump': [/water\s*pump/gi, /pressure\s*pump/gi, /shurflo/gi],
+            'Plumbing': [/plumbing/gi, /pex\s*plumbing/gi, /water\s*system/gi],
+            
+            // Kitchen & Appliances
+            'Kitchen': [/kitchen/gi, /kitchenette/gi, /galley/gi, /cooking\s*area/gi],
+            'Refrigerator': [/refrigerator/gi, /fridge/gi, /dometic/gi, /norcold/gi, /12v\s*fridge/gi],
+            'Induction Cooktop': [/induction\s*cooktop/gi, /induction\s*stove/gi, /electric\s*cooktop/gi],
+            'Propane Stove': [/propane\s*stove/gi, /gas\s*stove/gi, /2\s*burner/gi, /3\s*burner/gi],
+            'Microwave': [/microwave/gi, /convection\s*microwave/gi],
+            'Sink': [/sink/gi, /stainless\s*sink/gi, /undermount\s*sink/gi],
+            'Custom Cabinetry': [/custom\s*cabinet/gi, /cabinetry/gi, /hardwood\s*cabinet/gi],
+            'Countertops': [/countertop/gi, /quartz\s*counter/gi, /butcher\s*block/gi],
+            
+            // Bathroom & Sanitation
+            'Bathroom': [/bathroom/gi, /wet\s*bath/gi, /full\s*bath/gi, /half\s*bath/gi],
+            'Shower': [/shower/gi, /cassette\s*shower/gi, /tiled\s*shower/gi],
+            'Toilet': [/toilet/gi, /cassette\s*toilet/gi, /composting\s*toilet/gi, /nature\'s\s*head/gi],
+            'Ventilation Fan': [/vent\s*fan/gi, /exhaust\s*fan/gi, /bathroom\s*fan/gi, /maxxfan/gi],
+            
+            // Climate Control
+            'Air Conditioning': [/air\s*conditioning/gi, /ac\s*unit/gi, /dometic\s*ac/gi, /roof\s*ac/gi],
+            'Heating': [/heating/gi, /furnace/gi, /diesel\s*heater/gi, /webasto/gi, /espar/gi],
+            'Insulation': [/insulation/gi, /spray\s*foam/gi, /thinsulate/gi, /polyiso/gi],
+            'Roof Vent': [/roof\s*vent/gi, /fantastic\s*fan/gi, /maxxair/gi, /ventilation/gi],
+            
+            // Sleeping & Living
+            'Bed': [/bed/gi, /queen\s*bed/gi, /full\s*bed/gi, /murphy\s*bed/gi, /convertible\s*bed/gi],
+            'Dinette': [/dinette/gi, /dining\s*table/gi, /convertible\s*table/gi],
+            'Seating': [/seating/gi, /bench\s*seat/gi, /swivel\s*seat/gi, /captain\'s\s*chair/gi],
+            'Storage': [/storage/gi, /overhead\s*storage/gi, /under\s*bed\s*storage/gi, /garage/gi],
+            'Flooring': [/flooring/gi, /luxury\s*vinyl/gi, /hardwood\s*floor/gi, /tile\s*floor/gi],
+            
+            // Exterior Features
+            'Awning': [/awning/gi, /dometic\s*awning/gi, /fiamma\s*awning/gi, /retractable\s*awning/gi],
+            'Roof Rack': [/roof\s*rack/gi, /thule\s*rack/gi, /yakima\s*rack/gi],
+            'Bike Rack': [/bike\s*rack/gi, /bicycle\s*rack/gi, /rear\s*bike/gi],
+            'Ladder': [/ladder/gi, /rear\s*ladder/gi, /access\s*ladder/gi],
+            'Running Boards': [/running\s*board/gi, /side\s*step/gi, /step\s*bar/gi],
+            'Backup Camera': [/backup\s*camera/gi, /rear\s*camera/gi, /reversing\s*camera/gi],
+            
+            // Technology & Entertainment
+            'WiFi': [/wifi/gi, /wi-fi/gi, /internet/gi, /cellular\s*booster/gi],
+            'TV': [/television/gi, /smart\s*tv/gi, /32\s*inch\s*tv/gi, /entertainment/gi],
+            'Sound System': [/sound\s*system/gi, /stereo/gi, /bluetooth\s*speaker/gi, /jbl/gi],
+            'USB Outlets': [/usb\s*outlet/gi, /usb\s*port/gi, /charging\s*port/gi],
+            
+            // Off-Grid & Adventure
+            'Off-Grid Package': [/off[\s-]?grid/gi, /boondocking/gi, /dry\s*camping/gi],
+            '4x4 Conversion': [/4x4/gi, /four\s*wheel\s*drive/gi, /awd/gi, /all\s*wheel/gi],
+            'Lift Kit': [/lift\s*kit/gi, /suspension\s*lift/gi, /ground\s*clearance/gi],
+            'Skid Plates': [/skid\s*plate/gi, /underbody\s*protection/gi, /armor/gi],
+            'Recovery Gear': [/recovery\s*gear/gi, /winch/gi, /tow\s*strap/gi],
+            
+            // Custom Features
+            'Custom Woodwork': [/custom\s*wood/gi, /hardwood/gi, /bamboo/gi, /teak/gi],
+            'Custom Paint': [/custom\s*paint/gi, /paint\s*job/gi, /vinyl\s*wrap/gi],
+            'Window Tinting': [/window\s*tint/gi, /tinted\s*window/gi, /privacy\s*glass/gi],
+            'Blackout Curtains': [/blackout\s*curtain/gi, /privacy\s*curtain/gi, /window\s*cover/gi]
+        };
+        
+        // Check each amenity pattern
+        Object.keys(amenityPatterns).forEach(amenity => {
+            const patterns = amenityPatterns[amenity];
+            for (const pattern of patterns) {
+                if (text.match(pattern)) {
+                    if (!amenities.includes(amenity)) {
+                        amenities.push(amenity);
+                    }
+                    break; // Found this amenity, move to next
+                }
+            }
+        });
+        
+        // If no specific amenities found, add generic ones based on context
+        if (amenities.length === 0) {
+            if (text.includes('custom') || text.includes('conversion')) {
+                amenities.push('Custom Build');
+            }
+            if (text.includes('van') || text.includes('camper')) {
+                amenities.push('Van Conversion');
+            }
+        }
+        
+        // Sort amenities for consistency
+        return amenities.sort();
+    });
+}
+
 module.exports = {
     extractBusinessName,
     extractContactInfo,
     extractDescription,
     extractSocialMedia,
-    extractVanTypes
+    extractVanTypes,
+    extractAmenities
 };

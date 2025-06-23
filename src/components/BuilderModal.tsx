@@ -32,6 +32,7 @@ import {
   Instagram as InstagramIcon,
   YouTube as YouTubeIcon,
   Pinterest as PinterestIcon,
+  Twitter as TwitterIcon,
   ArrowBackIos,
   ArrowForwardIos,
   Phone,
@@ -43,10 +44,19 @@ import {
   Check as CheckIcon,
   PhotoCamera as GalleryIcon,
   ArrowBack as ArrowBackIcon,
-  ArrowForward as ArrowForwardIcon
+  ArrowForward as ArrowForwardIcon,
+  LocationOn
 } from '@mui/icons-material';
+import { SvgIcon } from '@mui/material';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Builder, PricingTier, type GalleryImage } from '../types';
+
+// Custom TikTok icon component
+const TikTokIcon = (props: any) => (
+  <SvgIcon {...props} viewBox="0 0 24 24">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.04-.1z"/>
+  </SvgIcon>
+);
 
 // Styled Components
 const ModalContent = styled(Box)(({ theme }) => ({
@@ -180,22 +190,56 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
     switch (activeTab) {
       case 0: // Overview
         return (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
-            <div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '32px' }}>
+            <div style={{ paddingRight: '16px', borderRight: '1px solid #e0e0e0' }}>
+              <Typography variant="body1" paragraph sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <LocationOn color="primary" />
+                <span>
+                  {builder.address ? `${builder.address}, ${location.city}, ${location.state} ${location.zip}` : `${location.city}, ${location.state} ${location.zip}`}
+                </span>
+              </Typography>
+              
               <Typography variant="body1" paragraph>{description}</Typography>
             </div>
             
-            <div>
+            <div style={{ paddingLeft: '16px' }}>
               <Typography variant="h6" gutterBottom>Van Types</Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-                {(vanTypes || []).map((type, index) => (
-                  <Chip key={index} label={type} color="primary" variant="outlined" />
-                ))}
+                {(() => {
+                  // Parse van types to ensure each type gets its own pill (same logic as BuilderCard)
+                  const parseVanTypes = (vanTypesStr: string): string[] => {
+                    if (!vanTypesStr) return ['Custom Van'];
+                    
+                    // Split by comma and handle parentheses content
+                    // Example: "Mercedes Sprinter, Ford Transit (Luxury)" 
+                    // becomes ["Mercedes Sprinter", "Ford Transit", "Luxury"]
+                    
+                    // First, extract content in parentheses
+                    const parenthesesMatch = vanTypesStr.match(/\(([^)]+)\)/);
+                    const specialties = parenthesesMatch ? parenthesesMatch[1].split(',').map(s => s.trim()) : [];
+                    
+                    // Remove parentheses content and split main types
+                    const mainTypes = vanTypesStr.replace(/\s*\([^)]*\)/, '').split(',').map(s => s.trim()).filter(s => s);
+                    
+                    return [...mainTypes, ...specialties];
+                  };
+                  
+                  const types = parseVanTypes(typeof vanTypes === 'string' ? vanTypes : (vanTypes || []).join(', '));
+                  
+                  return types.map((type, index) => (
+                    <Chip 
+                      key={`${type}-${index}`} 
+                      label={type} 
+                      color="primary" 
+                      variant="outlined"
+                    />
+                  ));
+                })()}
               </Box>
 
               <Typography variant="h6" gutterBottom>Amenities</Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-                {(amenities || []).map((amenity, index) => (
+                {(amenities || []).slice(0, 12).map((amenity, index) => (
                   <Chip 
                     key={index} 
                     label={amenity} 
@@ -203,6 +247,17 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                     icon={<CheckIcon fontSize="small" />}
                   />
                 ))}
+                {(amenities || []).length > 12 && (
+                  <Chip 
+                    label={`+${(amenities || []).length - 12} more`}
+                    variant="outlined"
+                    sx={{ 
+                      fontStyle: 'italic',
+                      color: 'text.secondary',
+                      borderColor: 'text.secondary'
+                    }}
+                  />
+                )}
               </Box>
             </div>
           </div>
@@ -489,14 +544,14 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{ 
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
+                      bgcolor: theme.palette.primary.main,
+                      color: 'white',
                       borderRadius: '50%',
                       width: 40,
                       height: 40,
                       transition: 'all 0.2s ease-in-out',
                       '&:hover': {
-                        bgcolor: theme.palette.primary.main,
-                        color: 'white',
+                        bgcolor: theme.palette.primary.dark,
                         transform: 'scale(1.1)'
                       }
                     }}
@@ -513,14 +568,14 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{ 
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
+                      bgcolor: theme.palette.primary.main,
+                      color: 'white',
                       borderRadius: '50%',
                       width: 40,
                       height: 40,
                       transition: 'all 0.2s ease-in-out',
                       '&:hover': {
-                        bgcolor: theme.palette.primary.main,
-                        color: 'white',
+                        bgcolor: theme.palette.primary.dark,
                         transform: 'scale(1.1)'
                       }
                     }}
@@ -537,19 +592,67 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{ 
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
+                      bgcolor: theme.palette.primary.main,
+                      color: 'white',
                       borderRadius: '50%',
                       width: 40,
                       height: 40,
                       transition: 'all 0.2s ease-in-out',
                       '&:hover': {
-                        bgcolor: theme.palette.primary.main,
-                        color: 'white',
+                        bgcolor: theme.palette.primary.dark,
                         transform: 'scale(1.1)'
                       }
                     }}
                   >
                     <FacebookIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {socialMedia?.tiktok && (
+                <Tooltip title="TikTok Profile">
+                  <IconButton
+                    component="a"
+                    href={socialMedia.tiktok}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ 
+                      bgcolor: theme.palette.primary.main,
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: 40,
+                      height: 40,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        bgcolor: theme.palette.primary.dark,
+                        transform: 'scale(1.1)'
+                      }
+                    }}
+                  >
+                    <TikTokIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {socialMedia?.twitter && (
+                <Tooltip title="Twitter Profile">
+                  <IconButton
+                    component="a"
+                    href={socialMedia.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ 
+                      bgcolor: theme.palette.primary.main,
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: 40,
+                      height: 40,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        bgcolor: theme.palette.primary.dark,
+                        transform: 'scale(1.1)'
+                      }
+                    }}
+                  >
+                    <TwitterIcon />
                   </IconButton>
                 </Tooltip>
               )}
@@ -561,14 +664,14 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{ 
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
+                      bgcolor: theme.palette.primary.main,
+                      color: 'white',
                       borderRadius: '50%',
                       width: 40,
                       height: 40,
                       transition: 'all 0.2s ease-in-out',
                       '&:hover': {
-                        bgcolor: theme.palette.primary.main,
-                        color: 'white',
+                        bgcolor: theme.palette.primary.dark,
                         transform: 'scale(1.1)'
                       }
                     }}

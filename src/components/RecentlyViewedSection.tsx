@@ -120,7 +120,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
                   </Box>
                   
                   {/* Van Types */}
-                  {builder.vanTypes && builder.vanTypes.length > 0 && (
+                  {builder.vanTypes && Array.isArray(builder.vanTypes) && builder.vanTypes.length > 0 && (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
                       {builder.vanTypes.slice(0, 2).map((vanType: string) => (
                         <Chip 
@@ -136,7 +136,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
                   )}
                   
                   {/* Services */}
-                  {builder.services && builder.services.length > 0 && (
+                  {builder.services && Array.isArray(builder.services) && builder.services.length > 0 && (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                       {builder.services.slice(0, 2).map((service: string) => (
                         <Chip 

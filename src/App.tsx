@@ -553,7 +553,15 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="sticky" color="default" elevation={1}>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: mode === 'dark' 
+            ? 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)'
+            : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+        }}
+      >
+        <AppBar position="sticky" color="default" elevation={1}>
         <Toolbar>
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
             <img 
@@ -1018,6 +1026,7 @@ const App = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      </Box>
     </ThemeProvider>
   );
 };

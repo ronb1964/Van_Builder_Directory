@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+/* Smooth gradient background for better visual appeal */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

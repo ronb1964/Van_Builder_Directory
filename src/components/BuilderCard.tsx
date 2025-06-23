@@ -13,27 +13,17 @@ import {
   useTheme,
   alpha,
   Grow,
-  Zoom,
-  SvgIcon
+  Zoom
 } from '@mui/material';
 import { 
   LocationOn, 
   Phone, 
   Email, 
-  Language, 
-  DirectionsCar,
-  YouTube,
-  Instagram,
-  Facebook
+  Language
 } from '@mui/icons-material';
 import { Builder } from '../types';
 
-// Custom TikTok icon component
-const TikTokIcon = (props: any) => (
-  <SvgIcon {...props} viewBox="0 0 24 24">
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.04-.1z"/>
-  </SvgIcon>
-);
+
 
 interface BuilderCardProps {
   builder: Builder;
@@ -111,20 +101,23 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
 
         {/* Card Media */}
         <Box
+          onClick={() => onViewDetails(builder)}
           sx={{
-            height: 160,
+            height: 100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
             color: 'white',
-            fontSize: '1.4rem',
+            fontSize: '1.2rem',
             fontWeight: '600',
             transition: 'all 0.3s ease-in-out',
             textAlign: 'center',
             px: 2,
+            py: 1.5,
             borderRadius: '8px 8px 0 0',
             textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+            cursor: 'pointer',
             '&:hover': {
               background: `linear-gradient(135deg, ${alpha(theme.palette.primary.dark, 0.8)} 0%, ${alpha(theme.palette.primary.dark, 0.7)} 100%)`,
               transform: 'scale(1.02)'
@@ -257,7 +250,8 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                 component="a"
                 href={phone ? `tel:${phone}` : `mailto:${email}`}
                 sx={{ 
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
+                  bgcolor: theme.palette.primary.main,
+                  color: 'white',
                   borderRadius: '50%',
                   width: 32,
                   height: 32,
@@ -265,8 +259,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   minHeight: 32,
                   transition: 'all 0.2s ease-in-out',
                   '&:hover': {
-                    bgcolor: theme.palette.primary.main,
-                    color: 'white',
+                    bgcolor: theme.palette.primary.dark,
                     transform: 'scale(1.1)'
                   }
                 }}
@@ -283,7 +276,8 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   component="a"
                   href={`mailto:${email}`}
                   sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: theme.palette.primary.main,
+                    color: 'white',
                     borderRadius: '50%',
                     width: 32,
                     height: 32,
@@ -291,8 +285,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                     minHeight: 32,
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
+                      bgcolor: theme.palette.primary.dark,
                       transform: 'scale(1.1)'
                     }
                   }}
@@ -312,7 +305,8 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor: theme.palette.primary.main,
+                    color: 'white',
                     borderRadius: '50%',
                     width: 32,
                     height: 32,
@@ -320,8 +314,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                     minHeight: 32,
                     transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
+                      bgcolor: theme.palette.primary.dark,
                       transform: 'scale(1.1)'
                     }
                   }}
@@ -330,122 +323,7 @@ const BuilderCard: React.FC<BuilderCardProps> = ({
                 </IconButton>
               </Tooltip>
             )}
-            {socialMedia?.youtube && (
-              <Tooltip title="YouTube Channel">
-                <IconButton 
-                  size="small" 
-                  color="primary" 
-                  aria-label="youtube"
-                  component="a"
-                  href={socialMedia.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
-                    borderRadius: '50%',
-                    width: 32,
-                    height: 32,
-                    minWidth: 32,
-                    minHeight: 32,
-                    transition: 'all 0.2s ease-in-out',
-                    '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
-                      transform: 'scale(1.1)'
-                    }
-                  }}
-                >
-                  <YouTube fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {socialMedia?.instagram && (
-              <Tooltip title="Instagram Profile">
-                <IconButton 
-                  size="small" 
-                  color="primary" 
-                  aria-label="instagram"
-                  component="a"
-                  href={socialMedia.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
-                    borderRadius: '50%',
-                    width: 32,
-                    height: 32,
-                    minWidth: 32,
-                    minHeight: 32,
-                    transition: 'all 0.2s ease-in-out',
-                    '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
-                      transform: 'scale(1.1)'
-                    }
-                  }}
-                >
-                  <Instagram fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {socialMedia?.facebook && (
-              <Tooltip title="Facebook Profile">
-                <IconButton 
-                  size="small" 
-                  color="primary" 
-                  aria-label="facebook"
-                  component="a"
-                  href={socialMedia.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
-                    borderRadius: '50%',
-                    width: 32,
-                    height: 32,
-                    minWidth: 32,
-                    minHeight: 32,
-                    transition: 'all 0.2s ease-in-out',
-                    '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
-                      transform: 'scale(1.1)'
-                    }
-                  }}
-                >
-                  <Facebook fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {socialMedia?.tiktok && (
-              <Tooltip title="TikTok Profile">
-                <IconButton 
-                  size="small" 
-                  color="primary" 
-                  aria-label="tiktok"
-                  component="a"
-                  href={socialMedia.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ 
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
-                    borderRadius: '50%',
-                    width: 32,
-                    height: 32,
-                    minWidth: 32,
-                    minHeight: 32,
-                    transition: 'all 0.2s ease-in-out',
-                    '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                      color: 'white',
-                      transform: 'scale(1.1)'
-                    }
-                  }}
-                >
-                  <TikTokIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
+
           </Box>
         </Box>
       </Card>

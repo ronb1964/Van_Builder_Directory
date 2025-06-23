@@ -169,6 +169,13 @@ class VanBuilderScraper {
             // Extract description
             builderData.description = await dataExtraction.extractDescription(this.page);
             
+            // Extract van types
+            const vanTypeData = await dataExtraction.extractVanTypes(this.page);
+            builderData.van_types = [vanTypeData.description]; // Use the formatted description
+            
+            // Extract amenities
+            builderData.amenities = await dataExtraction.extractAmenities(this.page);
+            
             // Extract social media
             builderData.social_media = await dataExtraction.extractSocialMedia(this.page);
             

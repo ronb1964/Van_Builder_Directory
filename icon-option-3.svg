@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Option 3: Minimalist Geometric Van -->
+  <g>
+    <!-- Van body - clean geometric shape -->
+    <rect x="6" y="13" width="20" height="8" fill="#4CAF50" />
+    
+    <!-- Front section -->
+    <polygon points="4,15 6,13 6,19 4,19" fill="#2E7D32" />
+    
+    <!-- Windows - single strip -->
+    <rect x="8" y="15" width="16" height="3" fill="#F1F8E9" />
+    
+    <!-- Window dividers -->
+    <line x1="14" y1="15" x2="14" y2="18" stroke="#4CAF50" stroke-width="0.5" />
+    <line x1="20" y1="15" x2="20" y2="18" stroke="#4CAF50" stroke-width="0.5" />
+    
+    <!-- Wheels - simple circles -->
+    <circle cx="9" cy="23" r="2" fill="#263238" />
+    <circle cx="23" cy="23" r="2" fill="#263238" />
+    
+    <!-- Simple highlights on wheels -->
+    <circle cx="9" cy="23" r="0.7" fill="#546E7A" />
+    <circle cx="23" cy="23" r="0.7" fill="#546E7A" />
+  </g>
+</svg> 
