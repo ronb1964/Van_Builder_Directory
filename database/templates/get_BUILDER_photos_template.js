@@ -161,39 +161,22 @@ async function extractBuilderPhotos() {
         if (photos.length > 0) {
             console.log(`\n💾 Updating database with ${photos.length} photos...`);
             
-            const db = new sqlite3.Database('./builders.db');
-            const serverDb = new sqlite3.Database('../server/database/builders.db');
+            // Using single application database - no more scraper database confusion
+const db = new sqlite3.Database('../server/database/builders.db');
             
             const photosJson = JSON.stringify(photos);
             
-            // Update main database
+            // Update application database
             await new Promise((resolve, reject) => {
                 db.run(
                     `UPDATE builders SET photos = ? WHERE name = ? AND state = ?`,
                     [photosJson, BUILDER_CONFIG.name, BUILDER_CONFIG.state],
                     function(err) {
                         if (err) {
-                            console.log(`❌ Main DB update failed: ${err.message}`);
+                            console.log(`❌ Database update failed: ${err.message}`);
                             reject(err);
                         } else {
-                            console.log(`✅ Main database updated (${this.changes} rows)`);
-                            resolve();
-                        }
-                    }
-                );
-            });
-            
-            // Update server database
-            await new Promise((resolve, reject) => {
-                serverDb.run(
-                    `UPDATE builders SET photos = ? WHERE name = ? AND state = ?`,
-                    [photosJson, BUILDER_CONFIG.name, BUILDER_CONFIG.state],
-                    function(err) {
-                        if (err) {
-                            console.log(`❌ Server DB update failed: ${err.message}`);
-                            reject(err);
-                        } else {
-                            console.log(`✅ Server database updated (${this.changes} rows)`);
+                            console.log(`✅ Application database updated (${this.changes} rows)`);
                             resolve();
                         }
                     }
@@ -201,7 +184,6 @@ async function extractBuilderPhotos() {
             });
             
             db.close();
-            serverDb.close();
             
             console.log(`\n🎉 Successfully extracted ${photos.length} photos for ${BUILDER_CONFIG.name}!`);
         } else {

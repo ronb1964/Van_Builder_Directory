@@ -8,8 +8,8 @@ async function fixSocialMediaFormat() {
     console.log(`🔄 Converting ${STATE_NAME} Social Media to Object Format`);
     console.log('=======================================================');
     
-    const db = new sqlite3.Database('./builders.db');
-    const serverDb = new sqlite3.Database('../server/database/builders.db');
+    // Using single application database - no more scraper database confusion
+const db = new sqlite3.Database('../server/database/builders.db');
     
     let conversionsApplied = 0;
     
@@ -75,33 +75,17 @@ async function fixSocialMediaFormat() {
         
         const newSocialMediaJson = JSON.stringify(socialMediaObject);
         
-        // Update both databases
+        // Update application database
         await new Promise((resolve, reject) => {
             db.run(
                 `UPDATE builders SET social_media = ? WHERE name = ? AND state = ?`,
                 [newSocialMediaJson, builder.name, STATE_ABBREV],
                 function(err) {
                     if (err) {
-                        console.log(`   ❌ Main DB update failed: ${err.message}`);
+                        console.log(`   ❌ Database update failed: ${err.message}`);
                         reject(err);
                     } else {
-                        console.log(`   ✅ Main database updated`);
-                        resolve();
-                    }
-                }
-            );
-        });
-        
-        await new Promise((resolve, reject) => {
-            serverDb.run(
-                `UPDATE builders SET social_media = ? WHERE name = ? AND state = ?`,
-                [newSocialMediaJson, builder.name, STATE_ABBREV],
-                function(err) {
-                    if (err) {
-                        console.log(`   ❌ Server DB update failed: ${err.message}`);
-                        reject(err);
-                    } else {
-                        console.log(`   ✅ Server database updated`);
+                        console.log(`   ✅ Application database updated`);
                         resolve();
                     }
                 }
@@ -169,7 +153,6 @@ async function fixSocialMediaFormat() {
     console.log('4. Move to next state following the same workflow');
     
     db.close();
-    serverDb.close();
 }
 
 // Run the conversion

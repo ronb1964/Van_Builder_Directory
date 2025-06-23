@@ -27,8 +27,8 @@ async function fixStateDataIssues() {
     console.log('🔧 Fixing [STATE_NAME] Data Issues');
     console.log('==================================');
     
-    const db = new sqlite3.Database('./builders.db');
-    const serverDb = new sqlite3.Database('../server/database/builders.db');
+    // Using single application database - no more scraper database confusion
+const db = new sqlite3.Database('../server/database/builders.db');
     
     let fixesApplied = 0;
     let needsResearch = 0;
@@ -37,9 +37,8 @@ async function fixStateDataIssues() {
     console.log('📥 Importing raw [STATE_NAME] scraping results...');
     try {
         const { execSync } = require('child_process');
-        execSync('sqlite3 builders.db < [state_name]_builders_with_coordinates.sql', { stdio: 'inherit' });
         execSync('sqlite3 ../server/database/builders.db < [state_name]_builders_with_coordinates.sql', { stdio: 'inherit' });
-        console.log('✅ Raw data imported');
+        console.log('✅ Raw data imported to application database');
     } catch (error) {
         console.log('⚠️ Import may have failed or data already exists:', error.message);
     }
@@ -94,27 +93,14 @@ async function fixStateDataIssues() {
             
             const updateQuery = `UPDATE builders SET ${updates.join(', ')} WHERE name = ? AND state = '[STATE_ABBREV]'`;
             
-            // Update main database
+            // Update application database
             await new Promise((resolve, reject) => {
                 db.run(updateQuery, values, function(err) {
                     if (err) {
-                        console.log(`   ❌ Main DB update failed: ${err.message}`);
+                        console.log(`   ❌ Database update failed: ${err.message}`);
                         reject(err);
                     } else {
-                        console.log(`   ✅ Main database updated (${this.changes} rows)`);
-                        resolve();
-                    }
-                });
-            });
-            
-            // Update server database
-            await new Promise((resolve, reject) => {
-                serverDb.run(updateQuery, values, function(err) {
-                    if (err) {
-                        console.log(`   ❌ Server DB update failed: ${err.message}`);
-                        reject(err);
-                    } else {
-                        console.log(`   ✅ Server database updated (${this.changes} rows)`);
+                        console.log(`   ✅ Application database updated (${this.changes} rows)`);
                         resolve();
                     }
                 });
@@ -149,7 +135,6 @@ async function fixStateDataIssues() {
     console.log('   Ready for social media format conversion');
     
     db.close();
-    serverDb.close();
 }
 
 // Run the fixes

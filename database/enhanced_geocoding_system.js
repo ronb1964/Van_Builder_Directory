@@ -130,7 +130,7 @@ class EnhancedGeocodingSystem {
     async validateExistingBuilder(builderId) {
         console.log(`🔍 Validating existing builder coordinates...`);
         
-        const db = new sqlite3.Database('./builders.db');
+        const db = new sqlite3.Database('../server/database/builders.db');
         
         return new Promise((resolve, reject) => {
             db.get(
