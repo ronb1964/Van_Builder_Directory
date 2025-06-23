@@ -195,7 +195,36 @@ const BuilderModal: React.FC<BuilderModalProps> = ({ builder, open, onClose }) =
               <Typography variant="body1" paragraph sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <LocationOn color="primary" />
                 <span>
-                  {builder.address ? `${builder.address}, ${location.city}, ${location.state} ${location.zip}` : `${location.city}, ${location.state} ${location.zip}`}
+                  {(() => {
+                    // Smart address formatting to avoid duplication
+                    const parts = [];
+                    
+                    // Add address if it exists and isn't empty/malformed
+                    if (builder.address && 
+                        builder.address.trim() !== '' && 
+                        !builder.address.includes('0 0 For Sale') &&
+                        !builder.address.includes('2021 by revamp') &&
+                        !builder.address.includes('2025 My Cust')) {
+                      parts.push(builder.address);
+                    }
+                    
+                    // Add city
+                    if (location.city) {
+                      parts.push(location.city);
+                    }
+                    
+                    // Add state
+                    if (location.state) {
+                      parts.push(location.state);
+                    }
+                    
+                    // Add zip if it exists and is valid (5 digits)
+                    if (location.zip && /^\d{5}$/.test(location.zip)) {
+                      parts.push(location.zip);
+                    }
+                    
+                    return parts.join(', ');
+                  })()}
                 </span>
               </Typography>
               
