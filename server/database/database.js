@@ -30,13 +30,31 @@ class DatabaseService {
     const builders = this.db.prepare(query).all();
     
     return builders.map(builder => {
-      // Get photos for this builder
-      const photos = this.getBuilderPhotos(builder.id);
-      const gallery = photos.map(photo => ({
-        url: photo.url,
-        alt: photo.alt_text || `${builder.name} van conversion`,
-        caption: photo.caption
-      }));
+      // Get photos for this builder - handle both old and new photo storage
+      let gallery = [];
+      
+      if (builder.photos) {
+        try {
+          // New format: JSON string in photos column
+          const photosData = JSON.parse(builder.photos);
+          gallery = photosData.map(photo => ({
+            url: photo.url,
+            alt: photo.alt || `${builder.name} van conversion`,
+            caption: photo.caption || ''
+          }));
+        } catch (e) {
+          console.log(`Error parsing photos for ${builder.name}:`, e.message);
+          gallery = [];
+        }
+      } else {
+        // Fallback to old format: builder_gallery table
+        const photos = this.getBuilderPhotos(builder.id);
+        gallery = photos.map(photo => ({
+          url: photo.url,
+          alt: photo.alt_text || `${builder.name} van conversion`,
+          caption: photo.caption
+        }));
+      }
 
       return {
         id: builder.id,
