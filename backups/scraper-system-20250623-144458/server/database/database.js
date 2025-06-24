@@ -59,7 +59,7 @@ class DatabaseService {
       return {
         id: builder.id,
         name: builder.name,
-        address: builder.address || '',
+        address: builder.address || `${builder.city}, ${builder.state}`,
         phone: this.formatPhone(builder.phone),
         email: builder.email,
         website: builder.website,
